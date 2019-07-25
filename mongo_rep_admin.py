@@ -116,6 +116,7 @@ def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
         (input) prt_lvl -> Integer - Level at which to print message.
 
     """
+    rep_status = dict(rep_status)
 
     if not rep_stat.get("health"):
         gen_libs.prt_msg("Health", "Bad", prt_lvl)
