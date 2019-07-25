@@ -366,12 +366,12 @@ def chk_mem_rep_lag(rep_status, **kwargs):
     json_fmt = kwargs.get("json", False)
 
     if json_fmt:
-        outdata = {"Application": "Mongo Replication",
-                   "Rep Set": rep_status.get("set"),
-                   "Master": get_master(rep_status).get("name"),
-                   "Asof": datetime.datetime.strftime(datetime.datetime.now(),
+        outdata = {"application": "Mongo Replication",
+                   "repSet": rep_status.get("set"),
+                   "master": get_master(rep_status).get("name"),
+                   "asOf": datetime.datetime.strftime(datetime.datetime.now(),
                                                       "%Y-%m-%d %H:%M:%S"),
-                   "Slaves": []}
+                   "slaves": []}
 
     else:
         print("\nReplication lag for Replica set: %s."
@@ -392,12 +392,12 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             if json_fmt:
                 sec_ago = fetch_rep_lag(member.get("optimeDate"), **kwargs)
 
-                outdata["Slaves"].append({"Name": member.get("name"),
-                                          "Sync_To":
+                outdata["slaves"].append({"name": member.get("name"),
+                                          "syncTo":
                                           datetime.datetime.strftime(
                                               member.get("optimeDate"),
                                               "%Y-%m-%d %H:%M:%S"),
-                                          "Lag_Time": sec_ago})
+                                          "lagTime": sec_ago})
 
             else:
                 fetch_rep_lag(member.get("optimeDate"), **kwargs)
