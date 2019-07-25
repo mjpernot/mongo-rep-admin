@@ -415,6 +415,7 @@ def chk_rep_lag(REPSET, args_array, **kwargs):
 
     """
 
+    args_array = dict(args_array)
     json_fmt = args_array.get("-j", False)
     outfile = args_array.get("-o", None)
     db_tbl = args_array.get("-i", None)
