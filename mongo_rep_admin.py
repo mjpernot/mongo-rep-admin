@@ -124,7 +124,7 @@ def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
         gen_libs.prt_msg("Health", "Good", prt_lvl)
 
 
-def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1):
+def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
 
     """Function:  rep_state_chk
 
