@@ -181,8 +181,8 @@ def chk_rep_stat(REPSET, args_array, **kwargs):
 
     """
 
+    args_array = dict(args_array)
     print("\nReplication Status Check for Rep Set:  %s" % (REPSET.repset))
-
     prt_all = kwargs.get("prt_all", False)
 
     # Process each member in replica set.
