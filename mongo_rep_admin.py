@@ -150,7 +150,7 @@ def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
         gen_libs.prt_msg("State Msg", rep_stat.get("stateStr"), prt_lvl + 1)
 
 
-def rep_msg_chk(rep_stat, prt_lvl=1):
+def rep_msg_chk(rep_stat, prt_lvl=1, **kwargs):
 
     """Function:  rep_msg_chk
 
