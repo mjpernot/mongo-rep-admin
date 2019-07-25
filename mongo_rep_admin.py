@@ -271,6 +271,7 @@ def get_master(rep_status, **kwargs):
 
     """
 
+    rep_status = dict(rep_status)
     primary = None
 
     # Process each member in replica set.
