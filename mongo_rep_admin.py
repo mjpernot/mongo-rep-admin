@@ -205,6 +205,7 @@ def prt_rep_stat(REPSET, args_array, **kwargs):
 
     """
 
+    args_array = dict(args_array)
     chk_rep_stat(REPSET, args_array, prt_all=args_array["-T"])
 
 
