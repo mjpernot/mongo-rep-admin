@@ -141,7 +141,7 @@ def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
 
     # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter).
     good_state = [1, 2, 7]
-    rep_status = dict(rep_status)
+    rep_stat = dict(rep_stat)
 
     if rep_stat.get("state") not in good_state:
         gen_libs.prt_msg("State", rep_stat.get("state"), prt_lvl)
@@ -164,7 +164,7 @@ def rep_msg_chk(rep_stat, prt_lvl=1, **kwargs):
 
     """
 
-    rep_status = dict(rep_status)
+    rep_stat = dict(rep_stat)
 
     if rep_stat.get("infoMessage"):
         gen_libs.prt_msg("Error Message", rep_stat.get("infoMessage"), prt_lvl)
