@@ -104,7 +104,7 @@ def help_message():
     print(__doc__)
 
 
-def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1):
+def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
 
     """Function:  rep_health_chk
 
