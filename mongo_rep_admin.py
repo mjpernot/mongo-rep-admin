@@ -246,6 +246,7 @@ def fetch_members(REPSET, args_array, **kwargs):
 
     """
 
+    args_array = dict(args_array)
     print("\nMembers of replica set: %s" % (REPSET.repset))
 
     if (REPSET.is_primary()):
