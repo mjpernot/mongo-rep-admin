@@ -257,7 +257,7 @@ def fetch_members(REPSET, args_array, **kwargs):
         print("\t" + ":".join([x[0], str(x[1])]))
 
 
-def get_master(rep_status):
+def get_master(rep_status, **kwargs):
 
     """Function:  get_master
 
