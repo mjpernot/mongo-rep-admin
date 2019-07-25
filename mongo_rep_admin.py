@@ -220,8 +220,8 @@ def fetch_priority(REPSET, args_array, **kwargs):
 
     """
 
+    args_array = dict(args_array)
     print("\nMembers => priority of replica set: %s" % (REPSET.repset))
-
     COLL = mongo_class.Coll(REPSET.name, REPSET.user, REPSET.passwd,
                             REPSET.host, REPSET.port, "local",
                             "system.replset", REPSET.auth, REPSET.conf_file)
