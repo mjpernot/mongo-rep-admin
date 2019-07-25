@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.1.0] - 2019-07-25
+### Changed
+- get_optimedate:  Added \*\*kwargs to argument list.
+- get_master:  Added \*\*kwargs to argument list.
+- rep_msg_chk:  Added \*\*kwargs to argument list.
+- rep_state_chk:  Added \*\*kwargs to argument list.
+- rep_health_chk:  Added \*\*kwargs to argument list.
+
+
 ## [3.0.1] - 2018-11-30
 ### Changed
 - Documentation updates.
