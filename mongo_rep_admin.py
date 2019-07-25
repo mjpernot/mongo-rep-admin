@@ -280,7 +280,7 @@ def get_master(rep_status, **kwargs):
     return primary
 
 
-def get_optimedate(rep_status):
+def get_optimedate(rep_status, **kwargs):
 
     """Function:  get_optimedate
 
