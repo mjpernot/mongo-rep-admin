@@ -20,6 +20,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - run_program:  Fixed mutable list/dictionary argument issue.
 
 ### Changed
+- chk_mem_rep_lag:  Converted JSON output to camelCase.
 - get_optimedate:  Added \*\*kwargs to argument list.
 - get_master:  Added \*\*kwargs to argument list.
 - rep_msg_chk:  Added \*\*kwargs to argument list.
