@@ -5,6 +5,14 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ## [3.1.0] - 2019-07-25
+### Fixed
+- chk_rep_stat:  Fixed mutable list/dictionary argument issue.
+- prt_rep_stat:  Fixed mutable list/dictionary argument issue.
+- fetch_priority:  Fixed mutable list/dictionary argument issue.
+- fetch_members:  Fixed mutable list/dictionary argument issue.
+- chk_rep_lag:  Fixed mutable list/dictionary argument issue.
+- run_program:  Fixed mutable list/dictionary argument issue.
+
 ### Changed
 - get_optimedate:  Added \*\*kwargs to argument list.
 - get_master:  Added \*\*kwargs to argument list.
