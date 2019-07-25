@@ -356,6 +356,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
 
     """
 
+    rep_status = dict(rep_status)
     json_fmt = kwargs.get("json", False)
 
     if json_fmt:
