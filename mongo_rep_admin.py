@@ -162,6 +162,8 @@ def rep_msg_chk(rep_stat, prt_lvl=1, **kwargs):
 
     """
 
+    rep_status = dict(rep_status)
+
     if rep_stat.get("infoMessage"):
         gen_libs.prt_msg("Error Message", rep_stat.get("infoMessage"), prt_lvl)
 
