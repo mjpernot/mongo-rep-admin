@@ -22,6 +22,7 @@ pipeline {
                 source test_env/bin/activate
                 pip2 install mock --user
                 pip2 install pymongo --user
+                ./test/unit/mongo_rep_admin/help_message.py
                 deactivate
                 rm -rf test_env
                 """
