@@ -6,6 +6,12 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [3.1.0] - 2019-07-25
 ### Fixed
+- rep_health_chk:  Fixed mutable list/dictionary argument issue.
+- rep_state_chk:  Fixed mutable list/dictionary argument issue.
+- rep_msg_chk:  Fixed mutable list/dictionary argument issue.
+- get_master:  Fixed mutable list/dictionary argument issue.
+- get_optimedate:  Fixed mutable list/dictionary argument issue.
+- chk_mem_rep_lag:  Fixed mutable list/dictionary argument issue.
 - chk_rep_stat:  Fixed mutable list/dictionary argument issue.
 - prt_rep_stat:  Fixed mutable list/dictionary argument issue.
 - fetch_priority:  Fixed mutable list/dictionary argument issue.
