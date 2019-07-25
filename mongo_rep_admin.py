@@ -451,8 +451,9 @@ def run_program(args_array, func_dict, **kwargs):
 
     """
 
+    args_array = dict(args_array)
+    func_dict = dict(func_dict)
     SERVER = gen_libs.load_module(args_array["-c"], args_array["-d"])
-
     COLL = mongo_class.Coll(SERVER.name, SERVER.user, SERVER.passwd,
                             SERVER.host, SERVER.port, "local",
                             "system.replset", SERVER.auth, SERVER.conf_file)
@@ -462,7 +463,6 @@ def run_program(args_array, func_dict, **kwargs):
     if COLL.coll_cnt() != 0:
         # Fetch the replication set name.
         rep_set = COLL.coll_find1().get("_id")
-
         REPSET = mongo_class.RepSet(SERVER.name, SERVER.user, SERVER.passwd,
                                     SERVER.host, SERVER.port, SERVER.auth,
                                     repset=rep_set)
