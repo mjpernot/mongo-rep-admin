@@ -87,7 +87,6 @@ import mongo_lib.mongo_libs as mongo_libs
 import mongo_lib.mongo_class as mongo_class
 import version
 
-# Version
 __version__ = version.__version__
 
 
@@ -203,8 +202,6 @@ def prt_rep_stat(REPSET, args_array, **kwargs):
     Arguments:
         (input) REPSET -> Replication set instance.
         (input) args_array -> Array of command line options and values.
-        (input) **kwargs:
-            None
 
     """
 
@@ -220,8 +217,6 @@ def fetch_priority(REPSET, args_array, **kwargs):
     Arguments:
         (input) REPSET -> Replication set instance.
         (input) args_array -> Array of command line options and values.
-        (input) **kwargs:
-            None
 
     """
 
@@ -248,8 +243,6 @@ def fetch_members(REPSET, args_array, **kwargs):
     Arguments:
         (ininput) REPSET -> Replication set instance.
         (input) args_array -> Array of command line options and values.
-        (input) **kwargs:
-            None
 
     """
 
@@ -419,8 +412,6 @@ def chk_rep_lag(REPSET, args_array, **kwargs):
     Arguments:
         (input) REPSET -> Replication set instance.
         (input) args_array -> Array of command line options and values.
-        (input) **kwargs:
-            None
 
     """
 
@@ -457,8 +448,6 @@ def run_program(args_array, func_dict, **kwargs):
     Arguments:
         (input) args_array -> Dict of command line options and values.
         (input) func_dict -> Dictionary list of functions and options.
-        (input) **kwargs:
-            None
 
     """
 
