@@ -89,7 +89,7 @@ class Server(object):
 
         """
 
-        return ["server1", 27017]
+        return ("server1", 27017)
 
     def fetch_nodes(self):
 
@@ -101,7 +101,7 @@ class Server(object):
 
         """
 
-        return ["server2", 27017]
+        return ([("server1", 27017), ("server2", 27017)])
 
 
 class UnitTest(unittest.TestCase):
