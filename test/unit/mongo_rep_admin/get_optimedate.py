@@ -17,6 +17,7 @@
 # Standard
 import sys
 import os
+import datetime
 
 if sys.version_info < (2, 7):
     import unittest2 as unittest
@@ -61,11 +62,17 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        self.rep_stat = {"members": [{"optimeDate": "2019-07-26 11:13:01",
-                                      "name": "server1"},
-                                     {"optimeDate": "2019-07-26 11:13:02",
-                                      "name": "server2"}]}
-        self.results = "2019-07-26 11:13:02"
+        self.rep_stat = \
+            {"members": [{"optimeDate":
+                          datetime.datetime.strptime("2019-07-26 11:13:01",
+                                                     "%Y-%m-%d %H:%M:%S"),
+                          "name": "server1"},
+                         {"optimeDate":
+                          datetime.datetime.strptime("2019-07-26 11:13:02",
+                                                     "%Y-%m-%d %H:%M:%S"),
+                          "name": "server2"}]}
+        self.results = datetime.datetime.strptime("2019-07-26 11:13:02",
+                                                  "%Y-%m-%d %H:%M:%S")
 
     def test_get_optimedate(self):
 
