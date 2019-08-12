@@ -143,11 +143,7 @@ def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
     good_state = [1, 2, 7]
     rep_stat = dict(rep_stat)
 
-    if rep_stat.get("state") not in good_state:
-        gen_libs.prt_msg("State", rep_stat.get("state"), prt_lvl)
-        gen_libs.prt_msg("State Msg", rep_stat.get("stateStr"), prt_lvl + 1)
-
-    elif prt_all:
+    if rep_stat.get("state") not in good_state or prt_all:
         gen_libs.prt_msg("State", rep_stat.get("state"), prt_lvl)
         gen_libs.prt_msg("State Msg", rep_stat.get("stateStr"), prt_lvl + 1)
 
