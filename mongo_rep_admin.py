@@ -213,23 +213,23 @@ def prt_rep_stat(repset, args_array, **kwargs):
     chk_rep_stat(repset, args_array, prt_all=args_array["-T"])
 
 
-def fetch_priority(REPSET, args_array, **kwargs):
+def fetch_priority(repset, args_array, **kwargs):
 
     """Function:  fetch_priority
 
     Description:  Fetch and print members in the replication set.
 
     Arguments:
-        (input) REPSET -> Replication set instance.
+        (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
 
     """
 
     args_array = dict(args_array)
-    print("\nMembers => priority of replica set: %s" % (REPSET.repset))
-    COLL = mongo_class.Coll(REPSET.name, REPSET.user, REPSET.passwd,
-                            REPSET.host, REPSET.port, "local",
-                            "system.replset", REPSET.auth, REPSET.conf_file)
+    print("\nMembers => priority of replica set: %s" % (repset.repset))
+    COLL = mongo_class.Coll(repset.name, repset.user, repset.passwd,
+                            repset.host, repset.port, "local",
+                            "system.replset", repset.auth, repset.conf_file)
     COLL.connect()
 
     for x in COLL.coll_find1()["members"]:
