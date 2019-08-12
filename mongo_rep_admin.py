@@ -238,7 +238,7 @@ def fetch_priority(repset, args_array, **kwargs):
     cmds_gen.disconnect([COLL])
 
 
-def fetch_members(REPSET, args_array, **kwargs):
+def fetch_members(repset, args_array, **kwargs):
 
     """Function:  fetch_members
 
@@ -246,20 +246,20 @@ def fetch_members(REPSET, args_array, **kwargs):
         the primary server.
 
     Arguments:
-        (ininput) REPSET -> Replication set instance.
+        (ininput) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
 
     """
 
     args_array = dict(args_array)
-    print("\nMembers of replica set: %s" % (REPSET.repset))
+    print("\nMembers of replica set: %s" % (repset.repset))
 
-    if (REPSET.is_primary()):
-        x = REPSET.fetch_adr()
+    if (repset.is_primary()):
+        x = repset.fetch_adr()
         print("\t" + ":".join([x[0], str(x[1])]) + "  (Primary)")
 
     # Process secondary servers.
-    for x in REPSET.fetch_nodes().difference(set([REPSET.fetch_adr()])):
+    for x in repset.fetch_nodes().difference(set([repset.fetch_adr()])):
         print("\t" + ":".join([x[0], str(x[1])]))
 
 
