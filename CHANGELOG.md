@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
-## [3.1.0] - 2019-07-25
+## [3.1.0] - 2019-08-12
 ### Fixed
 - rep_health_chk:  Fixed mutable list/dictionary argument issue.
 - rep_state_chk:  Fixed mutable list/dictionary argument issue.
@@ -19,7 +19,21 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - chk_rep_lag:  Fixed mutable list/dictionary argument issue.
 - run_program:  Fixed mutable list/dictionary argument issue.
 
+### Added
+- setup_mail:  Initialize a mail instance.
+
 ### Changed
+- chk_mem_rep_lag:  Added capability to mail out JSON formatted data.
+- run_program:  Added setup of mail instance and passing mail instance to functions.
+- main:  Added '-e' and '-s' options to allow for email capability for some options.
+- rep_state_chk:  Refactored the "if" statements logic.
+- main:  Refactored the "if" statements logic.
+- run_program:  Changed variables to standard naming convention.
+- chk_rep_lag:  Changed variables to standard naming convention.
+- fetch_members:  Changed variable to standard naming convention.
+- fetch_priority:  Changed variable to standard naming convention.
+- prt_rep_stat:  Changed variable to standard naming convention.
+- chk_rep_stat:  Changed variable to standard naming convention.
 - chk_mem_rep_lag:  Converted JSON output to camelCase.
 - get_optimedate:  Added \*\*kwargs to argument list.
 - get_master:  Added \*\*kwargs to argument list.

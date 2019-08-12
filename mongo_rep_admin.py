@@ -29,6 +29,10 @@
             database.  Do not include the .py extension.  Used only with the
             -i option.
         -o path/file => Directory path and file name for output.
+        -e to_email_addresses => Enables emailing capability for an option if
+            the option allows it.  Sends output to one or more email addresses.
+        -s subject_line => Subject line of email.  Optional, will create own
+            subject line if one is not provided.
         -v => Display version of this program.
         -h => Help and usage message.
 
@@ -75,6 +79,8 @@
 # Standard
 import sys
 import datetime
+import getpass
+import socket
 
 # Third party
 import json
@@ -83,6 +89,7 @@ import json
 import lib.arg_parser as arg_parser
 import lib.gen_libs as gen_libs
 import lib.cmds_gen as cmds_gen
+import lib.gen_class as gen_class
 import mongo_lib.mongo_libs as mongo_libs
 import mongo_lib.mongo_class as mongo_class
 import version
@@ -143,11 +150,7 @@ def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
     good_state = [1, 2, 7]
     rep_stat = dict(rep_stat)
 
-    if rep_stat.get("state") not in good_state:
-        gen_libs.prt_msg("State", rep_stat.get("state"), prt_lvl)
-        gen_libs.prt_msg("State Msg", rep_stat.get("stateStr"), prt_lvl + 1)
-
-    elif prt_all:
+    if rep_stat.get("state") not in good_state or prt_all:
         gen_libs.prt_msg("State", rep_stat.get("state"), prt_lvl)
         gen_libs.prt_msg("State Msg", rep_stat.get("stateStr"), prt_lvl + 1)
 
@@ -170,7 +173,7 @@ def rep_msg_chk(rep_stat, prt_lvl=1, **kwargs):
         gen_libs.prt_msg("Error Message", rep_stat.get("infoMessage"), prt_lvl)
 
 
-def chk_rep_stat(REPSET, args_array, **kwargs):
+def chk_rep_stat(repset, args_array, **kwargs):
 
     """Function:  chk_rep_stat
 
@@ -178,7 +181,7 @@ def chk_rep_stat(REPSET, args_array, **kwargs):
         set.
 
     Arguments:
-        (input) REPSET -> Replication set instance.
+        (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
         (input) **kwargs:
             prt_all -> True|False on printing all status messages.
@@ -186,50 +189,50 @@ def chk_rep_stat(REPSET, args_array, **kwargs):
     """
 
     args_array = dict(args_array)
-    print("\nReplication Status Check for Rep Set:  %s" % (REPSET.repset))
+    print("\nReplication Status Check for Rep Set:  %s" % (repset.repset))
     prt_all = kwargs.get("prt_all", False)
 
     # Process each member in replica set.
-    for x in REPSET.adm_cmd("replSetGetStatus").get("members"):
+    for x in repset.adm_cmd("replSetGetStatus").get("members"):
         print("\nServer: %s" % (x.get("name")))
         rep_health_chk(x, prt_all)
         rep_state_chk(x, prt_all)
         rep_msg_chk(x)
 
 
-def prt_rep_stat(REPSET, args_array, **kwargs):
+def prt_rep_stat(repset, args_array, **kwargs):
 
     """Function:  prt_rep_stat
 
     Description:  Set the print all flag and call chk_rep_stat function.
 
     Arguments:
-        (input) REPSET -> Replication set instance.
+        (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
 
     """
 
     args_array = dict(args_array)
-    chk_rep_stat(REPSET, args_array, prt_all=args_array["-T"])
+    chk_rep_stat(repset, args_array, prt_all=args_array["-T"])
 
 
-def fetch_priority(REPSET, args_array, **kwargs):
+def fetch_priority(repset, args_array, **kwargs):
 
     """Function:  fetch_priority
 
     Description:  Fetch and print members in the replication set.
 
     Arguments:
-        (input) REPSET -> Replication set instance.
+        (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
 
     """
 
     args_array = dict(args_array)
-    print("\nMembers => priority of replica set: %s" % (REPSET.repset))
-    COLL = mongo_class.Coll(REPSET.name, REPSET.user, REPSET.passwd,
-                            REPSET.host, REPSET.port, "local",
-                            "system.replset", REPSET.auth, REPSET.conf_file)
+    print("\nMembers => priority of replica set: %s" % (repset.repset))
+    COLL = mongo_class.Coll(repset.name, repset.user, repset.passwd,
+                            repset.host, repset.port, "local",
+                            "system.replset", repset.auth, repset.conf_file)
     COLL.connect()
 
     for x in COLL.coll_find1()["members"]:
@@ -238,7 +241,7 @@ def fetch_priority(REPSET, args_array, **kwargs):
     cmds_gen.disconnect([COLL])
 
 
-def fetch_members(REPSET, args_array, **kwargs):
+def fetch_members(repset, args_array, **kwargs):
 
     """Function:  fetch_members
 
@@ -246,20 +249,20 @@ def fetch_members(REPSET, args_array, **kwargs):
         the primary server.
 
     Arguments:
-        (ininput) REPSET -> Replication set instance.
+        (ininput) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
 
     """
 
     args_array = dict(args_array)
-    print("\nMembers of replica set: %s" % (REPSET.repset))
+    print("\nMembers of replica set: %s" % (repset.repset))
 
-    if (REPSET.is_primary()):
-        x = REPSET.fetch_adr()
+    if (repset.is_primary()):
+        x = repset.fetch_adr()
         print("\t" + ":".join([x[0], str(x[1])]) + "  (Primary)")
 
     # Process secondary servers.
-    for x in REPSET.fetch_nodes().difference(set([REPSET.fetch_adr()])):
+    for x in repset.fetch_nodes().difference(set([repset.fetch_adr()])):
         print("\t" + ":".join([x[0], str(x[1])]))
 
 
@@ -359,6 +362,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             ofile -> file name - Name of output file.
             db_tbl -> database:collection - Name of db and collection.
             class_inst -> Server class instance or equivalent class.
+            mail -> Mail instance.
 
     """
 
@@ -406,12 +410,18 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
 
     if json_fmt:
+        mail = kwargs.get("mail", None)
+
         mongo_libs.json_prt_ins_2_db(outdata,
                                      class_cfg=kwargs.get("class_inst", None),
                                      **kwargs)
 
+        if mail:
+            mail.add_2_msg(jdata)
+            mail.send_mail()
 
-def chk_rep_lag(REPSET, args_array, **kwargs):
+
+def chk_rep_lag(repset, args_array, **kwargs):
 
     """Function:  chk_rep_lag
 
@@ -419,7 +429,7 @@ def chk_rep_lag(REPSET, args_array, **kwargs):
         datetime whether Primary or Secondary.
 
     Arguments:
-        (input) REPSET -> Replication set instance.
+        (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
 
     """
@@ -428,12 +438,12 @@ def chk_rep_lag(REPSET, args_array, **kwargs):
     json_fmt = args_array.get("-j", False)
     outfile = args_array.get("-o", None)
     db_tbl = args_array.get("-i", None)
-    rep_status = REPSET.adm_cmd("replSetGetStatus")
+    rep_status = repset.adm_cmd("replSetGetStatus")
     primary = get_master(rep_status)
-    Rep_Cfg = None
+    rep_cfg = None
 
     if args_array.get("-m", None):
-        Rep_Cfg = gen_libs.load_module(args_array["-m"], args_array["-d"])
+        rep_cfg = gen_libs.load_module(args_array["-m"], args_array["-d"])
 
     if primary:
         optime_date = primary.get("optimeDate")
@@ -446,7 +456,33 @@ def chk_rep_lag(REPSET, args_array, **kwargs):
 
     chk_mem_rep_lag(rep_status, optdt=optime_date, suf=suffix,
                     json=json_fmt, ofile=outfile, db_tbl=db_tbl,
-                    class_inst=Rep_Cfg)
+                    class_inst=rep_cfg)
+
+
+def setup_mail(to_line, subj=None, frm_line=None, **kwargs):
+
+    """Function:  setup_mail
+
+    Description:  Initialize a mail instance.  Provide 'from line' if one is
+        not passed.
+
+    Arguments:
+        (input) to_line -> Mail to line.
+        (input) subj -> Mail subject line.
+        (input) frm_line -> Mail from line.
+        (output) Mail instance.
+
+    """
+
+    to_line = list(to_line)
+
+    if isinstance(subj, list):
+        subj = list(subj)
+
+    if not frm_line:
+        frm_line = getpass.getuser() + "@" + socket.gethostname()
+
+    return gen_class.Mail(to_line, subj, frm_line)
 
 
 def run_program(args_array, func_dict, **kwargs):
@@ -463,31 +499,37 @@ def run_program(args_array, func_dict, **kwargs):
 
     args_array = dict(args_array)
     func_dict = dict(func_dict)
-    SERVER = gen_libs.load_module(args_array["-c"], args_array["-d"])
-    COLL = mongo_class.Coll(SERVER.name, SERVER.user, SERVER.passwd,
-                            SERVER.host, SERVER.port, "local",
-                            "system.replset", SERVER.auth, SERVER.conf_file)
-    COLL.connect()
+    mail = None
+    server = gen_libs.load_module(args_array["-c"], args_array["-d"])
+    coll = mongo_class.Coll(server.name, server.user, server.passwd,
+                            server.host, server.port, "local",
+                            "system.replset", server.auth, server.conf_file)
+    coll.connect()
 
     # Is replication setup.
-    if COLL.coll_cnt() != 0:
+    if coll.coll_cnt() != 0:
         # Fetch the replication set name.
-        rep_set = COLL.coll_find1().get("_id")
-        REPSET = mongo_class.RepSet(SERVER.name, SERVER.user, SERVER.passwd,
-                                    SERVER.host, SERVER.port, SERVER.auth,
-                                    repset=rep_set)
-        REPSET.connect()
+        rep_set = coll.coll_find1().get("_id")
+        repinst = mongo_class.RepSet(server.name, server.user, server.passwd,
+                                     server.host, server.port, server.auth,
+                                     repset=rep_set)
+        repinst.connect()
+
+        if args_array.get("-e", None):
+            mail = setup_mail(args_array.get("-e"),
+                              subj=args_array.get("-s", None))
+
 
         # Call function(s) - intersection of command line and function dict.
         for x in set(args_array.keys()) & set(func_dict.keys()):
-            func_dict[x](REPSET, args_array, **kwargs)
+            func_dict[x](repinst, args_array, mail=mail, **kwargs)
 
-        cmds_gen.disconnect([REPSET])
+        cmds_gen.disconnect([repinst])
 
     else:
         gen_libs.prt_msg("Error", "No replication found.", 0)
 
-    cmds_gen.disconnect([COLL])
+    cmds_gen.disconnect([coll])
 
 
 def main():
@@ -517,21 +559,23 @@ def main():
     file_crt_list = ["-o"]
     func_dict = {"-L": chk_rep_lag, "-M": fetch_members, "-S": chk_rep_stat,
                  "-P": fetch_priority, "-T": prt_rep_stat}
-    opt_con_req_list = {"-i": ["-m"]}
+    opt_con_req_list = {"-i": ["-m"], "-s": ["-e"]}
     opt_def_dict = {"-j": False, "-i": "sysmon:mongo_rep_lag"}
+    opt_multi_list = ["-e", "-s"]
     opt_req_list = ["-c", "-d"]
-    opt_val_list = ["-c", "-d", "-i", "-m", "-o"]
+    opt_val_list = ["-c", "-d", "-i", "-m", "-o", "-e", "-s"]
 
     # Process argument list from command line.
-    args_array = arg_parser.arg_parse2(sys.argv, opt_val_list, opt_def_dict)
+    args_array = arg_parser.arg_parse2(sys.argv, opt_val_list, opt_def_dict,
+                                       multi_val=opt_multi_list)
 
-    if not gen_libs.help_func(args_array, __version__, help_message):
-        if not arg_parser.arg_require(args_array, opt_req_list) \
-           and arg_parser.arg_cond_req(args_array, opt_con_req_list) \
-           and not arg_parser.arg_dir_chk_crt(args_array, dir_chk_list) \
-           and not arg_parser.arg_file_chk(args_array, file_chk_list,
+    if not gen_libs.help_func(args_array, __version__, help_message) \
+       and not arg_parser.arg_require(args_array, opt_req_list) \
+       and arg_parser.arg_cond_req(args_array, opt_con_req_list) \
+       and not arg_parser.arg_dir_chk_crt(args_array, dir_chk_list) \
+       and not arg_parser.arg_file_chk(args_array, file_chk_list,
                                            file_crt_list):
-            run_program(args_array, func_dict)
+        run_program(args_array, func_dict)
 
 
 if __name__ == "__main__":
