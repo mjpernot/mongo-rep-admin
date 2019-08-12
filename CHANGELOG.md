@@ -27,6 +27,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - main:  Added '-e' and '-s' options to allow for email capability for some options.
 - rep_state_chk:  Refactored the "if" statements logic.
 - main:  Refactored the "if" statements logic.
+- run_program:  Changed variables to standard naming convention.
 - chk_rep_lag:  Changed variables to standard naming convention.
 - fetch_members:  Changed variable to standard naming convention.
 - fetch_priority:  Changed variable to standard naming convention.
