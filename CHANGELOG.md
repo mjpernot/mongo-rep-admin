@@ -20,7 +20,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - run_program:  Fixed mutable list/dictionary argument issue.
 
 ### Changed
-- chk_rep_lag:  Changed variable to standard naming convention.
+- chk_rep_lag:  Changed variables to standard naming convention.
 - fetch_members:  Changed variable to standard naming convention.
 - fetch_priority:  Changed variable to standard naming convention.
 - prt_rep_stat:  Changed variable to standard naming convention.
