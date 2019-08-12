@@ -17,6 +17,7 @@
 # Standard
 import sys
 import os
+import datetime
 
 if sys.version_info < (2, 7):
     import unittest2 as unittest
@@ -62,12 +63,15 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        self.optdt = "2019-07-26 11:13:02"
-        self.dtg = "2019-07-26 11:12:12"
+        self.optdt = datetime.datetime.strptime("2019-07-26 11:13:02",
+                                                "%Y-%m-%d %H:%M:%S")
+        self.dtg = datetime.datetime.strptime("2019-07-26 11:12:12",
+                                              "%Y-%m-%d %H:%M:%S")
         self.results = 50
 
+    @mock.patch("mongo_rep_admin.gen_libs.get_secs")
     @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
-    def test_std_out(self, mock_prt):
+    def test_std_out(self, mock_prt, mock_secs):
 
         """Function:  test_std_out
 
@@ -78,11 +82,12 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_prt.return_value = True
+        mock_secs.return_value = self.results
 
-        #with gen_libs.no_std_out():
-        self.assertFalse(mongo_rep_admin.fetch_rep_lag(self.dtg,
-                                                       optdt=self.optdt,
-                                                       suf="Primary"))
+        with gen_libs.no_std_out():
+            self.assertFalse(mongo_rep_admin.fetch_rep_lag(self.dtg,
+                                                           optdt=self.optdt,
+                                                           suf="Primary"))
 
     def test_json(self):
 
