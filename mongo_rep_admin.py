@@ -411,7 +411,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
                                      **kwargs)
 
 
-def chk_rep_lag(REPSET, args_array, **kwargs):
+def chk_rep_lag(repset, args_array, **kwargs):
 
     """Function:  chk_rep_lag
 
@@ -419,7 +419,7 @@ def chk_rep_lag(REPSET, args_array, **kwargs):
         datetime whether Primary or Secondary.
 
     Arguments:
-        (input) REPSET -> Replication set instance.
+        (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
 
     """
@@ -428,7 +428,7 @@ def chk_rep_lag(REPSET, args_array, **kwargs):
     json_fmt = args_array.get("-j", False)
     outfile = args_array.get("-o", None)
     db_tbl = args_array.get("-i", None)
-    rep_status = REPSET.adm_cmd("replSetGetStatus")
+    rep_status = repset.adm_cmd("replSetGetStatus")
     primary = get_master(rep_status)
     Rep_Cfg = None
 
