@@ -101,7 +101,7 @@ class Server(object):
 
         """
 
-        return ([("server1", 27017), ("server2", 27017)])
+        return set([("server1", 27017), ("server2", 27017)])
 
 
 class UnitTest(unittest.TestCase):
@@ -143,9 +143,9 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        #with gen_libs.no_std_out():
-        self.assertFalse(mongo_rep_admin.fetch_members(self.server,
-                                                        self.args_array))
+        with gen_libs.no_std_out():
+            self.assertFalse(mongo_rep_admin.fetch_members(self.server,
+                                                           self.args_array))
 
 
 if __name__ == "__main__":
