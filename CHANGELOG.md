@@ -23,6 +23,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - setup_mail:  Initialize a mail instance.
 
 ### Changed
+- main:  Added '-e' and '-s' options to allow for email capability for some options.
 - rep_state_chk:  Refactored the "if" statements logic.
 - main:  Refactored the "if" statements logic.
 - chk_rep_lag:  Changed variables to standard naming convention.
