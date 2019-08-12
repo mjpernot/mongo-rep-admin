@@ -6,6 +6,7 @@
 
 echo ""
 echo "Unit test:"
+test/unit/mongo_rep_admin/chk_mem_rep_lag.py
 test/unit/mongo_rep_admin/chk_rep_lag.py
 test/unit/mongo_rep_admin/chk_rep_stat.py
 test/unit/mongo_rep_admin/fetch_members.py
