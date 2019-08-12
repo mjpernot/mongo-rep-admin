@@ -489,6 +489,7 @@ def run_program(args_array, func_dict, **kwargs):
 
     args_array = dict(args_array)
     func_dict = dict(func_dict)
+    mail = None
     SERVER = gen_libs.load_module(args_array["-c"], args_array["-d"])
     COLL = mongo_class.Coll(SERVER.name, SERVER.user, SERVER.passwd,
                             SERVER.host, SERVER.port, "local",
@@ -504,9 +505,14 @@ def run_program(args_array, func_dict, **kwargs):
                                     repset=rep_set)
         REPSET.connect()
 
+        if args_array.get("-e", None):
+            mail = setup_mail(args_array.get("-e"),
+                              subj=args_array.get("-s", None))
+
+
         # Call function(s) - intersection of command line and function dict.
         for x in set(args_array.keys()) & set(func_dict.keys()):
-            func_dict[x](REPSET, args_array, **kwargs)
+            func_dict[x](REPSET, args_array, mail=mail, **kwargs)
 
         cmds_gen.disconnect([REPSET])
 
