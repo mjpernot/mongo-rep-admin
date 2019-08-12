@@ -490,20 +490,20 @@ def run_program(args_array, func_dict, **kwargs):
     args_array = dict(args_array)
     func_dict = dict(func_dict)
     mail = None
-    SERVER = gen_libs.load_module(args_array["-c"], args_array["-d"])
-    COLL = mongo_class.Coll(SERVER.name, SERVER.user, SERVER.passwd,
-                            SERVER.host, SERVER.port, "local",
-                            "system.replset", SERVER.auth, SERVER.conf_file)
-    COLL.connect()
+    server = gen_libs.load_module(args_array["-c"], args_array["-d"])
+    coll = mongo_class.Coll(server.name, server.user, server.passwd,
+                            server.host, server.port, "local",
+                            "system.replset", server.auth, server.conf_file)
+    coll.connect()
 
     # Is replication setup.
-    if COLL.coll_cnt() != 0:
+    if coll.coll_cnt() != 0:
         # Fetch the replication set name.
-        rep_set = COLL.coll_find1().get("_id")
-        REPSET = mongo_class.RepSet(SERVER.name, SERVER.user, SERVER.passwd,
-                                    SERVER.host, SERVER.port, SERVER.auth,
-                                    repset=rep_set)
-        REPSET.connect()
+        rep_set = coll.coll_find1().get("_id")
+        repinst = mongo_class.RepSet(server.name, server.user, server.passwd,
+                                     server.host, server.port, server.auth,
+                                     repset=rep_set)
+        repinst.connect()
 
         if args_array.get("-e", None):
             mail = setup_mail(args_array.get("-e"),
@@ -512,14 +512,14 @@ def run_program(args_array, func_dict, **kwargs):
 
         # Call function(s) - intersection of command line and function dict.
         for x in set(args_array.keys()) & set(func_dict.keys()):
-            func_dict[x](REPSET, args_array, mail=mail, **kwargs)
+            func_dict[x](repinst, args_array, mail=mail, **kwargs)
 
-        cmds_gen.disconnect([REPSET])
+        cmds_gen.disconnect([repinst])
 
     else:
         gen_libs.prt_msg("Error", "No replication found.", 0)
 
-    cmds_gen.disconnect([COLL])
+    cmds_gen.disconnect([coll])
 
 
 def main():
