@@ -430,10 +430,10 @@ def chk_rep_lag(repset, args_array, **kwargs):
     db_tbl = args_array.get("-i", None)
     rep_status = repset.adm_cmd("replSetGetStatus")
     primary = get_master(rep_status)
-    Rep_Cfg = None
+    rep_cfg = None
 
     if args_array.get("-m", None):
-        Rep_Cfg = gen_libs.load_module(args_array["-m"], args_array["-d"])
+        rep_cfg = gen_libs.load_module(args_array["-m"], args_array["-d"])
 
     if primary:
         optime_date = primary.get("optimeDate")
@@ -446,7 +446,7 @@ def chk_rep_lag(repset, args_array, **kwargs):
 
     chk_mem_rep_lag(rep_status, optdt=optime_date, suf=suffix,
                     json=json_fmt, ofile=outfile, db_tbl=db_tbl,
-                    class_inst=Rep_Cfg)
+                    class_inst=rep_cfg)
 
 
 def run_program(args_array, func_dict, **kwargs):
