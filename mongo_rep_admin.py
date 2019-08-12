@@ -359,6 +359,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             ofile -> file name - Name of output file.
             db_tbl -> database:collection - Name of db and collection.
             class_inst -> Server class instance or equivalent class.
+            mail -> Mail instance.
 
     """
 
@@ -406,9 +407,15 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
 
     if json_fmt:
+        mail = kwargs.get("mail", None)
+
         mongo_libs.json_prt_ins_2_db(outdata,
                                      class_cfg=kwargs.get("class_inst", None),
                                      **kwargs)
+
+        if mail:
+            mail.add_2_msg(jdata)
+            mail.send_mail()
 
 
 def chk_rep_lag(repset, args_array, **kwargs):
