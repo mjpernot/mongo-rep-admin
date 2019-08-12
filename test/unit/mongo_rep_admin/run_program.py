@@ -25,6 +25,7 @@ else:
 
 # Third-party
 import mock
+import collections
 
 # Local
 sys.path.append(os.getcwd())
@@ -35,7 +36,22 @@ import version
 __version__ = version.__version__
 
 
-def prt_rep_stat(self, repset, args_array):
+def fetch_priority(repset, args_array, **kwargs):
+
+    """Function:  fetch_priority
+
+    Description:  Stub holder for mongo_rep_admin.fetch_priority function.
+
+    Arguments:
+        (input) repset -> Replication set instance.
+        (input) args_array -> Array of command line options and values.
+
+    """
+
+    return True
+
+
+def prt_rep_stat(repset, args_array, **kwargs):
 
     """Function:  prt_rep_stat
 
@@ -78,7 +94,7 @@ class Coll(object):
 
         """
 
-        self.coll_cnt = 1
+        self.count = 1
 
     def connect(self):
 
@@ -102,7 +118,7 @@ class Coll(object):
 
         """
 
-        return self.coll_cnt
+        return self.count
 
     def coll_find1(self):
 
@@ -191,20 +207,23 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        self.server = {"name": "name", "user": "user", "passwd": "pwd",
-                       "host": "host", "port": 27017, "auth": "auth",
-                       "conf_file": "conffile"}
+        Server = collections.namedtuple("Server",
+                    "name user passwd host port auth conf_file")
+        self.server = Server("name", "user", "pwd", "host", 27017, "auth",
+                             "conffile")
 
         self.repset = RepSet()
         self.coll = Coll()
-        self.args_array = {"-T": True}
+        self.args_array = {"-T": True, "-c": "config", "-d": "dir/path"}
         self.func_dict = {"-P": fetch_priority, "-T": prt_rep_stat}
 
+    @mock.patch("mongo_rep_admin.gen_libs.load_module")
     @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
     @mock.patch("mongo_rep_admin.mongo_class.RepSet")
     @mock.patch("mongo_rep_admin.cmds_gen.disconnect")
     @mock.patch("mongo_rep_admin.mongo_class.Coll")
-    def test_no_replication(self, mock_coll, mock_cmd, mock_repset, mock_prt):
+    def test_no_replication(self, mock_coll, mock_cmd, mock_repset, mock_prt,
+                            mock_load):
 
         """Function:  test_no_replication
 
@@ -214,19 +233,21 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        self.coll.coll_cnt = 0
+        self.coll.count = 0
         mock_coll.return_value = self.coll
         mock_cmd.return_value = True
         mock_repset.return_value = self.repset
         mock_prt.return_value = True
+        mock_load.return_value = self.server
 
         self.assertFalse(mongo_rep_admin.run_program(self.args_array,
                                                      self.func_dict))
 
+    @mock.patch("mongo_rep_admin.gen_libs.load_module")
     @mock.patch("mongo_rep_admin.mongo_class.RepSet")
     @mock.patch("mongo_rep_admin.cmds_gen.disconnect")
     @mock.patch("mongo_rep_admin.mongo_class.Coll")
-    def test_replication(self, mock_coll, mock_cmd, mock_repset):
+    def test_replication(self, mock_coll, mock_cmd, mock_repset, mock_load):
 
         """Function:  test_replication
 
@@ -239,6 +260,7 @@ class UnitTest(unittest.TestCase):
         mock_coll.return_value = self.coll
         mock_cmd.return_value = True
         mock_repset.return_value = self.repset
+        mock_load.return_value = self.server
 
         self.assertFalse(mongo_rep_admin.run_program(self.args_array,
                                                      self.func_dict))
