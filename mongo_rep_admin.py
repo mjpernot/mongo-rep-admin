@@ -197,20 +197,20 @@ def chk_rep_stat(repset, args_array, **kwargs):
         rep_msg_chk(x)
 
 
-def prt_rep_stat(REPSET, args_array, **kwargs):
+def prt_rep_stat(repset, args_array, **kwargs):
 
     """Function:  prt_rep_stat
 
     Description:  Set the print all flag and call chk_rep_stat function.
 
     Arguments:
-        (input) REPSET -> Replication set instance.
+        (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
 
     """
 
     args_array = dict(args_array)
-    chk_rep_stat(REPSET, args_array, prt_all=args_array["-T"])
+    chk_rep_stat(repset, args_array, prt_all=args_array["-T"])
 
 
 def fetch_priority(REPSET, args_array, **kwargs):
