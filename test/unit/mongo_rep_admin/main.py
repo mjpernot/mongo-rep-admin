@@ -90,10 +90,10 @@ class UnitTest(unittest.TestCase):
 
         self.assertFalse(mongo_rep_admin.main())
 
-    @mock.patch("mongo_rep_admin.arg_parser.arg_req_or_lst")
+    @mock.patch("mongo_rep_admin.arg_parser.arg_require")
     @mock.patch("mongo_rep_admin.gen_libs.help_func")
     @mock.patch("mongo_rep_admin.arg_parser.arg_parse2")
-    def test_help_false(self, mock_arg, mock_help, mock_or):
+    def test_help_false(self, mock_arg, mock_help, mock_req):
 
         """Function:  test_help_false
 
@@ -105,7 +105,7 @@ class UnitTest(unittest.TestCase):
 
         mock_arg.return_value = self.args_array
         mock_help.return_value = False
-        mock_or.return_value = False
+        mock_req.return_value = True
 
         self.assertFalse(mongo_rep_admin.main())
 
@@ -239,6 +239,27 @@ class UnitTest(unittest.TestCase):
 
         self.assertFalse(mongo_rep_admin.main())
 
+    @mock.patch("mongo_rep_admin.gen_libs.help_func")
+    @mock.patch("mongo_rep_admin.arg_parser")
+    def test_arg_file_true(self, mock_arg, mock_help):
+
+        """Function:  test_arg_file_true
+
+        Description:  Test arg_file_chk if returns true.
+
+        Arguments:
+
+        """
+
+        mock_arg.arg_parse2.return_value = self.args_array
+        mock_help.return_value = False
+        mock_arg.arg_require.return_value = False
+        mock_arg.arg_file_chk.return_value = True
+        mock_arg.arg_dir_chk_crt.return_value = False
+        mock_arg.arg_file_chk.return_value = True
+
+        self.assertFalse(mongo_rep_admin.main())
+
     @mock.patch("mongo_rep_admin.run_program")
     @mock.patch("mongo_rep_admin.gen_libs.help_func")
     @mock.patch("mongo_rep_admin.arg_parser")
@@ -264,3 +285,4 @@ class UnitTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    unittest.main()
