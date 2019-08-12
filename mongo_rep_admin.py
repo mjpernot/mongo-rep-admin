@@ -79,6 +79,8 @@
 # Standard
 import sys
 import datetime
+import getpass
+import socket
 
 # Third party
 import json
@@ -87,6 +89,7 @@ import json
 import lib.arg_parser as arg_parser
 import lib.gen_libs as gen_libs
 import lib.cmds_gen as cmds_gen
+import lib.gen_class as gen_class
 import mongo_lib.mongo_libs as mongo_libs
 import mongo_lib.mongo_class as mongo_class
 import version
