@@ -106,7 +106,7 @@ class UnitTest(unittest.TestCase):
 
         self.get_master = {"optimeDate": "2019-07-26 11:13:02"}
         self.server = Server()
-        self.args_array = {"-m": "config"}
+        self.args_array = {"-m": "config", "-d": "directory/path"}
 
     @mock.patch("mongo_rep_admin.get_optimedate")
     @mock.patch("mongo_rep_admin.chk_mem_rep_lag")
