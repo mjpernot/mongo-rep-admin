@@ -177,6 +177,7 @@ class UnitTest(unittest.TestCase):
     Methods:
         setUp -> Initialize testing environment.
         test_replication -> Test with replication setup.
+        test_no_replication -> Test with no replication setup.
 
     """
 
@@ -198,6 +199,29 @@ class UnitTest(unittest.TestCase):
         self.coll = Coll()
         self.args_array = {"-T": True}
         self.func_dict = {"-P": fetch_priority, "-T": prt_rep_stat}
+
+    @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
+    @mock.patch("mongo_rep_admin.mongo_class.RepSet")
+    @mock.patch("mongo_rep_admin.cmds_gen.disconnect")
+    @mock.patch("mongo_rep_admin.mongo_class.Coll")
+    def test_no_replication(self, mock_coll, mock_cmd, mock_repset, mock_prt):
+
+        """Function:  test_no_replication
+
+        Description:  Test with no replication setup.
+
+        Arguments:
+
+        """
+
+        self.coll.coll_cnt = 0
+        mock_coll.return_value = self.coll
+        mock_cmd.return_value = True
+        mock_repset.return_value = self.repset
+        mock_prt.return_value = True
+
+        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
+                                                     self.func_dict))
 
     @mock.patch("mongo_rep_admin.mongo_class.RepSet")
     @mock.patch("mongo_rep_admin.cmds_gen.disconnect")
