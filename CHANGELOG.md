@@ -19,6 +19,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - chk_rep_lag:  Fixed mutable list/dictionary argument issue.
 - run_program:  Fixed mutable list/dictionary argument issue.
 
+### Added
+- setup_mail:  Initialize a mail instance.
+
 ### Changed
 - rep_state_chk:  Refactored the "if" statements logic.
 - main:  Refactored the "if" statements logic.
