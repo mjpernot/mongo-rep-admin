@@ -36,6 +36,7 @@ pipeline {
                 ./test/unit/mongo_rep_admin/rep_msg_chk.py
                 ./test/unit/mongo_rep_admin/rep_state_chk.py
                 ./test/unit/mongo_rep_admin/run_program.py
+                ./test/unit/mongo_rep_admin/setup_mail.py
                 deactivate
                 rm -rf test_env
                 """
