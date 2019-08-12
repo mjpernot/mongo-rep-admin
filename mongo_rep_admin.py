@@ -29,6 +29,10 @@
             database.  Do not include the .py extension.  Used only with the
             -i option.
         -o path/file => Directory path and file name for output.
+        -e to_email_addresses => Enables emailing capability for an option if
+            the option allows it.  Sends output to one or more email addresses.
+        -s subject_line => Subject line of email.  Optional, will create own
+            subject line if one is not provided.
         -v => Display version of this program.
         -h => Help and usage message.
 
@@ -539,13 +543,15 @@ def main():
     file_crt_list = ["-o"]
     func_dict = {"-L": chk_rep_lag, "-M": fetch_members, "-S": chk_rep_stat,
                  "-P": fetch_priority, "-T": prt_rep_stat}
-    opt_con_req_list = {"-i": ["-m"]}
+    opt_con_req_list = {"-i": ["-m"], "-s": ["-e"]}
     opt_def_dict = {"-j": False, "-i": "sysmon:mongo_rep_lag"}
+    opt_multi_list = ["-e", "-s"]
     opt_req_list = ["-c", "-d"]
-    opt_val_list = ["-c", "-d", "-i", "-m", "-o"]
+    opt_val_list = ["-c", "-d", "-i", "-m", "-o", "-e", "-s"]
 
     # Process argument list from command line.
-    args_array = arg_parser.arg_parse2(sys.argv, opt_val_list, opt_def_dict)
+    args_array = arg_parser.arg_parse2(sys.argv, opt_val_list, opt_def_dict,
+                                       multi_val=opt_multi_list)
 
     if not gen_libs.help_func(args_array, __version__, help_message) \
        and not arg_parser.arg_require(args_array, opt_req_list) \
