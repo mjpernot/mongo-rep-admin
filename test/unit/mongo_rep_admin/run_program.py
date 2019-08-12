@@ -207,9 +207,9 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        Server = collections.namedtuple("Server",
+        server = collections.namedtuple("Server",
                     "name user passwd host port auth conf_file")
-        self.server = Server("name", "user", "pwd", "host", 27017, "auth",
+        self.server = server("name", "user", "pwd", "host", 27017, "auth",
                              "conffile")
 
         self.repset = RepSet()
