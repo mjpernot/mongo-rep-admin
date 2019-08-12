@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
-## [3.1.0] - 2019-07-25
+## [3.1.0] - 2019-08-12
 ### Fixed
 - rep_health_chk:  Fixed mutable list/dictionary argument issue.
 - rep_state_chk:  Fixed mutable list/dictionary argument issue.
@@ -20,6 +20,11 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - run_program:  Fixed mutable list/dictionary argument issue.
 
 ### Changed
+- chk_rep_lag:  Changed variable to standard naming convention.
+- fetch_members:  Changed variable to standard naming convention.
+- fetch_priority:  Changed variable to standard naming convention.
+- prt_rep_stat:  Changed variable to standard naming convention.
+- chk_rep_stat:  Changed variable to standard naming convention.
 - chk_mem_rep_lag:  Converted JSON output to camelCase.
 - get_optimedate:  Added \*\*kwargs to argument list.
 - get_master:  Added \*\*kwargs to argument list.
