@@ -170,7 +170,7 @@ def rep_msg_chk(rep_stat, prt_lvl=1, **kwargs):
         gen_libs.prt_msg("Error Message", rep_stat.get("infoMessage"), prt_lvl)
 
 
-def chk_rep_stat(REPSET, args_array, **kwargs):
+def chk_rep_stat(repset, args_array, **kwargs):
 
     """Function:  chk_rep_stat
 
@@ -178,7 +178,7 @@ def chk_rep_stat(REPSET, args_array, **kwargs):
         set.
 
     Arguments:
-        (input) REPSET -> Replication set instance.
+        (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
         (input) **kwargs:
             prt_all -> True|False on printing all status messages.
@@ -186,11 +186,11 @@ def chk_rep_stat(REPSET, args_array, **kwargs):
     """
 
     args_array = dict(args_array)
-    print("\nReplication Status Check for Rep Set:  %s" % (REPSET.repset))
+    print("\nReplication Status Check for Rep Set:  %s" % (repset.repset))
     prt_all = kwargs.get("prt_all", False)
 
     # Process each member in replica set.
-    for x in REPSET.adm_cmd("replSetGetStatus").get("members"):
+    for x in repset.adm_cmd("replSetGetStatus").get("members"):
         print("\nServer: %s" % (x.get("name")))
         rep_health_chk(x, prt_all)
         rep_state_chk(x, prt_all)
