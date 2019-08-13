@@ -35,6 +35,61 @@ import version
 __version__ = version.__version__
 
 
+class Mail(object):
+
+    """Class:  Mail
+
+    Description:  Class stub holder for gen_class.Mail class.
+
+    Super-Class:
+
+    Sub-Classes:
+
+    Methods:
+        __init__ -> Class initialization.
+        add_2_msg -> Stub method holder for Mail.add_2_msg.
+        send_mail -> Stub method holder for Mail.send_mail.
+
+    """
+
+    def __init__(self, lag_time=1):
+
+        """Method:  __init__
+
+        Description:  Class initialization.
+
+        Arguments:
+            None
+
+        """
+
+        pass
+
+    def add_2_msg(self, data):
+
+        """Method:  add_2_msg
+
+        Description:  Stub method holder for Mail.add_2_msg.
+
+        Arguments:
+
+        """
+
+        return True
+
+    def send_mail(self):
+
+        """Method:  get_name
+
+        Description:  Stub method holder for Mail.send_mail.
+
+        Arguments:
+
+        """
+
+        return True
+
+
 class UnitTest(unittest.TestCase):
 
     """Class:  UnitTest
@@ -47,6 +102,8 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_email -> Test with email option.
+        test_json -> Test with JSON format.
         test_std_out -> Test with standard out.
 
     """
@@ -61,6 +118,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        self.mail = Mail()
         self.rep_status = {"set": "ReplicaSet",
                            "members": [{"state": 1, "name": "server1",
                                         "optimeDate": "2019-07-26 11:13:01",
@@ -69,6 +127,45 @@ class UnitTest(unittest.TestCase):
                                         "optimeDate": "2019-07-26 11:13:02",
                                         "optime": True}]}
         self.get_master = {"name": "master_server"}
+
+    @mock.patch("mongo_rep_admin.fetch_rep_lag")
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_email(self, mock_mst, mock_lag):
+
+        """Function:  test_email
+
+        Description:  Test with email option.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+        mock_lag.return_value = True
+
+        
+        self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(self.rep_status,
+                                                         json=True,
+                                                         mail=self.mail))
+
+    @mock.patch("mongo_rep_admin.fetch_rep_lag")
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_json(self, mock_mst, mock_lag):
+
+        """Function:  test_json
+
+        Description:  Test with JSON format.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+        mock_lag.return_value = True
+
+        
+        self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(self.rep_status,
+                                                         json=True))
 
     @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
