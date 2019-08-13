@@ -361,7 +361,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             json -> True|False - JSON format.
             ofile -> file name - Name of output file.
             db_tbl -> database:collection - Name of db and collection.
-            class_inst -> Server class instance or equivalent class.
+            class_cfg -> Class configuration module.
             mail -> Mail instance.
 
     """
@@ -410,11 +410,18 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
 
     if json_fmt:
+        jdata = json.dumps(outdata, indent=4)
+        mongo_cfg = kwargs.get("class_cfg", None)
+        db_tbl = kwargs.get("db_tbl", None)
+        ofile = kwargs.get("ofile", None)
         mail = kwargs.get("mail", None)
 
-        mongo_libs.json_prt_ins_2_db(outdata,
-                                     class_cfg=kwargs.get("class_inst", None),
-                                     **kwargs)
+        if mongo_cfg and db_tbl:
+            db, tbl = db_tbl.split(":")
+            mongo_libs.ins_doc(mongo_cfg, db, tbl, outdata)
+
+        if ofile:
+            gen_libs.write_file(ofile, "w", jdata)
 
         if mail:
             mail.add_2_msg(jdata)
@@ -440,10 +447,10 @@ def chk_rep_lag(repset, args_array, **kwargs):
     db_tbl = args_array.get("-i", None)
     rep_status = repset.adm_cmd("replSetGetStatus")
     primary = get_master(rep_status)
-    rep_cfg = None
+    mongo_cfg = None
 
     if args_array.get("-m", None):
-        rep_cfg = gen_libs.load_module(args_array["-m"], args_array["-d"])
+        mongo_cfg = gen_libs.load_module(args_array["-m"], args_array["-d"])
 
     if primary:
         optime_date = primary.get("optimeDate")
@@ -456,7 +463,7 @@ def chk_rep_lag(repset, args_array, **kwargs):
 
     chk_mem_rep_lag(rep_status, optdt=optime_date, suf=suffix,
                     json=json_fmt, ofile=outfile, db_tbl=db_tbl,
-                    class_inst=rep_cfg)
+                    class_cfg=mongo_cfg, **kwargs)
 
 
 def setup_mail(to_line, subj=None, frm_line=None, **kwargs):
