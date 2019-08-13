@@ -457,7 +457,7 @@ def chk_rep_lag(repset, args_array, **kwargs):
 
     chk_mem_rep_lag(rep_status, optdt=optime_date, suf=suffix,
                     json=json_fmt, ofile=outfile, db_tbl=db_tbl,
-                    class_inst=mongo_cfg, **kwargs)
+                    class_cfg=mongo_cfg, **kwargs)
 
 
 def setup_mail(to_line, subj=None, frm_line=None, **kwargs):
