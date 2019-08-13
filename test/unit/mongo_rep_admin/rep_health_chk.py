@@ -1,0 +1,114 @@
+#!/usr/bin/python
+# Classification (U)
+
+"""Program:  rep_health_chk.py
+
+    Description:  Unit testing of rep_health_chk in mongo_rep_admin.py.
+
+    Usage:
+        test/unit/mongo_rep_admin/rep_health_chk.py
+
+    Arguments:
+
+"""
+
+# Libraries and Global Variables
+
+# Standard
+import sys
+import os
+
+if sys.version_info < (2, 7):
+    import unittest2 as unittest
+else:
+    import unittest
+
+# Third-party
+import mock
+
+# Local
+sys.path.append(os.getcwd())
+import mongo_rep_admin
+import lib.gen_libs as gen_libs
+import version
+
+__version__ = version.__version__
+
+
+class UnitTest(unittest.TestCase):
+
+    """Class:  UnitTest
+
+    Description:  Class which is a representation of a unit testing.
+
+    Super-Class:  unittest.TestCase
+
+    Sub-Classes:
+
+    Methods:
+        setUp -> Initialize testing environment.
+        test_print_all -> Test with print all option.
+        test_good_health -> Test with good health.
+        test_bad_health -> Test with bad health.
+
+    """
+
+    def setUp(self):
+
+        """Function:  setUp
+
+        Description:  Initialization for unit testing.
+
+        Arguments:
+
+        """
+
+        self.rep_stat = {"health": False}
+        self.rep_stat2 = {"health": True}
+
+    @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
+    def test_print_all(self, mock_prt):
+
+        """Function:  test_print_all
+
+        Description:  Test with print all option.
+
+        Arguments:
+
+        """
+
+        mock_prt.return_value = True
+
+        self.assertFalse(mongo_rep_admin.rep_health_chk(self.rep_stat2,
+                                                        prt_all=True))
+
+    def test_good_health(self):
+
+        """Function:  test_good_health
+
+        Description:  Test with good health.
+
+        Arguments:
+
+        """
+
+        self.assertFalse(mongo_rep_admin.rep_health_chk(self.rep_stat2))
+
+    @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
+    def test_bad_health(self, mock_prt):
+
+        """Function:  test_bad_health
+
+        Description:  Test with bad health.
+
+        Arguments:
+
+        """
+
+        mock_prt.return_value = True
+
+        self.assertFalse(mongo_rep_admin.rep_health_chk(self.rep_stat))
+
+
+if __name__ == "__main__":
+    unittest.main()
