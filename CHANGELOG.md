@@ -4,6 +4,51 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.1.0] - 2019-08-12
+### Fixed
+- rep_health_chk:  Fixed mutable list/dictionary argument issue.
+- rep_state_chk:  Fixed mutable list/dictionary argument issue.
+- rep_msg_chk:  Fixed mutable list/dictionary argument issue.
+- get_master:  Fixed mutable list/dictionary argument issue.
+- get_optimedate:  Fixed mutable list/dictionary argument issue.
+- chk_mem_rep_lag:  Fixed mutable list/dictionary argument issue.
+- chk_rep_stat:  Fixed mutable list/dictionary argument issue.
+- prt_rep_stat:  Fixed mutable list/dictionary argument issue.
+- fetch_priority:  Fixed mutable list/dictionary argument issue.
+- fetch_members:  Fixed mutable list/dictionary argument issue.
+- chk_rep_lag:  Fixed mutable list/dictionary argument issue.
+- run_program:  Fixed mutable list/dictionary argument issue.
+
+### Added
+- \_process_json:  Private function for chk_mem_rep_lag().  Process JSON data.
+- setup_mail:  Initialize a mail instance.
+
+### Changed
+- chk_mem_rep_lag:  Replaced section of code with call to \_process_json.
+- chk_mem_rep_lag:  Replaced mongo_libs.json_prt_ins_2_db call with own internal code.
+- chk_mem_rep_lag:  Changed class_inst to class_cfg to be more descriptive.
+- chk_rep_lag:  Changed rep_cfg to mongo_cfg and class_inst to class_cfg to be more descriptive.
+- chk_mem_rep_lag:  Added capability to mail out JSON formatted data.
+- chk_mem_rep_lag:  Converted outdata to JSON format for email.
+- chk_rep_lag:  Passing mail instance to chk_mem_rep_lag function.
+- run_program:  Added setup of mail instance and passing mail instance to functions.
+- main:  Added '-e' and '-s' options to allow for email capability for some options.
+- rep_state_chk:  Refactored the "if" statements logic.
+- main:  Refactored the "if" statements logic.
+- run_program:  Changed variables to standard naming convention.
+- chk_rep_lag:  Changed variables to standard naming convention.
+- fetch_members:  Changed variable to standard naming convention.
+- fetch_priority:  Changed variable to standard naming convention.
+- prt_rep_stat:  Changed variable to standard naming convention.
+- chk_rep_stat:  Changed variable to standard naming convention.
+- chk_mem_rep_lag:  Converted JSON output to camelCase.
+- get_optimedate:  Added \*\*kwargs to argument list.
+- get_master:  Added \*\*kwargs to argument list.
+- rep_msg_chk:  Added \*\*kwargs to argument list.
+- rep_state_chk:  Added \*\*kwargs to argument list.
+- rep_health_chk:  Added \*\*kwargs to argument list.
+
+
 ## [3.0.1] - 2018-11-30
 ### Changed
 - Documentation updates.
@@ -33,7 +78,7 @@ Breaking Change
 
 ## [2.1.0] - 2017-08-17
 ### Changed
-- Help_Message: Replace docstring with printing the programs __doc__.
+- Help_Message: Replace docstring with printing the programs \_\_doc\_\_.
 - Change single quotes to double quotes.
 - Convert program to use local libraries from ./lib directory.
 
