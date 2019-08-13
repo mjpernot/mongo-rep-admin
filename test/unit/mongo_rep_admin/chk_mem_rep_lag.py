@@ -128,10 +128,9 @@ class UnitTest(unittest.TestCase):
                                         "optime": True}]}
         self.get_master = {"name": "master_server"}
 
-    @mock.patch("mongo_rep_admin.mongo_libs.json_prt_ins_2_db")
     @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
-    def test_email(self, mock_mst, mock_lag, mock_mongo):
+    def test_email(self, mock_mst, mock_lag):
 
         """Function:  test_email
 
@@ -143,9 +142,7 @@ class UnitTest(unittest.TestCase):
 
         mock_mst.return_value = self.get_master
         mock_lag.return_value = True
-        mock_mongo.return_value = True
 
-        
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(self.rep_status,
                                                          json=True,
                                                          mail=self.mail))
