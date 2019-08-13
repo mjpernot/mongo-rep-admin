@@ -361,7 +361,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             json -> True|False - JSON format.
             ofile -> file name - Name of output file.
             db_tbl -> database:collection - Name of db and collection.
-            class_inst -> Server class instance or equivalent class.
+            class_cfg -> Class configuration module.
             mail -> Mail instance.
 
     """
@@ -414,7 +414,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
         mail = kwargs.get("mail", None)
 
         mongo_libs.json_prt_ins_2_db(outdata,
-                                     class_cfg=kwargs.get("class_inst", None),
+                                     class_cfg=kwargs.get("class_cfg", None),
                                      **kwargs)
 
         if mail:
