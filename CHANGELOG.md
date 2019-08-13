@@ -23,6 +23,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - setup_mail:  Initialize a mail instance.
 
 ### Changed
+- chk_mem_rep_lag:  Changed class_inst to class_cfg to be more descriptive.
 - chk_rep_lag:  Changed rep_cfg to mongo_cfg and class_inst to class_cfg to be more descriptive.
 - chk_mem_rep_lag:  Added capability to mail out JSON formatted data.
 - chk_mem_rep_lag:  Converted outdata to JSON format for email.
