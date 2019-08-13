@@ -102,6 +102,7 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_file -> Test with writing to file.
         test_email -> Test with email option.
         test_json -> Test with JSON format.
         test_std_out -> Test with standard out.
@@ -127,6 +128,27 @@ class UnitTest(unittest.TestCase):
                                         "optimeDate": "2019-07-26 11:13:02",
                                         "optime": True}]}
         self.get_master = {"name": "master_server"}
+
+    @mock.patch("gen_libs.write_file")
+    @mock.patch("mongo_rep_admin.fetch_rep_lag")
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_file(self, mock_mst, mock_lag, mock_file):
+
+        """Function:  test_file
+
+        Description:  Test with writing to file.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+        mock_lag.return_value = True
+        mock_file.return_value = True
+
+        self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(self.rep_status,
+                                                         json=True,
+                                                         ofile="Filename"))
 
     @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
