@@ -410,6 +410,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
 
     if json_fmt:
+        jdata = json.dumps(outdata, indent=4)
         mail = kwargs.get("mail", None)
 
         mongo_libs.json_prt_ins_2_db(outdata,
