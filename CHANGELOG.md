@@ -23,6 +23,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - setup_mail:  Initialize a mail instance.
 
 ### Changed
+- chk_mem_rep_lag:  Replaced mongo_libs.json_prt_ins_2_db call with own internal code.
 - chk_mem_rep_lag:  Changed class_inst to class_cfg to be more descriptive.
 - chk_rep_lag:  Changed rep_cfg to mongo_cfg and class_inst to class_cfg to be more descriptive.
 - chk_mem_rep_lag:  Added capability to mail out JSON formatted data.
