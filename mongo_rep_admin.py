@@ -410,22 +410,41 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
 
     if json_fmt:
-        jdata = json.dumps(outdata, indent=4)
-        mongo_cfg = kwargs.get("class_cfg", None)
-        db_tbl = kwargs.get("db_tbl", None)
-        ofile = kwargs.get("ofile", None)
-        mail = kwargs.get("mail", None)
+        _process_json(outdata, **kwargs)
 
-        if mongo_cfg and db_tbl:
-            db, tbl = db_tbl.split(":")
-            mongo_libs.ins_doc(mongo_cfg, db, tbl, outdata)
 
-        if ofile:
-            gen_libs.write_file(ofile, "w", jdata)
+def _process_json(outdata, **kwargs):
 
-        if mail:
-            mail.add_2_msg(jdata)
-            mail.send_mail()
+    """Function:  _process_json
+
+    Description:  Private function for chk_mem_rep_lag().  Process JSON data.
+
+    Arguments:
+        (input) outdata -> JSON document from chk_mem_rep_lag function.
+        (input) **kwargs:
+            ofile -> file name - Name of output file.
+            db_tbl -> database:collection - Name of db and collection.
+            class_cfg -> Server class configuration settings.
+            mail -> Mail instance.
+
+    """
+
+    jdata = json.dumps(outdata, indent=4)
+    mongo_cfg = kwargs.get("class_cfg", None)
+    db_tbl = kwargs.get("db_tbl", None)
+    ofile = kwargs.get("ofile", None)
+    mail = kwargs.get("mail", None)
+
+    if mongo_cfg and db_tbl:
+        db, tbl = db_tbl.split(":")
+        mongo_libs.ins_doc(mongo_cfg, db, tbl, outdata)
+
+    if ofile:
+        gen_libs.write_file(ofile, "w", jdata)
+
+    if mail:
+        mail.add_2_msg(jdata)
+        mail.send_mail()
 
 
 def chk_rep_lag(repset, args_array, **kwargs):

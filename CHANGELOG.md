@@ -20,9 +20,11 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - run_program:  Fixed mutable list/dictionary argument issue.
 
 ### Added
+- \_process_json:  Private function for chk_mem_rep_lag().  Process JSON data.
 - setup_mail:  Initialize a mail instance.
 
 ### Changed
+- chk_mem_rep_lag:  Replaced section of code with call to \_process_json.
 - chk_mem_rep_lag:  Replaced mongo_libs.json_prt_ins_2_db call with own internal code.
 - chk_mem_rep_lag:  Changed class_inst to class_cfg to be more descriptive.
 - chk_rep_lag:  Changed rep_cfg to mongo_cfg and class_inst to class_cfg to be more descriptive.
