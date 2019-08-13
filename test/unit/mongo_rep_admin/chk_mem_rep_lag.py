@@ -17,6 +17,7 @@
 # Standard
 import sys
 import os
+import datetime
 
 if sys.version_info < (2, 7):
     import unittest2 as unittest
@@ -122,12 +123,14 @@ class UnitTest(unittest.TestCase):
 
         self.mail = Mail()
         self.rep_status = {"set": "ReplicaSet",
-                           "members": [{"state": 1, "name": "server1",
-                                        "optimeDate": "2019-07-26 11:13:01",
-                                        "optime": True},
-                                       {"state": 2, "name": "server2",
-                                        "optimeDate": "2019-07-26 11:13:02",
-                                        "optime": True}]}
+            "members": [{"state": 1, "name": "server1",
+            "optimeDate": datetime.datetime.strptime("2019-07-26 11:13:01",
+                                                     "%Y-%m-%d %H:%M:%S"),
+            "optime": True},
+            {"state": 2, "name": "server2",
+            "optimeDate": datetime.datetime.strptime("2019-07-26 11:13:02",
+                                                     "%Y-%m-%d %H:%M:%S"),
+            "optime": True}]}
         self.get_master = {"name": "master_server"}
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
