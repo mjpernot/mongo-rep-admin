@@ -180,6 +180,7 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_repset_not_set -> Test with repset name not set in config.
         test_email -> Test with setting up email.
         test_replication -> Test with replication setup.
         test_no_replication -> Test with no replication setup.
@@ -197,9 +198,13 @@ class UnitTest(unittest.TestCase):
         """
 
         server = collections.namedtuple(
-            "Server", "name user passwd host port auth conf_file")
+            "Server", "name user passwd host port auth conf_file repset")
         self.server = server("name", "user", "pwd", "host", 27017, "auth",
-                             "conffile")
+                             "conffile", "repsetname")
+        server2 = collections.namedtuple(
+            "Server", "name user passwd host port auth conf_file repset")
+        self.server2 = server2("name", "user", "pwd", "host", 27017, "auth",
+                               "conffile", None)
 
         self.repset = RepSet()
         self.coll = Coll()
@@ -208,7 +213,29 @@ class UnitTest(unittest.TestCase):
                             "-e": "Email_Address"}
         self.func_dict = {"-P": fetch_priority, "-T": prt_rep_stat}
 
-    @mock.patch("mongo_rep_admin.setup_mail")
+    @mock.patch("mongo_rep_admin.gen_libs.load_module")
+    @mock.patch("mongo_rep_admin.mongo_class.RepSet")
+    @mock.patch("mongo_rep_admin.cmds_gen.disconnect")
+    @mock.patch("mongo_rep_admin.mongo_class.Coll")
+    def test_repset_not_set(self, mock_coll, mock_cmd, mock_repset, mock_load):
+
+        """Function:  test_repset_not_set
+
+        Description:  Test with repset name not set in config.
+
+        Arguments:
+
+        """
+
+        mock_coll.return_value = self.coll
+        mock_cmd.return_value = True
+        mock_repset.return_value = self.repset
+        mock_load.return_value = self.server2
+
+        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
+                                                     self.func_dict))
+
+    @mock.patch("mongo_rep_admin.gen_class.setup_mail")
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
     @mock.patch("mongo_rep_admin.mongo_class.RepSet")
     @mock.patch("mongo_rep_admin.cmds_gen.disconnect")
