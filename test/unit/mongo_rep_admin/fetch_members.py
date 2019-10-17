@@ -46,7 +46,6 @@ class Server(object):
         is_primary -> Stub holder for mongo_class.Server.is_primary method.
         fetch_adr ->Stub holder for mongo_class.Server.fetch_adr method.
         fetch_nodes -> Stub holder for mongo_class.Server.fetch_nodes method.
-        
 
     """
 
