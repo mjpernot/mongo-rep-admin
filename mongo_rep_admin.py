@@ -529,17 +529,19 @@ def run_program(args_array, func_dict, **kwargs):
     mail = None
     server = gen_libs.load_module(args_array["-c"], args_array["-d"])
     coll = mongo_class.Coll(server.name, server.user, server.passwd,
-                            server.host, server.port, "local",
-                            "system.replset", server.auth, server.conf_file)
+                            host=server.host, port=server.port, db="local",
+                            coll="system.replset", auth=server.auth,
+                            conf_file=server.conf_file)
     coll.connect()
 
     # Is replication setup.
     if coll.coll_cnt() != 0:
+
         # Fetch the replication set name.
         rep_set = coll.coll_find1().get("_id")
         repinst = mongo_class.RepSet(server.name, server.user, server.passwd,
-                                     server.host, server.port, server.auth,
-                                     repset=rep_set)
+                                     host=server.host, port=server.port,
+                                     auth=server.auth, repset=rep_set)
         repinst.connect()
 
         if args_array.get("-e", None):

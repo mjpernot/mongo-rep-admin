@@ -6,6 +6,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [3.1.1] - 2019-10-17
 ### Changed
+- run_program:  Changed a number of arguments from positional to keyword arguments.
 - fetch_priority:  Changed a number of arguments from positional to keyword arguments.
 - fetch_priority:  Changed variable name to standard naming convention.
 
