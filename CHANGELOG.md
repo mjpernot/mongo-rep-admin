@@ -11,6 +11,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - fetch_priority:  Changed a number of arguments from positional to keyword arguments.
 - fetch_priority:  Changed variable name to standard naming convention.
 
+### Removed
+- setup_mail:  Replaced by gen_class.setup_mail function.
+
 
 ## [3.1.0] - 2019-08-12
 ### Fixed
