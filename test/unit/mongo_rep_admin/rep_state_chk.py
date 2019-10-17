@@ -76,7 +76,7 @@ class UnitTest(unittest.TestCase):
         mock_prt.return_value = True
 
         self.assertFalse(mongo_rep_admin.rep_state_chk(self.rep_stat,
-                                                        prt_all=True))
+                                                       prt_all=True))
 
     def test_good_state(self):
 
