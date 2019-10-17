@@ -545,7 +545,6 @@ def run_program(args_array, func_dict, **kwargs):
             mail = setup_mail(args_array.get("-e"),
                               subj=args_array.get("-s", None))
 
-
         # Call function(s) - intersection of command line and function dict.
         for x in set(args_array.keys()) & set(func_dict.keys()):
             func_dict[x](repinst, args_array, mail=mail, **kwargs)
@@ -600,7 +599,7 @@ def main():
        and arg_parser.arg_cond_req(args_array, opt_con_req_list) \
        and not arg_parser.arg_dir_chk_crt(args_array, dir_chk_list) \
        and not arg_parser.arg_file_chk(args_array, file_chk_list,
-                                           file_crt_list):
+                                       file_crt_list):
         run_program(args_array, func_dict)
 
 
