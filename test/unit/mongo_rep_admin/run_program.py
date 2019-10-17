@@ -72,10 +72,6 @@ class Coll(object):
 
     Description:  Class stub holder for mongo_class.Coll class.
 
-    Super-Class:
-
-    Sub-Classes:
-
     Methods:
         __init__ -> Class initialization.
         connect -> Stub holder for mongo_class.Coll.connect method.
@@ -139,10 +135,6 @@ class RepSet(object):
 
     Description:  Class stub holder for mongo_class.RepSet class.
 
-    Super-Class:
-
-    Sub-Classes:
-
     Methods:
         __init__ -> Class initialization.
         connect -> Stub holder for mongo_class.RepSet.connect method.
@@ -185,10 +177,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:
 
     Methods:
         setUp -> Initialize testing environment.
