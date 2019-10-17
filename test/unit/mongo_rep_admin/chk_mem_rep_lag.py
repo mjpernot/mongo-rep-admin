@@ -115,22 +115,24 @@ class UnitTest(unittest.TestCase):
         """
 
         self.mail = Mail()
-        self.rep_status = {"set": "ReplicaSet",
+        self.rep_status = {
+            "set": "ReplicaSet",
             "members": [{"state": 1, "name": "server1",
-            "optimeDate": datetime.datetime.strptime("2019-07-26 11:13:01",
-                                                     "%Y-%m-%d %H:%M:%S"),
-            "optime": True},
-            {"state": 2, "name": "server2",
-            "optimeDate": datetime.datetime.strptime("2019-07-26 11:13:02",
-                                                     "%Y-%m-%d %H:%M:%S"),
-            "optime": True}]}
-        self.rep_status2 = {"set": "ReplicaSet",
+                         "optimeDate": datetime.datetime.strptime(
+                             "2019-07-26 11:13:01", "%Y-%m-%d %H:%M:%S"),
+                         "optime": True},
+                        {"state": 2, "name": "server2",
+                         "optimeDate": datetime.datetime.strptime(
+                             "2019-07-26 11:13:02", "%Y-%m-%d %H:%M:%S"),
+                         "optime": True}]}
+        self.rep_status2 = {
+            "set": "ReplicaSet",
             "members": [{"state": 1, "name": "server1",
-            "optimeDate": datetime.datetime.strptime("2019-07-26 11:13:01",
-                                                     "%Y-%m-%d %H:%M:%S")},
-            {"state": 2, "name": "server2",
-            "optimeDate": datetime.datetime.strptime("2019-07-26 11:13:02",
-                                                     "%Y-%m-%d %H:%M:%S")}]}
+                         "optimeDate": datetime.datetime.strptime(
+                             "2019-07-26 11:13:01", "%Y-%m-%d %H:%M:%S")},
+                        {"state": 2, "name": "server2",
+                         "optimeDate": datetime.datetime.strptime(
+                             "2019-07-26 11:13:02", "%Y-%m-%d %H:%M:%S")}]}
         self.get_master = {"name": "master_server"}
 
     @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
@@ -150,7 +152,6 @@ class UnitTest(unittest.TestCase):
         mock_lag.return_value = True
         mock_prt.return_value = True
 
-        
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(self.rep_status2,
                                                          json=True))
 
@@ -231,7 +232,6 @@ class UnitTest(unittest.TestCase):
         mock_mst.return_value = self.get_master
         mock_lag.return_value = True
 
-        
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(self.rep_status,
                                                          json=True))
 
