@@ -511,8 +511,13 @@ def run_program(args_array, func_dict, **kwargs):
     # Is replication setup.
     if coll.coll_cnt() != 0:
 
-        # Fetch the replication set name.
-        rep_set = coll.coll_find1().get("_id")
+        # Get replica set name if not in config.
+        if server.repset:
+            rep_set = server.repset
+
+        else:
+            rep_set = coll.coll_find1().get("_id")
+
         repinst = mongo_class.RepSet(server.name, server.user, server.passwd,
                                      host=server.host, port=server.port,
                                      auth=server.auth, repset=rep_set)
