@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.1.1] - 2019-10-17
+### Changed
+- fetch_priority:  Changed variable name to standard naming convention.
+
+
 ## [3.1.0] - 2019-08-12
 ### Fixed
 - rep_health_chk:  Fixed mutable list/dictionary argument issue.
