@@ -23,7 +23,6 @@ coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/rep_health_ch
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/rep_msg_chk.py
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/rep_state_chk.py
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/run_program.py
-coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/setup_mail.py
 
 echo ""
 echo "Producing code coverage report"
