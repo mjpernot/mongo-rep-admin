@@ -196,8 +196,8 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        server = collections.namedtuple("Server",
-                    "name user passwd host port auth conf_file")
+        server = collections.namedtuple(
+            "Server", "name user passwd host port auth conf_file")
         self.server = server("name", "user", "pwd", "host", 27017, "auth",
                              "conffile")
 
