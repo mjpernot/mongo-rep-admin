@@ -11,7 +11,7 @@
         secondaries, and replication configuration status.
 
     Usage:
-        mongo_rep_admin.py -c file -d path {-L | -M | -P  | -S | -T | -j |
+        mongo_rep_admin.py -c file -d path {-L [-z] | -M | -P  | -S | -T | -j |
             -o dir_path/file | -i db:coll | -m file} [-v | -h]
 
     Arguments:
@@ -33,11 +33,12 @@
             the option allows it.  Sends output to one or more email addresses.
         -s subject_line => Subject line of email.  Optional, will create own
             subject line if one is not provided.
+        -z => Suppress standard out.
         -v => Display version of this program.
         -h => Help and usage message.
 
         NOTE 1:  -v or -h overrides the other options.
-        NOTE 2:  -o and -j options is only available for -L option.
+        NOTE 2:  -o, -j, and -z options are only available for the -L option.
 
     Notes:
         Mongo configuration file format (mongo.py).  The configuration
@@ -67,10 +68,6 @@
 
     Example:
         mongo_rep_admin.py -c mongo -d config -L
-
-    Workaround:   To disable printing to standard out, use the -o option to
-        print to a file.  This is most often useful if wanting to insert into
-        a database, but not receive anything on standard out.
 
 """
 
@@ -230,15 +227,16 @@ def fetch_priority(repset, args_array, **kwargs):
 
     args_array = dict(args_array)
     print("\nMembers => priority of replica set: %s" % (repset.repset))
-    COLL = mongo_class.Coll(repset.name, repset.user, repset.passwd,
-                            repset.host, repset.port, "local",
-                            "system.replset", repset.auth, repset.conf_file)
-    COLL.connect()
+    coll = mongo_class.Coll(repset.name, repset.user, repset.passwd,
+                            host=repset.host, port=repset.port, db="local",
+                            coll="system.replset", auth=repset.auth,
+                            conf_file=repset.conf_file)
+    coll.connect()
 
-    for x in COLL.coll_find1()["members"]:
+    for x in coll.coll_find1()["members"]:
         print("\t{0} => {1}".format(x["host"], x["priority"]))
 
-    cmds_gen.disconnect([COLL])
+    cmds_gen.disconnect([coll])
 
 
 def fetch_members(repset, args_array, **kwargs):
@@ -327,7 +325,6 @@ def fetch_rep_lag(dtg, **kwargs):
             optdt -> Primary|Best Oplog date time.
             suf -> Primary|Freshest Secondary who has latest date time.
             json -> True|False - JSON format.
-            ofile -> file name - Name of output file.
         (output) sec_ago -> Replication lag in seconds.
 
     """
@@ -356,13 +353,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
     Arguments:
         (input) rep_status -> Member document from replSetGetStatus.
         (input) **kwargs:
-            optdt -> Primary Oplog date time of latest transaction.
-            suf -> Primary|Freshest Secondary who has latest optdt.
             json -> True|False - JSON format.
-            ofile -> file name - Name of output file.
-            db_tbl -> database:collection - Name of db and collection.
-            class_cfg -> Class configuration module.
-            mail -> Mail instance.
 
     """
 
@@ -426,6 +417,7 @@ def _process_json(outdata, **kwargs):
             db_tbl -> database:collection - Name of db and collection.
             class_cfg -> Server class configuration settings.
             mail -> Mail instance.
+            args_array -> Array of command line options and values.
 
     """
 
@@ -434,6 +426,7 @@ def _process_json(outdata, **kwargs):
     db_tbl = kwargs.get("db_tbl", None)
     ofile = kwargs.get("ofile", None)
     mail = kwargs.get("mail", None)
+    args_array = dict(kwargs.get("args_array", {}))
 
     if mongo_cfg and db_tbl:
         db, tbl = db_tbl.split(":")
@@ -445,6 +438,9 @@ def _process_json(outdata, **kwargs):
     if mail:
         mail.add_2_msg(jdata)
         mail.send_mail()
+
+    if not args_array.get("-z", False):
+        gen_libs.display_data(outdata)
 
 
 def chk_rep_lag(repset, args_array, **kwargs):
@@ -482,33 +478,7 @@ def chk_rep_lag(repset, args_array, **kwargs):
 
     chk_mem_rep_lag(rep_status, optdt=optime_date, suf=suffix,
                     json=json_fmt, ofile=outfile, db_tbl=db_tbl,
-                    class_cfg=mongo_cfg, **kwargs)
-
-
-def setup_mail(to_line, subj=None, frm_line=None, **kwargs):
-
-    """Function:  setup_mail
-
-    Description:  Initialize a mail instance.  Provide 'from line' if one is
-        not passed.
-
-    Arguments:
-        (input) to_line -> Mail to line.
-        (input) subj -> Mail subject line.
-        (input) frm_line -> Mail from line.
-        (output) Mail instance.
-
-    """
-
-    to_line = list(to_line)
-
-    if isinstance(subj, list):
-        subj = list(subj)
-
-    if not frm_line:
-        frm_line = getpass.getuser() + "@" + socket.gethostname()
-
-    return gen_class.Mail(to_line, subj, frm_line)
+                    class_cfg=mongo_cfg, args_array=args_array, **kwargs)
 
 
 def run_program(args_array, func_dict, **kwargs):
@@ -528,23 +498,29 @@ def run_program(args_array, func_dict, **kwargs):
     mail = None
     server = gen_libs.load_module(args_array["-c"], args_array["-d"])
     coll = mongo_class.Coll(server.name, server.user, server.passwd,
-                            server.host, server.port, "local",
-                            "system.replset", server.auth, server.conf_file)
+                            host=server.host, port=server.port, db="local",
+                            coll="system.replset", auth=server.auth,
+                            conf_file=server.conf_file)
     coll.connect()
 
     # Is replication setup.
     if coll.coll_cnt() != 0:
-        # Fetch the replication set name.
-        rep_set = coll.coll_find1().get("_id")
+
+        # Get replica set name if not in config.
+        if server.repset:
+            rep_set = server.repset
+
+        else:
+            rep_set = coll.coll_find1().get("_id")
+
         repinst = mongo_class.RepSet(server.name, server.user, server.passwd,
-                                     server.host, server.port, server.auth,
-                                     repset=rep_set)
+                                     host=server.host, port=server.port,
+                                     auth=server.auth, repset=rep_set)
         repinst.connect()
 
         if args_array.get("-e", None):
-            mail = setup_mail(args_array.get("-e"),
-                              subj=args_array.get("-s", None))
-
+            mail = gen_class.setup_mail(args_array.get("-e"),
+                                        subj=args_array.get("-s", None))
 
         # Call function(s) - intersection of command line and function dict.
         for x in set(args_array.keys()) & set(func_dict.keys()):
@@ -600,7 +576,7 @@ def main():
        and arg_parser.arg_cond_req(args_array, opt_con_req_list) \
        and not arg_parser.arg_dir_chk_crt(args_array, dir_chk_list) \
        and not arg_parser.arg_file_chk(args_array, file_chk_list,
-                                           file_crt_list):
+                                       file_crt_list):
         run_program(args_array, func_dict)
 
 
