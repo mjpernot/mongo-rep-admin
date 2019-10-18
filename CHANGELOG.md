@@ -5,8 +5,11 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ## [3.1.1] - 2019-10-18
+### Fixed
+- \_process_json:  Fixed printing JSON document to standard out.
+
 ### Changed
-- \_process_json:  Added printing JSON document to standard out and standard out suppression.
+- \_process_json:  Added standard out suppression.
 - chk_rep_lag:  Added args_array to chk_mem_rep_lag() call.
 - Updated documentation.
 - Added -z option to program - to suppres standard out for -L option.
