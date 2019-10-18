@@ -6,8 +6,10 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [3.1.1] - 2019-10-18
 ### Changed
+- \_process_json:  Added printing JSON document to standard out and standard out suppression.
 - chk_rep_lag:  Added args_array to chk_mem_rep_lag() call.
-- Updated documentation to add -z option.
+- Updated documentation.
+- Added -z option to program - to suppres standard out for -L option.
 - run_program:  Use repset name from config file first before querying for it.
 - run_program:  Replaced setup_mail() call with gen_class.setup_mail() call.
 - run_program:  Changed a number of arguments from positional to keyword arguments.

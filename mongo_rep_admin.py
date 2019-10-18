@@ -417,6 +417,7 @@ def _process_json(outdata, **kwargs):
             db_tbl -> database:collection - Name of db and collection.
             class_cfg -> Server class configuration settings.
             mail -> Mail instance.
+            args_array -> Array of command line options and values.
 
     """
 
@@ -425,6 +426,7 @@ def _process_json(outdata, **kwargs):
     db_tbl = kwargs.get("db_tbl", None)
     ofile = kwargs.get("ofile", None)
     mail = kwargs.get("mail", None)
+    args_array = dict(kwargs.get("args_array", {}))
 
     if mongo_cfg and db_tbl:
         db, tbl = db_tbl.split(":")
@@ -436,6 +438,9 @@ def _process_json(outdata, **kwargs):
     if mail:
         mail.add_2_msg(jdata)
         mail.send_mail()
+
+    if not args_array.get("-z", False):
+        gen_libs.display_data(outdata)
 
 
 def chk_rep_lag(repset, args_array, **kwargs):
