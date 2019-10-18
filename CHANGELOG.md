@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.1.1] - 2019-10-18
+### Fixed
+- \_process_json:  Fixed printing JSON document to standard out.
+
+### Changed
+- \_process_json:  Added standard out suppression.
+- chk_rep_lag:  Added args_array to chk_mem_rep_lag() call.
+- Updated documentation.
+- Added -z option to program - to suppres standard out for -L option.
+- run_program:  Use repset name from config file first before querying for it.
+- run_program:  Replaced setup_mail() call with gen_class.setup_mail() call.
+- run_program:  Changed a number of arguments from positional to keyword arguments.
+- fetch_priority:  Changed a number of arguments from positional to keyword arguments.
+- fetch_priority:  Changed variable name to standard naming convention.
+
+### Removed
+- setup_mail:  Replaced by gen_class.setup_mail function.
+
+
 ## [3.1.0] - 2019-08-12
 ### Fixed
 - rep_health_chk:  Fixed mutable list/dictionary argument issue.

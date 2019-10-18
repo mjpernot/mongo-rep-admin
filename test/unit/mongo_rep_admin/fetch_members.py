@@ -41,16 +41,11 @@ class Server(object):
 
     Description:  Class stub holder for mongo_class.Server class.
 
-    Super-Class:
-
-    Sub-Classes:
-
     Methods:
         __init__ -> Class initialization.
         is_primary -> Stub holder for mongo_class.Server.is_primary method.
         fetch_adr ->Stub holder for mongo_class.Server.fetch_adr method.
         fetch_nodes -> Stub holder for mongo_class.Server.fetch_nodes method.
-        
 
     """
 
@@ -109,10 +104,6 @@ class UnitTest(unittest.TestCase):
     """Class:  UnitTest
 
     Description:  Class which is a representation of a unit testing.
-
-    Super-Class:  unittest.TestCase
-
-    Sub-Classes:
 
     Methods:
         setUp -> Initialize testing environment.
