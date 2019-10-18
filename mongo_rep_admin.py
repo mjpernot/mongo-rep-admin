@@ -480,7 +480,7 @@ def chk_rep_lag(repset, args_array, **kwargs):
 
     chk_mem_rep_lag(rep_status, optdt=optime_date, suf=suffix,
                     json=json_fmt, ofile=outfile, db_tbl=db_tbl,
-                    class_cfg=mongo_cfg, **kwargs)
+                    class_cfg=mongo_cfg, args_array=args_array, **kwargs)
 
 
 def run_program(args_array, func_dict, **kwargs):

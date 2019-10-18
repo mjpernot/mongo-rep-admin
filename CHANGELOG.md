@@ -6,6 +6,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [3.1.1] - 2019-10-18
 ### Changed
+- chk_rep_lag:  Added args_array to chk_mem_rep_lag() call.
 - Updated documentation to add -z option.
 - run_program:  Use repset name from config file first before querying for it.
 - run_program:  Replaced setup_mail() call with gen_class.setup_mail() call.
