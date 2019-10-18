@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
-## [3.1.1] - 2019-10-17
+## [3.1.1] - 2019-10-18
 ### Changed
+- Updated documentation to add -z option.
 - run_program:  Use repset name from config file first before querying for it.
 - run_program:  Replaced setup_mail() call with gen_class.setup_mail() call.
 - run_program:  Changed a number of arguments from positional to keyword arguments.

@@ -11,7 +11,7 @@
         secondaries, and replication configuration status.
 
     Usage:
-        mongo_rep_admin.py -c file -d path {-L | -M | -P  | -S | -T | -j |
+        mongo_rep_admin.py -c file -d path {-L [-z] | -M | -P  | -S | -T | -j |
             -o dir_path/file | -i db:coll | -m file} [-v | -h]
 
     Arguments:
@@ -33,11 +33,12 @@
             the option allows it.  Sends output to one or more email addresses.
         -s subject_line => Subject line of email.  Optional, will create own
             subject line if one is not provided.
+        -z => Suppress standard out.
         -v => Display version of this program.
         -h => Help and usage message.
 
         NOTE 1:  -v or -h overrides the other options.
-        NOTE 2:  -o and -j options is only available for -L option.
+        NOTE 2:  -o, -j, and -z options are only available for the -L option.
 
     Notes:
         Mongo configuration file format (mongo.py).  The configuration
@@ -67,10 +68,6 @@
 
     Example:
         mongo_rep_admin.py -c mongo -d config -L
-
-    Workaround:   To disable printing to standard out, use the -o option to
-        print to a file.  This is most often useful if wanting to insert into
-        a database, but not receive anything on standard out.
 
 """
 
