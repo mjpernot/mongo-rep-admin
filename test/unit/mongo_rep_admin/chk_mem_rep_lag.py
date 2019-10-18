@@ -177,7 +177,7 @@ class UnitTest(unittest.TestCase):
         mock_prt.return_value = True
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
-            self.rep_status, json=True))
+            self.rep_status, json=True, args_array=self.args_array2))
 
     @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
     @mock.patch("mongo_rep_admin.fetch_rep_lag")
