@@ -325,7 +325,6 @@ def fetch_rep_lag(dtg, **kwargs):
             optdt -> Primary|Best Oplog date time.
             suf -> Primary|Freshest Secondary who has latest date time.
             json -> True|False - JSON format.
-            ofile -> file name - Name of output file.
         (output) sec_ago -> Replication lag in seconds.
 
     """
@@ -354,13 +353,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
     Arguments:
         (input) rep_status -> Member document from replSetGetStatus.
         (input) **kwargs:
-            optdt -> Primary Oplog date time of latest transaction.
-            suf -> Primary|Freshest Secondary who has latest optdt.
             json -> True|False - JSON format.
-            ofile -> file name - Name of output file.
-            db_tbl -> database:collection - Name of db and collection.
-            class_cfg -> Class configuration module.
-            mail -> Mail instance.
 
     """
 
