@@ -434,7 +434,7 @@ def _process_json(outdata, **kwargs):
     """
 
     mode = "w"
-    jdata = json.dumps(outdata, indent=4)
+    indent = 4
     mongo_cfg = kwargs.get("class_cfg", None)
     db_tbl = kwargs.get("db_tbl", None)
     ofile = kwargs.get("ofile", None)
@@ -443,6 +443,11 @@ def _process_json(outdata, **kwargs):
 
     if args_array.get("-a", False):
         mode = "a"
+
+    if args_array.get("-f", False):
+        indent = None
+
+    jdata = json.dumps(outdata, indent=indent)
 
     if mongo_cfg and db_tbl:
         db, tbl = db_tbl.split(":")
