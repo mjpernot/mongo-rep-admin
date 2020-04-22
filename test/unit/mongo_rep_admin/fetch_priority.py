@@ -109,7 +109,7 @@ class Server(object):
         self.repset = "RepsetName"
         self.name = "name"
         self.user = "user"
-        self.passwd = "pwd"
+        self.passwd = None
         self.host = "host"
         self.port = 27017
         self.auth = "auth"
