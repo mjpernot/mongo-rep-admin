@@ -10,6 +10,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Added "-a" option to allow for appending of data to existing output file.
 
 ### Changed
+- \_process_json:  Added -f option to set the indentation setting for the JSON structure.
 - \_process_json:  Added -a option to set the file mode for writing to out file.
 - Documentation changes.
 
