@@ -28,6 +28,9 @@
             database.  Do not include the .py extension.  Used only with the
             -i option.
         -o path/file => Directory path and file name for output.
+            Default is to overwrite the file.
+            Use the -a option to append to an existing file.
+        -a => Append output to output file.
         -e to_email_addresses => Enables emailing capability for an option if
             the option allows it.  Sends output to one or more email addresses.
         -s subject_line => Subject line of email.  Optional, will create own
