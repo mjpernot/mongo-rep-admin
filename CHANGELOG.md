@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.2.0] - 2020-04-22
+### Changed
+- Documentation changes.
+
+
 ## [3.1.1] - 2019-10-18
 ### Fixed
 - \_process_json:  Fixed printing JSON document to standard out.
