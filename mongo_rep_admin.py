@@ -12,7 +12,7 @@
 
     Usage:
         mongo_rep_admin.py -c file -d path
-            {-L [-j] [-z] [-o dir_path/file [-a]] [-i db:coll -m file]
+            {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i db:coll -m file]
                 [-e toEmail {toEmail2, [...]} [-s subject]]} |
             {-M | -P | -S | -T }
             [-v | -h]
@@ -22,6 +22,7 @@
         -d dir path => Directory path to config file (-c). Required arg.
         -L => Check Replication lag.
         -j => Set output to JSON format.
+        -f => Flatten the JSON data structure to file and standard out.
         -i database:collection => Name of database and collection.
             Delimited by colon (:).  Default: sysmon:mongo_rep_lag
         -m file => Mongo config file used for the insertion into a Mongo
