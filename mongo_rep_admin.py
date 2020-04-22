@@ -12,7 +12,7 @@
 
     Usage:
         mongo_rep_admin.py -c file -d path
-            {-L [-j] [-z] [-o dir_path/file] [-i db:coll -m file]
+            {-L [-j] [-z] [-o dir_path/file [-a]] [-i db:coll -m file]
                 [-e toEmail {toEmail2, [...]} [-s subject]]} |
             {-M | -P | -S | -T }
             [-v | -h]
