@@ -5,6 +5,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ## [3.2.0] - 2020-04-22
+### Added
+- Added "-a" option to allow for appending of data to existing output file.
+
 ### Changed
 - Documentation changes.
 
