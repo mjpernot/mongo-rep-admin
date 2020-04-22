@@ -3,25 +3,24 @@
 
 """Program:  mongo_rep_admin.py
 
-    Description:  Administration program for Mongo Replication system.  Has a
-        number of functions to monitor the status of the replication between
+    Description:  Administration program for Mongo replica set.  The program
+        has a number of functions to monitor the status of replication between
         primary and secondary databases.  The program can monitor and check on
         a number of different aspects in replication to include checking master
         status, membership status, replication time lag between primary and
         secondaries, and replication configuration status.
 
     Usage:
-        mongo_rep_admin.py -c file -d path {-L [-z] | -M | -P  | -S | -T | -j |
-            -o dir_path/file | -i db:coll | -m file} [-v | -h]
+        mongo_rep_admin.py -c file -d path
+            {-L [-j] [-z] [-o dir_path/file] [-i db:coll -m file]
+                [-e toEmail {toEmail2, [...]} [-s subject]]} |
+            {-M | -P | -S | -T }
+            [-v | -h]
 
     Arguments:
         -c file => Server configuration file.  Required arg.
         -d dir path => Directory path to config file (-c). Required arg.
         -L => Check Replication lag.
-        -M => Show current members in replication set.
-        -P => Show priority for members in replication set.
-        -S => Check status of rep for members in rep set, print errors.
-        -T => Check status of rep for members in rep set and print all.
         -j => Set output to JSON format.
         -i database:collection => Name of database and collection.
             Delimited by colon (:).  Default: sysmon:mongo_rep_lag
@@ -34,22 +33,31 @@
         -s subject_line => Subject line of email.  Optional, will create own
             subject line if one is not provided.
         -z => Suppress standard out.
+        -M => Show current members in replication set.
+        -P => Show priority for members in replication set.
+        -S => Check status of rep for members in rep set, print errors.
+        -T => Check status of rep for members in rep set and print all.
         -v => Display version of this program.
         -h => Help and usage message.
 
         NOTE 1:  -v or -h overrides the other options.
-        NOTE 2:  -o, -j, and -z options are only available for the -L option.
+        NOTE 2:  -o, -j, -e, and -z options are only available for -L option.
 
     Notes:
-        Mongo configuration file format (mongo.py).  The configuration
-            file format for the Mongo connection used for inserting data into
-            a database.  There are two ways to connect:  single or replica set.
+        Mongo configuration file format (config/mongo.py.TEMPLATE).  The
+            configuration file format is for connecting to a Mongo database or
+            replica set for monitoring.  A second configuration file can also
+            be used to connect to a Mongo database or replica set to insert the
+            results of the performance monitoring into.
+
+            There are two ways to connect methods:  single Mongo database or a
+            Mongo replica set.
 
             1.)  Single database connection:
 
             # Single Configuration file for Mongo Database Server.
-            user = "root"
-            passwd = "ROOT_PASSWORD"
+            user = "USER"
+            passwd = "PASSWORD"
             host = "IP_ADDRESS"
             name = "HOSTNAME"
             port = PORT_NUMBER (default of mysql is 27017)
@@ -67,7 +75,7 @@
             connect to different databases with different names.
 
     Example:
-        mongo_rep_admin.py -c mongo -d config -L
+        mongo_rep_admin.py -c mongo -d config -L -j
 
 """
 
