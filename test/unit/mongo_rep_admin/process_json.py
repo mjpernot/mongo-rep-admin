@@ -124,6 +124,23 @@ class UnitTest(unittest.TestCase):
         self.args_array = {"-z": True}
         self.args_array2 = {}
         self.args_array3 = {"-z": True, "-a": True}
+        self.args_array4 = {"-z": True, "-f": True}
+
+    @mock.patch("mongo_rep_admin.gen_libs.display_data")
+    def test_json_flatten(self, mock_prt):
+
+        """Function:  test_json_flatten
+
+        Description:  Test with JSON format flatten.
+
+        Arguments:
+
+        """
+
+        mock_prt.return_value = True
+
+        self.assertFalse(mongo_rep_admin._process_json(
+            self.outdata, args_array=self.args_array4))
 
     def test_json_stdout_suppress(self):
 
