@@ -16,11 +16,11 @@
 
 
 # Features
-  * Check Replication lag.
+  * Check replication lag.
   * Show current members in replication set.
   * Show priority for members in replication set.
-  * Check status of rep for members in rep set, print errors.
-  * Check status of rep for members in rep set and print all.
+  * Check status of replication for members in replica set and print errors.
+  * Check status of replication for members in replica set and print all.
   * Insert results into a Mongo database.
 
 # Prerequisites:
