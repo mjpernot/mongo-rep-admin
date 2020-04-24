@@ -2,7 +2,7 @@
 # Classification (U)
 
 # Description:
-  This program is used to adminstrate a Mongo replica set, to include checking master status, membership status, replication time lag between primary and secondaries, and replication configuration status.
+  This program is used to adminstrate a Mongo replica set, this includes checking the master status, checking membership status, checking replication time lag between primary and secondaries databases, and displaying the replication configuration status.
 
 
 ###  This README file is broken down into the following sections:
