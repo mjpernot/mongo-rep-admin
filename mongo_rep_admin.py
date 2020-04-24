@@ -44,7 +44,7 @@
         -v => Display version of this program.
         -h => Help and usage message.
 
-        NOTE 1:  -v or -h overrides the other options.
+        NOTE 1:  -v and -h overrides all other options.
         NOTE 2:  -o, -j, -e, and -z options are only available for -L option.
 
     Notes:
