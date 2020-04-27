@@ -2,7 +2,7 @@
 # Classification (U)
 
 # Description:
-  This program is used to adminstrate a Mongo replica set, this includes checking the master status, checking membership status, checking replication time lag between primary and secondaries databases, and displaying the replication configuration status.
+  Adminstrates a Mongo replica set, this includes checking the master status, checking membership status, checking replication time lag between primary and secondaries databases, and displaying the replication configuration status.
 
 
 ###  This README file is broken down into the following sections:
@@ -21,7 +21,7 @@
   * Show priority for members in replication set.
   * Check status of replication for members in replica set and print errors.
   * Check status of replication for members in replica set and print all.
-  * Insert results into a Mongo database.
+  * Ability to sent output to standard out, file, or insert results into a Mongo database.
 
 # Prerequisites:
 
@@ -127,7 +127,7 @@ chmod 600 mongo_insert.py
 
 # Unit Testing:
 
-### Description: Testing consists of unit testing for the functions in the mongo-rep-admin.py program.
+### Description: Testing consists of unit testing for the functions in the program.
 
 ### Installation:
 
