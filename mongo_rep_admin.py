@@ -369,6 +369,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
 
     """
 
+    t_format = "%Y-%m-%d %H:%M:%S"
     rep_status = dict(rep_status)
     json_fmt = kwargs.get("json", False)
 
@@ -377,7 +378,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
                    "repSet": rep_status.get("set"),
                    "master": get_master(rep_status).get("name"),
                    "asOf": datetime.datetime.strftime(datetime.datetime.now(),
-                                                      "%Y-%m-%d %H:%M:%S"),
+                                                      t_format),
                    "slaves": []}
 
     else:
@@ -403,7 +404,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
                                           "syncTo":
                                           datetime.datetime.strftime(
                                               member.get("optimeDate"),
-                                              "%Y-%m-%d %H:%M:%S"),
+                                              t_format),
                                           "lagTime": sec_ago})
 
             else:
