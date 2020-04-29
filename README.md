@@ -2,7 +2,7 @@
 # Classification (U)
 
 # Description:
-  This program is used to adminstrate a Mongo replica set, to include checking master status, membership status, replication time lag between primary and secondaries, and replication configuration status.
+  Adminstrates a Mongo replica set, this includes checking the master status, checking membership status, checking replication time lag between primary and secondaries databases, and displaying the replication configuration status.
 
 
 ###  This README file is broken down into the following sections:
@@ -16,18 +16,16 @@
 
 
 # Features
-  * Check Replication lag.
+  * Check replication lag.
   * Show current members in replication set.
   * Show priority for members in replication set.
-  * Check status of rep for members in rep set, print errors.
-  * Check status of rep for members in rep set and print all.
-  * Insert results into a Mongo database.
+  * Check status of replication for members in replica set and print errors.
+  * Check status of replication for members in replica set and print all.
+  * Ability to sent output to standard out, file, or insert results into a Mongo database.
 
 # Prerequisites:
 
   * List of Linux packages that need to be installed on the server.
-    - python-libs
-    - python-devel
     - git
     - python-pip
 
@@ -79,8 +77,9 @@ cp mongo.py.TEMPLATE mongo.py
 
 Make the appropriate change to the environment.
   * Make the appropriate changes to connect to a Mongo database.
-    - passwd = "ROOT_PASSWORD"
-    - host = "HOST_IP"
+    - user = "USER"
+    - passwd = "PASSWORD"
+    - host = "IP_ADDRESS"
     - name = "HOSTNAME"
 
   * If connecting to a Mongo replica set, otherwise set to None.
@@ -91,6 +90,26 @@ Make the appropriate change to the environment.
 ```
 vim mongo.py
 chmod 600 mongo.py
+```
+
+If inserting the results into a different Mongo database then create another mongo configuration file and use this file with the -m option.
+
+Make the appropriate change to the environment.
+  * Make the appropriate changes to connect to a Mongo database.
+    - user = "USER"
+    - passwd = "PASSWORD"
+    - host = "IP_ADDRESS"
+    - name = "HOSTNAME"
+
+  * If connecting to a Mongo replica set, otherwise set to None.
+    - repset = "REPLICA_SET_NAME"
+    - repset_hosts = "HOST_1:PORT, HOST_2:PORT, ..."
+    - db_auth = "AUTHENTICATION_DATABASE"
+
+```
+cp mongo.py.TEMPLATE mongo_insert.py
+vim mongo_insert.py
+chmod 600 mongo_insert.py
 ```
 
 
@@ -108,7 +127,7 @@ chmod 600 mongo.py
 
 # Unit Testing:
 
-### Description: Testing consists of unit testing for the functions in the mongo-rep-admin.py program.
+### Description: Testing consists of unit testing for the functions in the program.
 
 ### Installation:
 
@@ -141,35 +160,17 @@ pip install -r requirements-python-lib.txt --target mongo_lib/lib --trusted-host
 ```
 
 
-# Unit test runs for mongo-rep-admin.py:
+### Testing:
   * Replace **{Python_Project}** with the baseline path of the python program.
 
 ```
 cd {Python_Project}/mongo-rep-admin
-test/unit/mongo_rep_admin/chk_mem_rep_lag.py
-test/unit/mongo_rep_admin/chk_rep_lag.py
-test/unit/mongo_rep_admin/chk_rep_stat.py
-test/unit/mongo_rep_admin/fetch_members.py
-test/unit/mongo_rep_admin/fetch_priority.py
-test/unit/mongo_rep_admin/fetch_rep_lag.py
-test/unit/mongo_rep_admin/get_master.py
-test/unit/mongo_rep_admin/get_optimedate.py
-test/unit/mongo_rep_admin/help_message.py
-test/unit/mongo_rep_admin/main.py
-test/unit/mongo_rep_admin/process_json.py
-test/unit/mongo_rep_admin/prt_rep_stat.py
-test/unit/mongo_rep_admin/rep_health_chk.py
-test/unit/mongo_rep_admin/rep_msg_chk.py
-test/unit/mongo_rep_admin/rep_state_chk.py
-test/unit/mongo_rep_admin/run_program.py
-```
-
-### All unit testing
-```
 test/unit/mongo_rep_admin/unit_test_run.sh
 ```
 
-### Code coverage program
+### Code Coverage:
 ```
+cd {Python_Project}/mongo-rep-admin
 test/unit/mongo_rep_admin/code_coverage.sh
 ```
+

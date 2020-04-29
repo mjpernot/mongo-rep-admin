@@ -25,12 +25,10 @@ else:
     import unittest
 
 # Third-party
-import mock
 
 # Local
 sys.path.append(os.getcwd())
 import mongo_rep_admin
-import lib.gen_libs as gen_libs
 import version
 
 __version__ = version.__version__
@@ -58,17 +56,18 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        self.t_format  = "%Y-%m-%d %H:%M:%S"
         self.rep_stat = \
             {"members": [{"optimeDate":
                           datetime.datetime.strptime("2019-07-26 11:13:01",
-                                                     "%Y-%m-%d %H:%M:%S"),
+                                                     self.t_format),
                           "name": "server1"},
                          {"optimeDate":
                           datetime.datetime.strptime("2019-07-26 11:13:02",
-                                                     "%Y-%m-%d %H:%M:%S"),
+                                                     self.t_format),
                           "name": "server2"}]}
         self.results = datetime.datetime.strptime("2019-07-26 11:13:02",
-                                                  "%Y-%m-%d %H:%M:%S")
+                                                  self.t_format)
 
     def test_get_optimedate(self):
 
