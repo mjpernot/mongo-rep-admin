@@ -3,53 +3,65 @@
 
 """Program:  mongo_rep_admin.py
 
-    Description:  Administration program for Mongo Replication system.  Has a
-        number of functions to monitor the status of the replication between
+    Description:  Administration program for Mongo replica set.  The program
+        has a number of functions to monitor the status of replication between
         primary and secondary databases.  The program can monitor and check on
         a number of different aspects in replication to include checking master
         status, membership status, replication time lag between primary and
         secondaries, and replication configuration status.
 
     Usage:
-        mongo_rep_admin.py -c file -d path {-L [-z] | -M | -P  | -S | -T | -j |
-            -o dir_path/file | -i db:coll | -m file} [-v | -h]
+        mongo_rep_admin.py -c file -d path
+            {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i db:coll -m file]
+                [-e toEmail {toEmail2, [...]} [-s subject]]} |
+            {-M | -P | -S | -T }
+            [-v | -h]
 
     Arguments:
         -c file => Server configuration file.  Required arg.
         -d dir path => Directory path to config file (-c). Required arg.
         -L => Check Replication lag.
-        -M => Show current members in replication set.
-        -P => Show priority for members in replication set.
-        -S => Check status of rep for members in rep set, print errors.
-        -T => Check status of rep for members in rep set and print all.
         -j => Set output to JSON format.
+        -f => Flatten the JSON data structure to file and standard out.
         -i database:collection => Name of database and collection.
             Delimited by colon (:).  Default: sysmon:mongo_rep_lag
         -m file => Mongo config file used for the insertion into a Mongo
             database.  Do not include the .py extension.  Used only with the
             -i option.
         -o path/file => Directory path and file name for output.
+            Default is to overwrite the file.
+            Use the -a option to append to an existing file.
+        -a => Append output to output file.
         -e to_email_addresses => Enables emailing capability for an option if
             the option allows it.  Sends output to one or more email addresses.
         -s subject_line => Subject line of email.  Optional, will create own
             subject line if one is not provided.
         -z => Suppress standard out.
+        -M => Show current members in replication set.
+        -P => Show priority for members in replication set.
+        -S => Check status of rep for members in rep set, print errors.
+        -T => Check status of rep for members in rep set and print all.
         -v => Display version of this program.
         -h => Help and usage message.
 
-        NOTE 1:  -v or -h overrides the other options.
-        NOTE 2:  -o, -j, and -z options are only available for the -L option.
+        NOTE 1:  -v and -h overrides all other options.
+        NOTE 2:  -o, -j, -e, and -z options are only available for -L option.
 
     Notes:
-        Mongo configuration file format (mongo.py).  The configuration
-            file format for the Mongo connection used for inserting data into
-            a database.  There are two ways to connect:  single or replica set.
+        Mongo configuration file format (config/mongo.py.TEMPLATE).  The
+            configuration file format is for connecting to a Mongo database or
+            replica set for monitoring.  A second configuration file can also
+            be used to connect to a Mongo database or replica set to insert the
+            results of the performance monitoring into.
+
+            There are two ways to connect methods:  single Mongo database or a
+            Mongo replica set.
 
             1.)  Single database connection:
 
             # Single Configuration file for Mongo Database Server.
-            user = "root"
-            passwd = "ROOT_PASSWORD"
+            user = "USER"
+            passwd = "PASSWORD"
             host = "IP_ADDRESS"
             name = "HOSTNAME"
             port = PORT_NUMBER (default of mysql is 27017)
@@ -67,7 +79,7 @@
             connect to different databases with different names.
 
     Example:
-        mongo_rep_admin.py -c mongo -d config -L
+        mongo_rep_admin.py -c mongo -d config -L -j
 
 """
 
@@ -357,6 +369,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
 
     """
 
+    t_format = "%Y-%m-%d %H:%M:%S"
     rep_status = dict(rep_status)
     json_fmt = kwargs.get("json", False)
 
@@ -365,7 +378,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
                    "repSet": rep_status.get("set"),
                    "master": get_master(rep_status).get("name"),
                    "asOf": datetime.datetime.strftime(datetime.datetime.now(),
-                                                      "%Y-%m-%d %H:%M:%S"),
+                                                      t_format),
                    "slaves": []}
 
     else:
@@ -391,7 +404,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
                                           "syncTo":
                                           datetime.datetime.strftime(
                                               member.get("optimeDate"),
-                                              "%Y-%m-%d %H:%M:%S"),
+                                              t_format),
                                           "lagTime": sec_ago})
 
             else:
@@ -421,19 +434,28 @@ def _process_json(outdata, **kwargs):
 
     """
 
-    jdata = json.dumps(outdata, indent=4)
+    mode = "w"
+    indent = 4
     mongo_cfg = kwargs.get("class_cfg", None)
     db_tbl = kwargs.get("db_tbl", None)
     ofile = kwargs.get("ofile", None)
     mail = kwargs.get("mail", None)
     args_array = dict(kwargs.get("args_array", {}))
 
+    if args_array.get("-a", False):
+        mode = "a"
+
+    if args_array.get("-f", False):
+        indent = None
+
+    jdata = json.dumps(outdata, indent=indent)
+
     if mongo_cfg and db_tbl:
         db, tbl = db_tbl.split(":")
         mongo_libs.ins_doc(mongo_cfg, db, tbl, outdata)
 
     if ofile:
-        gen_libs.write_file(ofile, "w", jdata)
+        gen_libs.write_file(ofile, mode, jdata)
 
     if mail:
         mail.add_2_msg(jdata)
@@ -556,6 +578,7 @@ def main():
 
     """
 
+    cmdline = gen_libs.get_inst(sys)
     dir_chk_list = ["-d"]
     file_chk_list = ["-o"]
     file_crt_list = ["-o"]
@@ -568,8 +591,8 @@ def main():
     opt_val_list = ["-c", "-d", "-i", "-m", "-o", "-e", "-s"]
 
     # Process argument list from command line.
-    args_array = arg_parser.arg_parse2(sys.argv, opt_val_list, opt_def_dict,
-                                       multi_val=opt_multi_list)
+    args_array = arg_parser.arg_parse2(cmdline.argv, opt_val_list,
+                                       opt_def_dict, multi_val=opt_multi_list)
 
     if not gen_libs.help_func(args_array, __version__, help_message) \
        and not arg_parser.arg_require(args_array, opt_req_list) \

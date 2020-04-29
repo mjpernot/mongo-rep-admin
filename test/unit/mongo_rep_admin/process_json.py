@@ -98,6 +98,7 @@ class UnitTest(unittest.TestCase):
         test_json_stdout_suppress -> Test with JSON format std out suppression.
         test_json_stdout -> Test with JSON format to standard out.
         test_mongo -> Test with writing to mongo.
+        test_file_append -> Test with writing to file in append mode.
         test_file -> Test with writing to file.
         test_email -> Test with email option.
 
@@ -122,6 +123,24 @@ class UnitTest(unittest.TestCase):
             "slaves": ["slave1", "slave2"]}
         self.args_array = {"-z": True}
         self.args_array2 = {}
+        self.args_array3 = {"-z": True, "-a": True}
+        self.args_array4 = {"-z": True, "-f": True}
+
+    @mock.patch("mongo_rep_admin.gen_libs.display_data")
+    def test_json_flatten(self, mock_prt):
+
+        """Function:  test_json_flatten
+
+        Description:  Test with JSON format flatten.
+
+        Arguments:
+
+        """
+
+        mock_prt.return_value = True
+
+        self.assertFalse(mongo_rep_admin._process_json(
+            self.outdata, args_array=self.args_array4))
 
     def test_json_stdout_suppress(self):
 
@@ -168,6 +187,22 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(mongo_rep_admin._process_json(
             self.outdata, class_cfg="mongocfg", db_tbl="db:tbl",
             args_array=self.args_array))
+
+    @mock.patch("mongo_rep_admin.gen_libs.write_file")
+    def test_file_append(self, mock_file):
+
+        """Function:  test_file_append
+
+        Description:  Test with writing to file in append mode.
+
+        Arguments:
+
+        """
+
+        mock_file.return_value = True
+
+        self.assertFalse(mongo_rep_admin._process_json(
+            self.outdata, ofile="Filename", args_array=self.args_array3))
 
     @mock.patch("mongo_rep_admin.gen_libs.write_file")
     def test_file(self, mock_file):

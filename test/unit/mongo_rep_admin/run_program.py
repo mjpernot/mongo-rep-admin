@@ -24,13 +24,12 @@ else:
     import unittest
 
 # Third-party
-import mock
 import collections
+import mock
 
 # Local
 sys.path.append(os.getcwd())
 import mongo_rep_admin
-import lib.gen_libs as gen_libs
 import version
 
 __version__ = version.__version__
@@ -153,7 +152,7 @@ class RepSet(object):
 
         self.name = "name"
         self.user = "user"
-        self.passwd = "pwd"
+        self.passwd = None
         self.host = "host"
         self.port = 27017
         self.auth = "auth"
@@ -199,11 +198,11 @@ class UnitTest(unittest.TestCase):
 
         server = collections.namedtuple(
             "Server", "name user passwd host port auth conf_file repset")
-        self.server = server("name", "user", "pwd", "host", 27017, "auth",
+        self.server = server("name", "user", "XXXX", "host", 27017, "auth",
                              "conffile", "repsetname")
         server2 = collections.namedtuple(
             "Server", "name user passwd host port auth conf_file repset")
-        self.server2 = server2("name", "user", "pwd", "host", 27017, "auth",
+        self.server2 = server2("name", "user", "XXXX", "host", 27017, "auth",
                                "conffile", None)
 
         self.repset = RepSet()

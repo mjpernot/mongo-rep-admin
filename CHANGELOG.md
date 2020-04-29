@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.2.0] - 2020-04-22
+### Added
+- Added "-f" option to allow the flattening of the JSON data structure to file and standard out.
+- Added "-a" option to allow for appending of data to existing output file.
+
+### Changed
+- chk_mem_rep_lag: Set the time format string to a variable to reduce literals.
+- \_process_json:  Added -f option to set the indentation setting for the JSON structure.
+- \_process_json:  Added -a option to set the file mode for writing to out file.
+- Documentation changes.
+
+### Fixed
+- main:  Fixed handling command line arguments from SonarQube scan finding.
+
+
 ## [3.1.1] - 2019-10-18
 ### Fixed
 - \_process_json:  Fixed printing JSON document to standard out.
