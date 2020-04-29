@@ -15,6 +15,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - \_process_json:  Added -a option to set the file mode for writing to out file.
 - Documentation changes.
 
+### Fixed
+- main:  Fixed handling command line arguments from SonarQube scan finding.
+
 
 ## [3.1.1] - 2019-10-18
 ### Fixed
