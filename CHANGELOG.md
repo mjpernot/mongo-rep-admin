@@ -7,6 +7,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ## [3.2.1] - 2020-05-05
 ### Fixed
 - \_process_json:  Sent correct formatted data to gen_libs.display_data call.
+- Documentation correction for -T and -S options.
 
 
 ## [3.2.0] - 2020-04-22
