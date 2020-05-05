@@ -268,14 +268,15 @@ def fetch_members(repset, args_array, **kwargs):
 
     args_array = dict(args_array)
     print("\nMembers of replica set: %s" % (repset.repset))
+    rep_status = repset.adm_cmd("replSetGetStatus")
+    primary = get_master(rep_status)
+    print("\t%s (Primary)" % (primary["name"]))
 
-    if (repset.is_primary()):
-        x = repset.fetch_adr()
-        print("\t" + ":".join([x[0], str(x[1])]) + "  (Primary)")
+    secondaries = [member for member in rep_status.get("members")
+                   if member.get("state") == 2]
 
-    # Process secondary servers.
-    for x in repset.fetch_nodes().difference(set([repset.fetch_adr()])):
-        print("\t" + ":".join([x[0], str(x[1])]))
+    for second in secondaries:
+        print("\t%s" % (second["name"]))
 
 
 def get_master(rep_status, **kwargs):
