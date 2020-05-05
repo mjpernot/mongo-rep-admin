@@ -462,7 +462,7 @@ def _process_json(outdata, **kwargs):
         mail.send_mail()
 
     if not args_array.get("-z", False):
-        gen_libs.display_data(outdata)
+        gen_libs.display_data(jdata)
 
 
 def chk_rep_lag(repset, args_array, **kwargs):
