@@ -39,8 +39,10 @@
         -z => Suppress standard out.
         -M => Show current members in replication set.
         -P => Show priority for members in replication set.
-        -S => Check status of rep for members in rep set, print errors.
-        -T => Check status of rep for members in rep set and print all.
+        -S => Check status of rep for members in rep set, but will only print
+            the status if errors are detected.
+        -T => Check status of rep for members in rep set and will print the
+            status in all checks.
         -v => Display version of this program.
         -h => Help and usage message.
 
