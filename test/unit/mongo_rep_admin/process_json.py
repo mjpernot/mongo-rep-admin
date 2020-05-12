@@ -30,7 +30,6 @@ import mock
 # Local
 sys.path.append(os.getcwd())
 import mongo_rep_admin
-import lib.gen_libs as gen_libs
 import version
 
 __version__ = version.__version__
@@ -60,7 +59,8 @@ class Mail(object):
 
         """
 
-        pass
+        self.lag_time = lag_time
+        self.data = None
 
     def add_2_msg(self, data):
 
@@ -71,6 +71,8 @@ class Mail(object):
         Arguments:
 
         """
+
+        self.data = data
 
         return True
 
