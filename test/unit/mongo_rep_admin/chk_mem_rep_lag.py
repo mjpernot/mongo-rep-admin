@@ -60,7 +60,7 @@ class Mail(object):
 
         """
 
-        pass
+        self.data = None
 
     def add_2_msg(self, data):
 
@@ -71,6 +71,8 @@ class Mail(object):
         Arguments:
 
         """
+
+        self.data = data
 
         return True
 
