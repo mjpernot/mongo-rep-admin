@@ -60,6 +60,7 @@ class Mail(object):
 
         """
 
+        self.lag_time = lag_time
         self.data = None
 
     def add_2_msg(self, data):
