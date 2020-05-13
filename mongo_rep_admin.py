@@ -454,8 +454,8 @@ def _process_json(outdata, **kwargs):
     jdata = json.dumps(outdata, indent=indent)
 
     if mongo_cfg and db_tbl:
-        db, tbl = db_tbl.split(":")
-        mongo_libs.ins_doc(mongo_cfg, db, tbl, outdata)
+        dbs, tbl = db_tbl.split(":")
+        mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
 
     if ofile:
         gen_libs.write_file(ofile, mode, jdata)
