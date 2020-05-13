@@ -90,8 +90,6 @@
 # Standard
 import sys
 import datetime
-import getpass
-import socket
 
 # Third party
 import json

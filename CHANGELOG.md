@@ -16,6 +16,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - fetch_priority:  Changed variable name to standard naming convention.
 - chk_rep_stat:  Changed variable name to standard naming convention.
 
+### Removed
+- Removed non-used module libraries.
+
 
 ## [3.2.0] - 2020-04-22
 ### Added
