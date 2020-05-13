@@ -47,7 +47,12 @@ def fetch_priority(repset, args_array, **kwargs):
 
     """
 
-    return True
+    status = True
+
+    if args_array and repset:
+        status = True
+
+    return status
 
 
 def prt_rep_stat(repset, args_array, **kwargs):
@@ -62,7 +67,12 @@ def prt_rep_stat(repset, args_array, **kwargs):
 
     """
 
-    return True
+    status = True
+
+    if args_array and repset:
+        status = True
+
+    return status
 
 
 class Coll(object):
