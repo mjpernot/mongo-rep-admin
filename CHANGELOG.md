@@ -11,6 +11,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Documentation correction for -T and -S options.
 
 ### Changed
+- run_program:  Changed variable name to standard naming convention.
 - fetch_priority:  Changed variable name to standard naming convention.
 - chk_rep_stat:  Changed variable name to standard naming convention.
 

@@ -548,8 +548,8 @@ def run_program(args_array, func_dict, **kwargs):
                                         subj=args_array.get("-s", None))
 
         # Call function(s) - intersection of command line and function dict.
-        for x in set(args_array.keys()) & set(func_dict.keys()):
-            func_dict[x](repinst, args_array, mail=mail, **kwargs)
+        for item in set(args_array.keys()) & set(func_dict.keys()):
+            func_dict[item](repinst, args_array, mail=mail, **kwargs)
 
         cmds_gen.disconnect([repinst])
 
