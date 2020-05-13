@@ -204,11 +204,11 @@ def chk_rep_stat(repset, args_array, **kwargs):
     prt_all = kwargs.get("prt_all", False)
 
     # Process each member in replica set.
-    for x in repset.adm_cmd("replSetGetStatus").get("members"):
-        print("\nServer: %s" % (x.get("name")))
-        rep_health_chk(x, prt_all)
-        rep_state_chk(x, prt_all)
-        rep_msg_chk(x)
+    for item in repset.adm_cmd("replSetGetStatus").get("members"):
+        print("\nServer: %s" % (item.get("name")))
+        rep_health_chk(item, prt_all)
+        rep_state_chk(item, prt_all)
+        rep_msg_chk(item)
 
 
 def prt_rep_stat(repset, args_array, **kwargs):

@@ -10,6 +10,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - \_process_json:  Sent correct formatted data to gen_libs.display_data call.
 - Documentation correction for -T and -S options.
 
+### Changed
+- chk_rep_stat:  Changed variable name to standard naming convention.
+
 
 ## [3.2.0] - 2020-04-22
 ### Added
