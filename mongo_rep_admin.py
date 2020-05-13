@@ -247,8 +247,8 @@ def fetch_priority(repset, args_array, **kwargs):
                             conf_file=repset.conf_file)
     coll.connect()
 
-    for x in coll.coll_find1()["members"]:
-        print("\t{0} => {1}".format(x["host"], x["priority"]))
+    for item in coll.coll_find1()["members"]:
+        print("\t{0} => {1}".format(item["host"], item["priority"]))
 
     cmds_gen.disconnect([coll])
 
