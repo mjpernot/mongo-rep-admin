@@ -21,7 +21,7 @@
   * Show priority for members in replication set.
   * Check status of replication for members in replica set and print errors.
   * Check status of replication for members in replica set and print all.
-  * Ability to sent output to standard out, file, or insert results into a Mongo database.
+  * Ability to sent output to standard out, file, and/or insert results into a Mongo database.
 
 # Prerequisites:
 
