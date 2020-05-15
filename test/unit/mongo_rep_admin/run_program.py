@@ -35,7 +35,7 @@ import version
 __version__ = version.__version__
 
 
-def fetch_priority(repset, args_array):
+def fetch_priority(repset, args_array, **kwargs):
 
     """Function:  fetch_priority
 
@@ -47,15 +47,16 @@ def fetch_priority(repset, args_array):
 
     """
 
+    mail = kwargs.get("mail", None)
     status = True
 
-    if args_array and repset:
+    if args_array and repset and mail:
         status = True
 
     return status
 
 
-def prt_rep_stat(repset, args_array):
+def prt_rep_stat(repset, args_array, **kwargs):
 
     """Function:  prt_rep_stat
 
@@ -67,9 +68,10 @@ def prt_rep_stat(repset, args_array):
 
     """
 
+    mail = kwargs.get("mail", None)
     status = True
 
-    if args_array and repset:
+    if args_array and repset and mail:
         status = True
 
     return status
