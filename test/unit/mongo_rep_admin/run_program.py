@@ -35,7 +35,7 @@ import version
 __version__ = version.__version__
 
 
-def fetch_priority(repset, args_array, **kwargs):
+def fetch_priority(repset, args_array):
 
     """Function:  fetch_priority
 
@@ -55,7 +55,7 @@ def fetch_priority(repset, args_array, **kwargs):
     return status
 
 
-def prt_rep_stat(repset, args_array, **kwargs):
+def prt_rep_stat(repset, args_array):
 
     """Function:  prt_rep_stat
 
