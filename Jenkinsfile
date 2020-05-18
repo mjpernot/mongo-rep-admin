@@ -68,25 +68,25 @@ pipeline {
                                 "pattern": "./*.py",
                                 "recursive": false,
                                 "excludePatterns": [],
-                                "target": "generic-local/highpoint/mongo-rep-admin/"
+                                "target": "pypi-proj-local/highpoint/mongo-rep-admin/"
                             },
                             {
                                 "pattern": "./*.txt",
                                 "recursive": false,
                                 "excludePatterns": [],
-                                "target": "generic-local/highpoint/mongo-rep-admin/"
+                                "target": "pypi-proj-local/highpoint/mongo-rep-admin/"
                             },
                             {
                                 "pattern": "./*.md",
                                 "recursive": false,
                                 "excludePatterns": [],
-                                "target": "generic-local/highpoint/mongo-rep-admin/"
+                                "target": "pypi-proj-local/highpoint/mongo-rep-admin/"
                             },
                             {
                                 "pattern": "*.TEMPLATE",
                                 "recursive": true,
                                 "excludePatterns": [],
-                                "target": "generic-local/highpoint/mongo-rep-admin/config/"
+                                "target": "pypi-proj-local/highpoint/mongo-rep-admin/config/"
                             }
                         ]
                     }"""

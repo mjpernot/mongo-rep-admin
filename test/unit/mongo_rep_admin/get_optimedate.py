@@ -56,7 +56,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        self.t_format  = "%Y-%m-%d %H:%M:%S"
+        self.t_format = "%Y-%m-%d %H:%M:%S"
         self.rep_stat = \
             {"members": [{"optimeDate":
                           datetime.datetime.strptime("2019-07-26 11:13:01",

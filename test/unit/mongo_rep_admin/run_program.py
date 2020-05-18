@@ -47,7 +47,13 @@ def fetch_priority(repset, args_array, **kwargs):
 
     """
 
-    return True
+    mail = kwargs.get("mail", None)
+    status = True
+
+    if args_array and repset and mail:
+        status = True
+
+    return status
 
 
 def prt_rep_stat(repset, args_array, **kwargs):
@@ -62,7 +68,13 @@ def prt_rep_stat(repset, args_array, **kwargs):
 
     """
 
-    return True
+    mail = kwargs.get("mail", None)
+    status = True
+
+    if args_array and repset and mail:
+        status = True
+
+    return status
 
 
 class Coll(object):
