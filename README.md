@@ -81,6 +81,9 @@ Make the appropriate change to the environment.
     - passwd = "PASSWORD"
     - host = "IP_ADDRESS"
     - name = "HOSTNAME"
+    - port = 27017
+    - conf_file = None
+    - auth = True
 
   * If connecting to a Mongo replica set, otherwise set to None.
     - repset = "REPLICA_SET_NAME"
@@ -100,6 +103,9 @@ Make the appropriate change to the environment.
     - passwd = "PASSWORD"
     - host = "IP_ADDRESS"
     - name = "HOSTNAME"
+    - port = 27017
+    - conf_file = None
+    - auth = True
 
   * If connecting to a Mongo replica set, otherwise set to None.
     - repset = "REPLICA_SET_NAME"
