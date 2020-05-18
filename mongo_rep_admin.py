@@ -39,8 +39,10 @@
         -z => Suppress standard out.
         -M => Show current members in replication set.
         -P => Show priority for members in replication set.
-        -S => Check status of rep for members in rep set, print errors.
-        -T => Check status of rep for members in rep set and print all.
+        -S => Check status of rep for members in rep set, but will only print
+            the status if errors are detected.
+        -T => Check status of rep for members in rep set and will print the
+            status in all checks.
         -v => Display version of this program.
         -h => Help and usage message.
 
@@ -88,8 +90,6 @@
 # Standard
 import sys
 import datetime
-import getpass
-import socket
 
 # Third party
 import json
@@ -202,11 +202,11 @@ def chk_rep_stat(repset, args_array, **kwargs):
     prt_all = kwargs.get("prt_all", False)
 
     # Process each member in replica set.
-    for x in repset.adm_cmd("replSetGetStatus").get("members"):
-        print("\nServer: %s" % (x.get("name")))
-        rep_health_chk(x, prt_all)
-        rep_state_chk(x, prt_all)
-        rep_msg_chk(x)
+    for item in repset.adm_cmd("replSetGetStatus").get("members"):
+        print("\nServer: %s" % (item.get("name")))
+        rep_health_chk(item, prt_all)
+        rep_state_chk(item, prt_all)
+        rep_msg_chk(item)
 
 
 def prt_rep_stat(repset, args_array, **kwargs):
@@ -245,8 +245,8 @@ def fetch_priority(repset, args_array, **kwargs):
                             conf_file=repset.conf_file)
     coll.connect()
 
-    for x in coll.coll_find1()["members"]:
-        print("\t{0} => {1}".format(x["host"], x["priority"]))
+    for item in coll.coll_find1()["members"]:
+        print("\t{0} => {1}".format(item["host"], item["priority"]))
 
     cmds_gen.disconnect([coll])
 
@@ -266,14 +266,15 @@ def fetch_members(repset, args_array, **kwargs):
 
     args_array = dict(args_array)
     print("\nMembers of replica set: %s" % (repset.repset))
+    rep_status = repset.adm_cmd("replSetGetStatus")
+    primary = get_master(rep_status)
+    print("\t%s (Primary)" % (primary["name"]))
 
-    if (repset.is_primary()):
-        x = repset.fetch_adr()
-        print("\t" + ":".join([x[0], str(x[1])]) + "  (Primary)")
+    secondaries = [member for member in rep_status.get("members")
+                   if member.get("state") == 2]
 
-    # Process secondary servers.
-    for x in repset.fetch_nodes().difference(set([repset.fetch_adr()])):
-        print("\t" + ":".join([x[0], str(x[1])]))
+    for second in secondaries:
+        print("\t%s" % (second["name"]))
 
 
 def get_master(rep_status, **kwargs):
@@ -451,8 +452,8 @@ def _process_json(outdata, **kwargs):
     jdata = json.dumps(outdata, indent=indent)
 
     if mongo_cfg and db_tbl:
-        db, tbl = db_tbl.split(":")
-        mongo_libs.ins_doc(mongo_cfg, db, tbl, outdata)
+        dbs, tbl = db_tbl.split(":")
+        mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
 
     if ofile:
         gen_libs.write_file(ofile, mode, jdata)
@@ -462,7 +463,7 @@ def _process_json(outdata, **kwargs):
         mail.send_mail()
 
     if not args_array.get("-z", False):
-        gen_libs.display_data(outdata)
+        gen_libs.display_data(jdata)
 
 
 def chk_rep_lag(repset, args_array, **kwargs):
@@ -545,8 +546,8 @@ def run_program(args_array, func_dict, **kwargs):
                                         subj=args_array.get("-s", None))
 
         # Call function(s) - intersection of command line and function dict.
-        for x in set(args_array.keys()) & set(func_dict.keys()):
-            func_dict[x](repinst, args_array, mail=mail, **kwargs)
+        for item in set(args_array.keys()) & set(func_dict.keys()):
+            func_dict[item](repinst, args_array, mail=mail, **kwargs)
 
         cmds_gen.disconnect([repinst])
 

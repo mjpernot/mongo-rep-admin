@@ -42,9 +42,7 @@ class Server(object):
 
     Methods:
         __init__ -> Class initialization.
-        is_primary -> Stub holder for mongo_class.Server.is_primary method.
-        fetch_adr ->Stub holder for mongo_class.Server.fetch_adr method.
-        fetch_nodes -> Stub holder for mongo_class.Server.fetch_nodes method.
+        adm_cmd -> adm_cmd method.
 
     """
 
@@ -58,44 +56,25 @@ class Server(object):
 
         """
 
-        self.repset = "RepsetName"
-        self.primary = True
+        self.repset = "spock"
+        self.data = {"members": [{"name": "mongo1:27017", "state": 1},
+                                 {"name": "mongo2:27017", "state": 2},
+                                 {"name": "mongo3:27017", "state": 2}]}
+        self.cmd = None
 
-    def is_primary(self):
+    def adm_cmd(self, cmd):
 
-        """Method:  connect
+        """Method:  adm_cmd
 
-        Description:  Stub holder for mongo_class.Server.is_primary method.
-
-        Arguments:
-
-        """
-
-        return self.primary
-
-    def fetch_adr(self):
-
-        """Method:  fetch_adr
-
-        Description:  Stub holder for mongo_class.Server.fetch_adr method.
+        Description:  adm_cmd method.
 
         Arguments:
 
         """
 
-        return ("server1", 27017)
+        self.cmd = cmd
 
-    def fetch_nodes(self):
-
-        """Method:  fetch_nodes
-
-        Description:  Stub holder for mongo_class.Server.fetch_nodes method.
-
-        Arguments:
-
-        """
-
-        return set([("server1", 27017), ("server2", 27017)])
+        return self.data
 
 
 class UnitTest(unittest.TestCase):

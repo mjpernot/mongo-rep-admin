@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.2.1] - 2020-05-05
+### Fixed
+- fetch_members:  Refactored function to use adm_cmd("replSetGetStatus") call to get the replica set data.
+- \_process_json:  Sent correct formatted data to gen_libs.display_data call.
+- Documentation correction for -T and -S options.
+
+### Changed
+- \_process_json:  Changed variable name to standard naming convention.
+- run_program:  Changed variable name to standard naming convention.
+- fetch_priority:  Changed variable name to standard naming convention.
+- chk_rep_stat:  Changed variable name to standard naming convention.
+
+### Removed
+- Removed non-used module libraries.
+
+
 ## [3.2.0] - 2020-04-22
 ### Added
 - Added "-f" option to allow the flattening of the JSON data structure to file and standard out.

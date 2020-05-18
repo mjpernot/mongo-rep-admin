@@ -21,7 +21,7 @@
   * Show priority for members in replication set.
   * Check status of replication for members in replica set and print errors.
   * Check status of replication for members in replica set and print all.
-  * Ability to sent output to standard out, file, or insert results into a Mongo database.
+  * Ability to sent output to standard out, file, and/or insert results into a Mongo database.
 
 # Prerequisites:
 
@@ -81,6 +81,9 @@ Make the appropriate change to the environment.
     - passwd = "PASSWORD"
     - host = "IP_ADDRESS"
     - name = "HOSTNAME"
+    - port = 27017
+    - conf_file = None
+    - auth = True
 
   * If connecting to a Mongo replica set, otherwise set to None.
     - repset = "REPLICA_SET_NAME"
@@ -100,6 +103,9 @@ Make the appropriate change to the environment.
     - passwd = "PASSWORD"
     - host = "IP_ADDRESS"
     - name = "HOSTNAME"
+    - port = 27017
+    - conf_file = None
+    - auth = True
 
   * If connecting to a Mongo replica set, otherwise set to None.
     - repset = "REPLICA_SET_NAME"

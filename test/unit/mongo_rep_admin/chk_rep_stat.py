@@ -58,6 +58,7 @@ class Server(object):
         """
 
         self.repset = "RepsetName"
+        self.cmd = None
 
     def adm_cmd(self, cmd):
 
@@ -69,6 +70,8 @@ class Server(object):
             (input) cmd -> Command.
 
         """
+
+        self.cmd = cmd
 
         return {"members": [{"name": "MemberName"}]}
 
