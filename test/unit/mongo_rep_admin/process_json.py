@@ -97,6 +97,7 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_json_flatten -> Test with JSON format to standard out suppression.
         test_json_stdout_suppress -> Test with JSON format std out suppression.
         test_json_stdout -> Test with JSON format to standard out.
         test_mongo -> Test with writing to mongo.
