@@ -8,6 +8,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ### Added
 - \_process_std:  Process standard out formatted data.
 
+### Changed
+- Documentation updates.
+
 
 ## [3.2.1] - 2020-05-05
 ### Fixed

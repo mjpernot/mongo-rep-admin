@@ -367,12 +367,12 @@ def chk_mem_rep_lag(rep_status, **kwargs):
         (input) rep_status -> Member document from replSetGetStatus.
         (input) **kwargs:
             json -> True|False - JSON format.
-            suf -> Primary|Freshest Secondary who has latest date time.
             ofile -> file name - Name of output file.
             db_tbl -> database:collection - Name of db and collection.
             class_cfg -> Server class configuration settings.
             mail -> Mail instance.
             args_array -> Array of command line options and values.
+            suf -> Primary|Freshest Secondary who has latest date time.
 
     """
 
