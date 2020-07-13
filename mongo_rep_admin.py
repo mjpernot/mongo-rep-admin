@@ -373,6 +373,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             mail -> Mail instance.
             args_array -> Array of command line options and values.
             suf -> Primary|Freshest Secondary who has latest date time.
+            optdt -> Primary|Best Oplog date time.
 
     """
 
@@ -380,17 +381,12 @@ def chk_mem_rep_lag(rep_status, **kwargs):
     rep_status = dict(rep_status)
     json_fmt = kwargs.get("json", False)
 
-    if json_fmt:
-        outdata = {"application": "Mongo Replication",
-                   "repSet": rep_status.get("set"),
-                   "master": get_master(rep_status).get("name"),
-                   "asOf": datetime.datetime.strftime(datetime.datetime.now(),
-                                                      t_format),
-                   "slaves": []}
-
-    else:
-        print("\nReplication lag for Replica set: %s."
-              % (rep_status.get("set")))
+    outdata = {"application": "Mongo Replication",
+               "repSet": rep_status.get("set"),
+               "master": get_master(rep_status).get("name"),
+               "asOf": datetime.datetime.strftime(datetime.datetime.now(),
+                                                  t_format),
+               "slaves": []}
 
     # Process each member in replica set.
     for member in rep_status.get("members"):
@@ -399,29 +395,25 @@ def chk_mem_rep_lag(rep_status, **kwargs):
         if member.get("state") in [1, 7]:
             continue
 
-        if not json_fmt:
-            print("\nSource: {0}".format(member.get("name")))
-
         # Fetch rep lag time.
         if member.get("optime"):
-            if json_fmt:
-                sec_ago = fetch_rep_lag(member.get("optimeDate"), **kwargs)
 
-                outdata["slaves"].append({"name": member.get("name"),
-                                          "syncTo":
-                                          datetime.datetime.strftime(
-                                              member.get("optimeDate"),
-                                              t_format),
-                                          "lagTime": sec_ago})
-
-            else:
-                fetch_rep_lag(member.get("optimeDate"), **kwargs)
+            sec_ago = gen_libs.get_secs(
+                kwargs["optdt"] - member.get("optimeDate"))
+            outdata["slaves"].append(
+                {"name": member.get("name"),
+                 "syncTo": datetime.datetime.strftime(
+                     member.get("optimeDate"), t_format),
+                 "lagTime": sec_ago})
 
         else:
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
 
     if json_fmt:
         _process_json(outdata, **kwargs)
+
+    else:
+        _process_std(outdata, **kwargs)
 
 
 def _process_std(outdata, **kwargs):
