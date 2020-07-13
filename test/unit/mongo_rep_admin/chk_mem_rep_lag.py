@@ -98,6 +98,7 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_std_out_suppress -> Test with standard out suppressed.
         test_json_stdout_suppress -> Test with JSON format std out suppression.
         test_json_stdout -> Test with JSON format to standard out.
         test_no_rep_info -> Test with no replication information.
@@ -146,10 +147,26 @@ class UnitTest(unittest.TestCase):
         self.args_array = {"-z": True}
         self.args_array2 = {}
 
-    @mock.patch("mongo_rep_admin.gen_libs.display_data")
-    @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
-    def test_json_stdout_suppress(self, mock_mst, mock_lag, mock_prt):
+    def test_std_out_suppress(self, mock_mst):
+
+        """Function:  test_std_out_suppress
+
+        Description:  Test with standard out suppressed.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+
+        self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
+            self.rep_status, optdt=self.optdt, suf=self.primary,
+            args_array=self.args_array))
+
+    @mock.patch("mongo_rep_admin.gen_libs.display_data")
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_json_stdout_suppress(self, mock_mst, mock_prt):
 
         """Function:  test_json_stdout_suppress
 
@@ -160,7 +177,6 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_mst.return_value = self.get_master
-        mock_lag.return_value = True
         mock_prt.return_value = True
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
@@ -168,9 +184,8 @@ class UnitTest(unittest.TestCase):
             optdt=self.optdt))
 
     @mock.patch("mongo_rep_admin.gen_libs.display_data")
-    @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
-    def test_json_stdout(self, mock_mst, mock_lag, mock_prt):
+    def test_json_stdout(self, mock_mst, mock_prt):
 
         """Function:  test_json_stdout
 
@@ -181,7 +196,6 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_mst.return_value = self.get_master
-        mock_lag.return_value = True
         mock_prt.return_value = True
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
@@ -189,9 +203,8 @@ class UnitTest(unittest.TestCase):
             optdt=self.optdt))
 
     @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
-    @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
-    def test_no_rep_info(self, mock_mst, mock_lag, mock_prt):
+    def test_no_rep_info(self, mock_mst, mock_prt):
 
         """Function:  test_no_rep_info
 
@@ -202,7 +215,6 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_mst.return_value = self.get_master
-        mock_lag.return_value = True
         mock_prt.return_value = True
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
@@ -210,9 +222,8 @@ class UnitTest(unittest.TestCase):
             optdt=self.optdt))
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
-    @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
-    def test_mongo(self, mock_mst, mock_lag, mock_mongo):
+    def test_mongo(self, mock_mst, mock_mongo):
 
         """Function:  test_mongo
 
@@ -223,7 +234,6 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_mst.return_value = self.get_master
-        mock_lag.return_value = True
         mock_mongo.return_value = True
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
@@ -231,9 +241,8 @@ class UnitTest(unittest.TestCase):
             args_array=self.args_array, optdt=self.optdt))
 
     @mock.patch("mongo_rep_admin.gen_libs.write_file")
-    @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
-    def test_file(self, mock_mst, mock_lag, mock_file):
+    def test_file(self, mock_mst, mock_file):
 
         """Function:  test_file
 
@@ -244,16 +253,14 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_mst.return_value = self.get_master
-        mock_lag.return_value = True
         mock_file.return_value = True
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
             self.rep_status, json=True, ofile="Filename",
             args_array=self.args_array, optdt=self.optdt))
 
-    @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
-    def test_email(self, mock_mst, mock_lag):
+    def test_email(self, mock_mst):
 
         """Function:  test_email
 
@@ -264,15 +271,13 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_mst.return_value = self.get_master
-        mock_lag.return_value = True
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
             self.rep_status, json=True, mail=self.mail,
             args_array=self.args_array, optdt=self.optdt))
 
-    @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
-    def test_json(self, mock_mst, mock_lag):
+    def test_json(self, mock_mst):
 
         """Function:  test_json
 
@@ -283,15 +288,13 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_mst.return_value = self.get_master
-        mock_lag.return_value = True
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
             self.rep_status, json=True, args_array=self.args_array,
             optdt=self.optdt))
 
-    @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
-    def test_std_out(self, mock_mst, mock_lag):
+    def test_std_out(self, mock_mst):
 
         """Function:  test_std_out
 
@@ -302,7 +305,6 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_mst.return_value = self.get_master
-        mock_lag.return_value = True
 
         with gen_libs.no_std_out():
             self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
