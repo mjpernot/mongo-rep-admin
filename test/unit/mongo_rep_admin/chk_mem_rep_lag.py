@@ -121,6 +121,7 @@ class UnitTest(unittest.TestCase):
 
         self.t_format = "%Y-%m-%d %H:%M:%S"
         self.mail = Mail()
+        self.primary = "primary"
         self.rep_status = {
             "set": "ReplicaSet",
             "members": [{"state": 1, "name": "server1",
@@ -139,6 +140,8 @@ class UnitTest(unittest.TestCase):
                         {"state": 2, "name": "server2",
                          "optimeDate": datetime.datetime.strptime(
                              "2019-07-26 11:13:02", self.t_format)}]}
+        self.optdt = datetime.datetime.strptime("2019-07-26 11:13:02",
+                                                "%Y-%m-%d %H:%M:%S")
         self.get_master = {"name": "master_server"}
         self.args_array = {"-z": True}
         self.args_array2 = {}
@@ -161,7 +164,8 @@ class UnitTest(unittest.TestCase):
         mock_prt.return_value = True
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
-            self.rep_status, json=True, args_array=self.args_array))
+            self.rep_status, json=True, args_array=self.args_array,
+            optdt=self.optdt))
 
     @mock.patch("mongo_rep_admin.gen_libs.display_data")
     @mock.patch("mongo_rep_admin.fetch_rep_lag")
@@ -181,7 +185,8 @@ class UnitTest(unittest.TestCase):
         mock_prt.return_value = True
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
-            self.rep_status, json=True, args_array=self.args_array2))
+            self.rep_status, json=True, args_array=self.args_array2,
+            optdt=self.optdt))
 
     @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
     @mock.patch("mongo_rep_admin.fetch_rep_lag")
@@ -201,7 +206,8 @@ class UnitTest(unittest.TestCase):
         mock_prt.return_value = True
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
-            self.rep_status2, json=True, args_array=self.args_array))
+            self.rep_status2, json=True, args_array=self.args_array,
+            optdt=self.optdt))
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     @mock.patch("mongo_rep_admin.fetch_rep_lag")
@@ -222,7 +228,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
             self.rep_status, json=True, class_cfg="mongocfg", db_tbl="db:tbl",
-            args_array=self.args_array))
+            args_array=self.args_array, optdt=self.optdt))
 
     @mock.patch("mongo_rep_admin.gen_libs.write_file")
     @mock.patch("mongo_rep_admin.fetch_rep_lag")
@@ -243,7 +249,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
             self.rep_status, json=True, ofile="Filename",
-            args_array=self.args_array))
+            args_array=self.args_array, optdt=self.optdt))
 
     @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
@@ -262,7 +268,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
             self.rep_status, json=True, mail=self.mail,
-            args_array=self.args_array))
+            args_array=self.args_array, optdt=self.optdt))
 
     @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
@@ -280,7 +286,8 @@ class UnitTest(unittest.TestCase):
         mock_lag.return_value = True
 
         self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
-            self.rep_status, json=True, args_array=self.args_array))
+            self.rep_status, json=True, args_array=self.args_array,
+            optdt=self.optdt))
 
     @mock.patch("mongo_rep_admin.fetch_rep_lag")
     @mock.patch("mongo_rep_admin.get_master")
@@ -299,7 +306,7 @@ class UnitTest(unittest.TestCase):
 
         with gen_libs.no_std_out():
             self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
-                self.rep_status))
+                self.rep_status, optdt=self.optdt, suf=self.primary))
 
 
 if __name__ == "__main__":
