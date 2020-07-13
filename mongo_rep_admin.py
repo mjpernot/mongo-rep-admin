@@ -367,6 +367,12 @@ def chk_mem_rep_lag(rep_status, **kwargs):
         (input) rep_status -> Member document from replSetGetStatus.
         (input) **kwargs:
             json -> True|False - JSON format.
+            suf -> Primary|Freshest Secondary who has latest date time.
+            ofile -> file name - Name of output file.
+            db_tbl -> database:collection - Name of db and collection.
+            class_cfg -> Server class configuration settings.
+            mail -> Mail instance.
+            args_array -> Array of command line options and values.
 
     """
 
@@ -416,6 +422,33 @@ def chk_mem_rep_lag(rep_status, **kwargs):
 
     if json_fmt:
         _process_json(outdata, **kwargs)
+
+
+def _process_std(outdata, **kwargs):
+
+    """Function:  _process_std
+
+    Description:  Private function for chk_mem_rep_lag().  Process standard out
+        formatted data.
+
+    Arguments:
+        (input) outdata -> JSON document from chk_mem_rep_lag function.
+        (input) **kwargs:
+            suf -> Primary|Freshest Secondary who has latest date time.
+            args_array -> Array of command line options and values.
+
+    """
+
+    args_array = dict(kwargs.get("args_array", {}))
+
+    if not args_array.get("-z", False):
+        print("\nReplication lag for Replica set: %s." % (outdata["repSet"]))
+
+        for item in outdata["slaves"]:
+            print("\nSource: {0}".format(item["name"]))
+            print("\tsynced to:  {0}".format(item["syncTo"]))
+            print("\t{0} secs ({1} hrs) behind the {2}".format(
+                item["lagTime"], (item["lagTime"] / 36) / 100, kwargs["suf"]))
 
 
 def _process_json(outdata, **kwargs):

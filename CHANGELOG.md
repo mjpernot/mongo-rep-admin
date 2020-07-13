@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.3.0] - 2020-07-13
+### Added
+- \_process_std:  Process standard out formatted data.
+
+
 ## [3.2.1] - 2020-05-05
 ### Fixed
 - fetch_members:  Refactored function to use adm_cmd("replSetGetStatus") call to get the replica set data.
