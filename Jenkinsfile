@@ -22,6 +22,7 @@ pipeline {
                 source test_env/bin/activate
                 pip2 install mock==2.0.0 --user
                 pip2 install pymongo==3.2.0 --user
+                ./test/unit/mongo_rep_admin/_process_std.py
                 ./test/unit/mongo_rep_admin/chk_mem_rep_lag.py
                 ./test/unit/mongo_rep_admin/chk_rep_lag.py
                 ./test/unit/mongo_rep_admin/chk_rep_stat.py
