@@ -14,6 +14,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - chk_mem_rep_lag:  Refactored to handle only the JSON format and convert to standard out format if requested.
 - Documentation updates.
 
+### Removed
+- fetch_rep_lag:  No longer required.
+
 
 ## [3.2.1] - 2020-05-05
 ### Fixed

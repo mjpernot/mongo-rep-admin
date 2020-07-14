@@ -325,37 +325,6 @@ def get_optimedate(rep_status, **kwargs):
     return optime_date
 
 
-def fetch_rep_lag(dtg, **kwargs):
-
-    """Function:  fetch_rep_lag
-
-    Description:  Computes the difference between the Primary|best oplog
-        datetime and Secondary oplog datetime.
-
-    Arguments:
-        (input) dtg -> Oplog date time for Secondary.
-        (input) **kwargs:
-            optdt -> Primary|Best Oplog date time.
-            suf -> Primary|Freshest Secondary who has latest date time.
-            json -> True|False - JSON format.
-        (output) sec_ago -> Replication lag in seconds.
-
-    """
-
-    # Total seconds and hours behind.
-    sec_ago = gen_libs.get_secs(kwargs["optdt"] - dtg)
-    hrs_ago = (sec_ago / 36) / 100
-    json_fmt = kwargs.get("json", False)
-
-    if json_fmt:
-        return sec_ago
-
-    else:
-        gen_libs.prt_msg("synced to", str(dtg), 1)
-        print("\t{0} secs ({1} hrs) behind the {2}".format(sec_ago, hrs_ago,
-                                                           kwargs["suf"]))
-
-
 def chk_mem_rep_lag(rep_status, **kwargs):
 
     """Function:  chk_mem_rep_lag
