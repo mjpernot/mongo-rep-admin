@@ -381,12 +381,12 @@ def chk_mem_rep_lag(rep_status, **kwargs):
     rep_status = dict(rep_status)
     json_fmt = kwargs.get("json", False)
 
-    outdata = {"application": "Mongo Replication",
-               "repSet": rep_status.get("set"),
-               "master": get_master(rep_status).get("name"),
-               "asOf": datetime.datetime.strftime(datetime.datetime.now(),
+    outdata = {"Application": "Mongo Replication",
+               "RepSet": rep_status.get("set"),
+               "Master": get_master(rep_status).get("name"),
+               "AsOf": datetime.datetime.strftime(datetime.datetime.now(),
                                                   t_format),
-               "slaves": []}
+               "Slaves": []}
 
     # Process each member in replica set.
     for member in rep_status.get("members"):
@@ -399,11 +399,11 @@ def chk_mem_rep_lag(rep_status, **kwargs):
         if member.get("optime"):
             sec_ago = gen_libs.get_secs(
                 kwargs["optdt"] - member.get("optimeDate"))
-            outdata["slaves"].append(
-                {"name": member.get("name"),
-                 "syncTo": datetime.datetime.strftime(
+            outdata["Slaves"].append(
+                {"Name": member.get("name"),
+                 "SyncTo": datetime.datetime.strftime(
                      member.get("optimeDate"), t_format),
-                 "lagTime": sec_ago})
+                 "LagTime": sec_ago})
 
         else:
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
@@ -441,13 +441,13 @@ def _process_std(outdata, **kwargs):
     if args_array.get("-a", False):
         mode = "a"
 
-    body.append("\nReplication lag for Replica set: %s." % (outdata["repSet"]))
+    body.append("\nReplication lag for Replica set: %s." % (outdata["RepSet"]))
 
-    for item in outdata["slaves"]:
-        body.append("\nSource: {0}".format(item["name"]))
-        body.append("\tsynced to:  {0}".format(item["syncTo"]))
+    for item in outdata["Slaves"]:
+        body.append("\nSource: {0}".format(item["Name"]))
+        body.append("\tsynced to:  {0}".format(item["SyncTo"]))
         body.append("\t{0} secs ({1} hrs) behind the {2}".format(
-            item["lagTime"], (item["lagTime"] / 36) / 100, kwargs["suf"]))
+            item["LagTime"], (item["LagTime"] / 36) / 100, kwargs["suf"]))
 
     if mongo_cfg and db_tbl:
         dbs, tbl = db_tbl.split(":")
