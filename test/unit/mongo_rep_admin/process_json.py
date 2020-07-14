@@ -119,11 +119,12 @@ class UnitTest(unittest.TestCase):
 
         self.mail = Mail()
         self.outdata = {
-            "application": "Mongo Replication", "repSet": "RepSetName",
-            "master": "MasterRepName",
-            "asOf": datetime.datetime.strftime(datetime.datetime.now(),
+            "Application": "Mongo Replication",
+            "RepSet": "RepSetName",
+            "Master": "MasterRepName",
+            "AsOf": datetime.datetime.strftime(datetime.datetime.now(),
                                                "%Y-%m-%d %H:%M:%S"),
-            "slaves": ["slave1", "slave2"]}
+            "Slaves": ["slave1", "slave2"]}
         self.args_array = {"-z": True}
         self.args_array2 = {}
         self.args_array3 = {"-z": True, "-a": True}
