@@ -178,7 +178,6 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(mongo_rep_admin._process_std(
             self.outdata, args_array=self.args_array2))
 
-    @unittest.skip("not yet implemented")
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     def test_mongo(self, mock_mongo):
 
@@ -194,7 +193,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertFalse(mongo_rep_admin._process_std(
             self.outdata, class_cfg="mongocfg", db_tbl="db:tbl",
-            args_array=self.args_array))
+            args_array=self.args_array2))
 
     @unittest.skip("not yet implemented")
     @mock.patch("mongo_rep_admin.gen_libs.write_file")
