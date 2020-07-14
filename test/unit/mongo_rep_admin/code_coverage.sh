@@ -14,7 +14,6 @@ coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/chk_rep_lag.p
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/chk_rep_stat.py
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/fetch_members.py
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/fetch_priority.py
-coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/fetch_rep_lag.py
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/get_master.py
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/get_optimedate.py
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/help_message.py
