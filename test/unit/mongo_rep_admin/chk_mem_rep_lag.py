@@ -98,6 +98,7 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_std_out_email -> Test with standard out email option.
         test_std_out_file_append -> Test standard out writing to file append.
         test_std_out_file -> Test with standard out writing to file.
         test_std_out_mongo -> Test with standard out writing to mongo.
@@ -150,6 +151,23 @@ class UnitTest(unittest.TestCase):
         self.args_array = {"-z": True}
         self.args_array2 = {}
         self.args_array3 = {"-z": True, "-a": True}
+
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_std_out_email(self, mock_mst):
+
+        """Function:  test_std_out_email
+
+        Description:  Test with standard out email option.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+
+        self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
+            self.rep_status, mail=self.mail, args_array=self.args_array,
+            optdt=self.optdt, suf=self.primary))
 
     @mock.patch("mongo_rep_admin.gen_libs.openfile",
                 mock.Mock(return_value="File_Handler"))
