@@ -100,11 +100,10 @@ class UnitTest(unittest.TestCase):
         setUp -> Initialize testing environment.
         test_std_out -> Test standard out format print.
         test_stdout_suppress -> Test with standard out suppressed.
-        # test_json_stdout -> Test with JSON format to standard out.
-        # test_mongo -> Test with writing to mongo.
-        # test_file_append -> Test with writing to file in append mode.
-        # test_file -> Test with writing to file.
-        # test_email -> Test with email option.
+        test_mongo -> Test with writing to mongo.
+        test_file_append -> Test with writing to file in append mode.
+        test_file -> Test with writing to file.
+        test_email -> Test with email option.
 
     """
 
@@ -134,7 +133,6 @@ class UnitTest(unittest.TestCase):
         self.args_array = {}
         self.args_array2 = {"-z": True}
         self.args_array3 = {"-z": True, "-a": True}
-        #self.args_array4 = {"-z": True, "-f": True}
 
     def test_std_out(self):
 
@@ -162,21 +160,6 @@ class UnitTest(unittest.TestCase):
 
         self.assertFalse(mongo_rep_admin._process_std(
             self.outdata, args_array=self.args_array2, suf=self.primary))
-
-    @unittest.skip("not yet implemented")
-    @mock.patch("mongo_rep_admin.gen_libs.display_data")
-    def test_json_stdout(self, mock_prt):
-
-        """Function:  test_json_stdout
-
-        Description:  Test with JSON format to standard out.
-
-        Arguments:
-
-        """
-
-        self.assertFalse(mongo_rep_admin._process_std(
-            self.outdata, args_array=self.args_array2))
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     def test_mongo(self, mock_mongo):
@@ -231,7 +214,6 @@ class UnitTest(unittest.TestCase):
             self.outdata, ofile="Filename", args_array=self.args_array2,
             suf=self.primary))
 
-    @unittest.skip("not yet implemented")
     def test_email(self):
 
         """Function:  test_email
@@ -243,7 +225,8 @@ class UnitTest(unittest.TestCase):
         """
 
         self.assertFalse(mongo_rep_admin._process_std(
-            self.outdata, mail=self.mail, args_array=self.args_array))
+            self.outdata, mail=self.mail, args_array=self.args_array2,
+            suf=self.primary))
 
 
 if __name__ == "__main__":
