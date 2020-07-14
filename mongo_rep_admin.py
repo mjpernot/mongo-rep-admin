@@ -558,9 +558,10 @@ def run_program(args_array, func_dict, **kwargs):
         else:
             rep_set = coll.coll_find1().get("_id")
 
-        repinst = mongo_class.RepSet(server.name, server.user, server.passwd,
-                                     host=server.host, port=server.port,
-                                     auth=server.auth, repset=rep_set)
+        repinst = mongo_class.RepSet(
+            server.name, server.user, server.passwd, host=server.host,
+            port=server.port, auth=server.auth, repset=rep_set,
+            repset_hosts=server.repset_hosts)
         repinst.connect()
 
         if args_array.get("-e", None):

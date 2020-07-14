@@ -10,6 +10,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - \_process_std:  Process standard out formatted data.
 
 ### Changed
+- run_program:  Added repset_hosts to mongo_class.RepSet instance call.
 - chk_mem_rep_lag:  Changed dictionary to CamelCase.
 - chk_mem_rep_lag:  Refactored to handle only the JSON format and convert to standard out format if requested.
 - Documentation updates.
