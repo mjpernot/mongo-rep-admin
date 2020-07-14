@@ -430,11 +430,16 @@ def _process_std(outdata, **kwargs):
 
     """
 
+    mode = "w"
     mongo_cfg = kwargs.get("class_cfg", None)
     db_tbl = kwargs.get("db_tbl", None)
+    ofile = kwargs.get("ofile", None)
     args_array = dict(kwargs.get("args_array", {}))
-
     body = []
+
+    if args_array.get("-a", False):
+        mode = "a"
+
     body.append("\nReplication lag for Replica set: %s." % (outdata["repSet"]))
 
     for item in outdata["slaves"]:
@@ -446,6 +451,12 @@ def _process_std(outdata, **kwargs):
     if mongo_cfg and db_tbl:
         dbs, tbl = db_tbl.split(":")
         mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
+
+    if ofile:
+        f_hldr = gen_libs.openfile(ofile, mode)
+
+        for item in body:
+            gen_libs.write_file2(f_hldr, item)
 
     if not args_array.get("-z", False):
         for item in body:
