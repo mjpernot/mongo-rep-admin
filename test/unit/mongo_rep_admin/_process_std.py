@@ -133,7 +133,7 @@ class UnitTest(unittest.TestCase):
                         "name": "mongo3:27017"}]}
         self.args_array = {}
         self.args_array2 = {"-z": True}
-        #self.args_array3 = {"-z": True, "-a": True}
+        self.args_array3 = {"-z": True, "-a": True}
         #self.args_array4 = {"-z": True, "-f": True}
 
     def test_std_out(self):
@@ -195,9 +195,11 @@ class UnitTest(unittest.TestCase):
             self.outdata, class_cfg="mongocfg", db_tbl="db:tbl",
             args_array=self.args_array2, suf=self.primary))
 
-    @unittest.skip("not yet implemented")
-    @mock.patch("mongo_rep_admin.gen_libs.write_file")
-    def test_file_append(self, mock_file):
+    @mock.patch("mongo_rep_admin.gen_libs.openfile",
+                mock.Mock(return_value="File_Handler"))
+    @mock.patch("mongo_rep_admin.gen_libs.write_file2",
+                mock.Mock(return_value=True))
+    def test_file_append(self):
 
         """Function:  test_file_append
 
@@ -207,14 +209,15 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_file.return_value = True
-
         self.assertFalse(mongo_rep_admin._process_std(
-            self.outdata, ofile="Filename", args_array=self.args_array3))
+            self.outdata, ofile="Filename", args_array=self.args_array3,
+            suf=self.primary))
 
-    @unittest.skip("not yet implemented")
-    @mock.patch("mongo_rep_admin.gen_libs.write_file")
-    def test_file(self, mock_file):
+    @mock.patch("mongo_rep_admin.gen_libs.openfile",
+                mock.Mock(return_value="File_Handler"))
+    @mock.patch("mongo_rep_admin.gen_libs.write_file2",
+                mock.Mock(return_value=True))
+    def test_file(self):
 
         """Function:  test_file
 
@@ -224,10 +227,9 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_file.return_value = True
-
         self.assertFalse(mongo_rep_admin._process_std(
-            self.outdata, ofile="Filename", args_array=self.args_array))
+            self.outdata, ofile="Filename", args_array=self.args_array2,
+            suf=self.primary))
 
     @unittest.skip("not yet implemented")
     def test_email(self):
