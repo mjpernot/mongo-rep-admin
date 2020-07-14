@@ -98,6 +98,8 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_std_out_file_append -> Test standard out writing to file append.
+        test_std_out_file -> Test with standard out writing to file.
         test_std_out_mongo -> Test with standard out writing to mongo.
         test_std_out_suppress -> Test with standard out suppressed.
         test_json_stdout_suppress -> Test with JSON format std out suppression.
@@ -147,6 +149,49 @@ class UnitTest(unittest.TestCase):
         self.get_master = {"name": "master_server"}
         self.args_array = {"-z": True}
         self.args_array2 = {}
+        self.args_array3 = {"-z": True, "-a": True}
+
+    @mock.patch("mongo_rep_admin.gen_libs.openfile",
+                mock.Mock(return_value="File_Handler"))
+    @mock.patch("mongo_rep_admin.gen_libs.write_file2",
+                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_std_out_file_append(self, mock_mst):
+
+        """Function:  test_std_out_file_append
+
+        Description:  Test with standard out writing to file appending.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+
+        self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
+            self.rep_status, ofile="Filename", args_array=self.args_array3,
+            optdt=self.optdt, suf=self.primary))
+
+    @mock.patch("mongo_rep_admin.gen_libs.openfile",
+                mock.Mock(return_value="File_Handler"))
+    @mock.patch("mongo_rep_admin.gen_libs.write_file2",
+                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_std_out_file(self, mock_mst):
+
+        """Function:  test_std_out_file
+
+        Description:  Test with standard out writing to file.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+
+        self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
+            self.rep_status, ofile="Filename", args_array=self.args_array,
+            optdt=self.optdt, suf=self.primary))
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     @mock.patch("mongo_rep_admin.get_master")
