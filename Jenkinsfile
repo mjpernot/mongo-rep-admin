@@ -21,6 +21,7 @@ pipeline {
                 virtualenv test_env
                 source test_env/bin/activate
                 pip2 install mock==2.0.0 --user
+                pip2 install psutil==5.4.3 --user
                 pip2 install pymongo==3.2.0 --user
                 ./test/unit/mongo_rep_admin/_process_std.py
                 ./test/unit/mongo_rep_admin/chk_mem_rep_lag.py
@@ -62,7 +63,7 @@ pipeline {
             steps {
                 script {
                     server = Artifactory.server('Artifactory')
-                    server.credentialsId = 'svc-highpoint-artifactory'
+                    server.credentialsId = 'art-svc-highpoint-dev'
                     uploadSpec = """{
                         "files": [
                             {
