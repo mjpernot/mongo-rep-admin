@@ -120,16 +120,16 @@ class UnitTest(unittest.TestCase):
         self.mail = Mail()
         self.primary = "primary"
         self.outdata = {
-            "application": "Mongo Replication",
-            "master": "mongo1:27017",
-            "repSet": "spock",
-            "asOf": "2020-07-13 11:51:21",
-            "slaves": [{"lagTime": 0,
-                        "syncTo": "2020-07-13 10:51:19",
-                        "name": "mongo2:27017"},
-                       {"lagTime": 10,
-                        "syncTo": "2020-07-13 10:51:09",
-                        "name": "mongo3:27017"}]}
+            "Application": "Mongo Replication",
+            "Master": "mongo1:27017",
+            "RepSet": "spock",
+            "AsOf": "2020-07-13 11:51:21",
+            "Slaves": [{"LagTime": 0,
+                        "SyncTo": "2020-07-13 10:51:19",
+                        "Name": "mongo2:27017"},
+                       {"LagTime": 10,
+                        "SyncTo": "2020-07-13 10:51:09",
+                        "Name": "mongo3:27017"}]}
         self.args_array = {}
         self.args_array2 = {"-z": True}
         self.args_array3 = {"-z": True, "-a": True}
