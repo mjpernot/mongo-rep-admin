@@ -239,10 +239,10 @@ def fetch_priority(repset, args_array, **kwargs):
 
     args_array = dict(args_array)
     print("\nMembers => priority of replica set: %s" % (repset.repset))
-    coll = mongo_class.Coll(repset.name, repset.user, repset.passwd,
-                            host=repset.host, port=repset.port, db="local",
-                            coll="system.replset", auth=repset.auth,
-                            conf_file=repset.conf_file)
+    coll = mongo_class.Coll(
+        repset.name, repset.user, repset.passwd, host=repset.host,
+        port=repset.port, db="local", coll="system.replset", auth=repset.auth,
+        conf_file=repset.conf_file)
     coll.connect()
 
     for item in coll.coll_find1()["members"]:
@@ -294,6 +294,7 @@ def get_master(rep_status, **kwargs):
 
     # Process each member in replica set.
     for member in rep_status.get("members"):
+
         if member.get("state") == 1:
             primary = member
             break
@@ -319,6 +320,7 @@ def get_optimedate(rep_status, **kwargs):
 
     # Find best datetime from Secondary servers.
     for member in rep_status.get("members"):
+
         if member.get("optimeDate") > optime_date:
             optime_date = member.get("optimeDate")
 
@@ -431,7 +433,13 @@ def _process_std(outdata, **kwargs):
 
     """
 
+    mongo_cfg = kwargs.get("class_cfg", None)
+    db_tbl = kwargs.get("db_tbl", None)
     args_array = dict(kwargs.get("args_array", {}))
+
+    if mongo_cfg and db_tbl:
+        dbs, tbl = db_tbl.split(":")
+        mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
 
     if not args_array.get("-z", False):
         print("\nReplication lag for Replica set: %s." % (outdata["repSet"]))
@@ -524,9 +532,10 @@ def chk_rep_lag(repset, args_array, **kwargs):
         optime_date = get_optimedate(rep_status)
         suffix = "freshest secondary"
 
-    chk_mem_rep_lag(rep_status, optdt=optime_date, suf=suffix,
-                    json=json_fmt, ofile=outfile, db_tbl=db_tbl,
-                    class_cfg=mongo_cfg, args_array=args_array, **kwargs)
+    chk_mem_rep_lag(
+        rep_status, optdt=optime_date, suf=suffix, json=json_fmt,
+        ofile=outfile, db_tbl=db_tbl, class_cfg=mongo_cfg,
+        args_array=args_array, **kwargs)
 
 
 def run_program(args_array, func_dict, **kwargs):
@@ -545,10 +554,10 @@ def run_program(args_array, func_dict, **kwargs):
     func_dict = dict(func_dict)
     mail = None
     server = gen_libs.load_module(args_array["-c"], args_array["-d"])
-    coll = mongo_class.Coll(server.name, server.user, server.passwd,
-                            host=server.host, port=server.port, db="local",
-                            coll="system.replset", auth=server.auth,
-                            conf_file=server.conf_file)
+    coll = mongo_class.Coll(
+        server.name, server.user, server.passwd, host=server.host,
+        port=server.port, db="local", coll="system.replset", auth=server.auth,
+        conf_file=server.conf_file)
     coll.connect()
 
     # Is replication setup.
