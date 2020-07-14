@@ -208,15 +208,40 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        server = collections.namedtuple(
-            "Server", "name user passwd host port auth conf_file repset")
-        self.server = server("name", "user", "XXXX", "host", 27017, "auth",
-                             "conffile", "repsetname")
-        server2 = collections.namedtuple(
-            "Server", "name user passwd host port auth conf_file repset")
-        self.server2 = server2("name", "user", "XXXX", "host", 27017, "auth",
-                               "conffile", None)
+        class CfgTest(object):
 
+            """Class:  CfgTest
+
+            Description:  Class which is a representation of a cfg module.
+
+            Methods:
+                __init__ -> Initialize configuration environment.
+
+            """
+
+            def __init__(self):
+
+                """Method:  __init__
+
+                Description:  Initialization instance of the CfgTest class.
+
+                Arguments:
+
+                """
+
+                self.name = "name"
+                self.user = "user"
+                self.passwd = None
+                self.host = "host"
+                self.port = 27017
+                self.auth = "auth"
+                self.conf_file = "conffile"
+                self.repset = "repsetname"
+                self.repset_hosts = "localhost:27017,localhost:27016"
+
+        self.server = CfgTest()
+        self.server2 = CfgTest()
+        self.server2.repset = None
         self.repset = RepSet()
         self.coll = Coll()
         self.args_array = {"-T": True, "-c": "config", "-d": "dir/path"}
