@@ -6,7 +6,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [3.3.0] - 2020-07-13
 ### Added
-- Added email, mongo insertion, and suppression capability for the -L option in standard out format.
+- Added email, mongo insertion, write to file and suppression capability for the -L option in standard out format.
 - \_process_std:  Process standard out formatted data.
 
 ### Changed

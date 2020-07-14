@@ -294,7 +294,6 @@ def get_master(rep_status, **kwargs):
 
     # Process each member in replica set.
     for member in rep_status.get("members"):
-
         if member.get("state") == 1:
             primary = member
             break
@@ -320,7 +319,6 @@ def get_optimedate(rep_status, **kwargs):
 
     # Find best datetime from Secondary servers.
     for member in rep_status.get("members"):
-
         if member.get("optimeDate") > optime_date:
             optime_date = member.get("optimeDate")
 
@@ -399,7 +397,6 @@ def chk_mem_rep_lag(rep_status, **kwargs):
 
         # Fetch rep lag time.
         if member.get("optime"):
-
             sec_ago = gen_libs.get_secs(
                 kwargs["optdt"] - member.get("optimeDate"))
             outdata["slaves"].append(
@@ -437,18 +434,22 @@ def _process_std(outdata, **kwargs):
     db_tbl = kwargs.get("db_tbl", None)
     args_array = dict(kwargs.get("args_array", {}))
 
+    body = []
+    body.append("\nReplication lag for Replica set: %s." % (outdata["repSet"]))
+
+    for item in outdata["slaves"]:
+        body.append("\nSource: {0}".format(item["name"]))
+        body.append("\tsynced to:  {0}".format(item["syncTo"]))
+        body.append("\t{0} secs ({1} hrs) behind the {2}".format(
+            item["lagTime"], (item["lagTime"] / 36) / 100, kwargs["suf"]))
+
     if mongo_cfg and db_tbl:
         dbs, tbl = db_tbl.split(":")
         mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
 
     if not args_array.get("-z", False):
-        print("\nReplication lag for Replica set: %s." % (outdata["repSet"]))
-
-        for item in outdata["slaves"]:
-            print("\nSource: {0}".format(item["name"]))
-            print("\tsynced to:  {0}".format(item["syncTo"]))
-            print("\t{0} secs ({1} hrs) behind the {2}".format(
-                item["lagTime"], (item["lagTime"] / 36) / 100, kwargs["suf"]))
+        for item in body:
+            print(item)
 
 
 def _process_json(outdata, **kwargs):
