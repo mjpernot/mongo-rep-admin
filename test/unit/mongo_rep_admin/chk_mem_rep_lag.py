@@ -98,6 +98,7 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_std_out_mongo -> Test with standard out writing to mongo.
         test_std_out_suppress -> Test with standard out suppressed.
         test_json_stdout_suppress -> Test with JSON format std out suppression.
         test_json_stdout -> Test with JSON format to standard out.
@@ -146,6 +147,25 @@ class UnitTest(unittest.TestCase):
         self.get_master = {"name": "master_server"}
         self.args_array = {"-z": True}
         self.args_array2 = {}
+
+    @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_std_out_mongo(self, mock_mst, mock_mongo):
+
+        """Function:  test_std_out_mongo
+
+        Description:  Test with standard out writing to mongo.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+        mock_mongo.return_value = True
+
+        self.assertFalse(mongo_rep_admin.chk_mem_rep_lag(
+            self.rep_status, class_cfg="mongocfg", db_tbl="db:tbl",
+            args_array=self.args_array, optdt=self.optdt, suf=self.primary))
 
     @mock.patch("mongo_rep_admin.get_master")
     def test_std_out_suppress(self, mock_mst):
