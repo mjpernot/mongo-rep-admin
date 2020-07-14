@@ -124,6 +124,7 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        self.date = "2019-07-26 11:13:02"
         self.t_format = "%Y-%m-%d %H:%M:%S"
         self.mail = Mail()
         self.primary = "primary"
@@ -135,7 +136,7 @@ class UnitTest(unittest.TestCase):
                          "optime": True},
                         {"state": 2, "name": "server2",
                          "optimeDate": datetime.datetime.strptime(
-                             "2019-07-26 11:13:02", self.t_format),
+                             self.date, self.t_format),
                          "optime": True}]}
         self.rep_status2 = {
             "set": "ReplicaSet",
@@ -144,9 +145,8 @@ class UnitTest(unittest.TestCase):
                              "2019-07-26 11:13:01", self.t_format)},
                         {"state": 2, "name": "server2",
                          "optimeDate": datetime.datetime.strptime(
-                             "2019-07-26 11:13:02", self.t_format)}]}
-        self.optdt = datetime.datetime.strptime("2019-07-26 11:13:02",
-                                                "%Y-%m-%d %H:%M:%S")
+                             self.date, self.t_format)}]}
+        self.optdt = datetime.datetime.strptime(self.date, "%Y-%m-%d %H:%M:%S")
         self.get_master = {"name": "master_server"}
         self.args_array = {"-z": True}
         self.args_array2 = {}
