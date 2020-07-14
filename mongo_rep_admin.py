@@ -434,6 +434,7 @@ def _process_std(outdata, **kwargs):
     mongo_cfg = kwargs.get("class_cfg", None)
     db_tbl = kwargs.get("db_tbl", None)
     ofile = kwargs.get("ofile", None)
+    mail = kwargs.get("mail", None)
     args_array = dict(kwargs.get("args_array", {}))
     body = []
 
@@ -455,8 +456,14 @@ def _process_std(outdata, **kwargs):
     if ofile:
         f_hldr = gen_libs.openfile(ofile, mode)
 
-        for item in body:
-            gen_libs.write_file2(f_hldr, item)
+        for line in body:
+            gen_libs.write_file2(f_hldr, line)
+
+    if mail:
+        for line in body:
+            mail.add_2_msg(line)
+
+        mail.send_mail()
 
     if not args_array.get("-z", False):
         for item in body:
