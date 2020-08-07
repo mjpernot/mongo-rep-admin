@@ -24,7 +24,6 @@ else:
     import unittest
 
 # Third-party
-import collections
 import mock
 
 # Local
