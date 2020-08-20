@@ -239,10 +239,10 @@ def fetch_priority(repset, args_array, **kwargs):
 
     args_array = dict(args_array)
     print("\nMembers => priority of replica set: %s" % (repset.repset))
-    coll = mongo_class.Coll(repset.name, repset.user, repset.passwd,
-                            host=repset.host, port=repset.port, db="local",
-                            coll="system.replset", auth=repset.auth,
-                            conf_file=repset.conf_file)
+    coll = mongo_class.Coll(
+        repset.name, repset.user, repset.passwd, host=repset.host,
+        port=repset.port, db="local", coll="system.replset", auth=repset.auth,
+        conf_file=repset.conf_file)
     coll.connect()
 
     for item in coll.coll_find1()["members"]:
@@ -325,37 +325,6 @@ def get_optimedate(rep_status, **kwargs):
     return optime_date
 
 
-def fetch_rep_lag(dtg, **kwargs):
-
-    """Function:  fetch_rep_lag
-
-    Description:  Computes the difference between the Primary|best oplog
-        datetime and Secondary oplog datetime.
-
-    Arguments:
-        (input) dtg -> Oplog date time for Secondary.
-        (input) **kwargs:
-            optdt -> Primary|Best Oplog date time.
-            suf -> Primary|Freshest Secondary who has latest date time.
-            json -> True|False - JSON format.
-        (output) sec_ago -> Replication lag in seconds.
-
-    """
-
-    # Total seconds and hours behind.
-    sec_ago = gen_libs.get_secs(kwargs["optdt"] - dtg)
-    hrs_ago = (sec_ago / 36) / 100
-    json_fmt = kwargs.get("json", False)
-
-    if json_fmt:
-        return sec_ago
-
-    else:
-        gen_libs.prt_msg("synced to", str(dtg), 1)
-        print("\t{0} secs ({1} hrs) behind the {2}".format(sec_ago, hrs_ago,
-                                                           kwargs["suf"]))
-
-
 def chk_mem_rep_lag(rep_status, **kwargs):
 
     """Function:  chk_mem_rep_lag
@@ -367,6 +336,13 @@ def chk_mem_rep_lag(rep_status, **kwargs):
         (input) rep_status -> Member document from replSetGetStatus.
         (input) **kwargs:
             json -> True|False - JSON format.
+            ofile -> file name - Name of output file.
+            db_tbl -> database:collection - Name of db and collection.
+            class_cfg -> Server class configuration settings.
+            mail -> Mail instance.
+            args_array -> Array of command line options and values.
+            suf -> Primary|Freshest Secondary who has latest date time.
+            optdt -> Primary|Best Oplog date time.
 
     """
 
@@ -374,17 +350,12 @@ def chk_mem_rep_lag(rep_status, **kwargs):
     rep_status = dict(rep_status)
     json_fmt = kwargs.get("json", False)
 
-    if json_fmt:
-        outdata = {"application": "Mongo Replication",
-                   "repSet": rep_status.get("set"),
-                   "master": get_master(rep_status).get("name"),
-                   "asOf": datetime.datetime.strftime(datetime.datetime.now(),
-                                                      t_format),
-                   "slaves": []}
-
-    else:
-        print("\nReplication lag for Replica set: %s."
-              % (rep_status.get("set")))
+    outdata = {"Application": "Mongo Replication",
+               "RepSet": rep_status.get("set"),
+               "Master": get_master(rep_status).get("name"),
+               "AsOf": datetime.datetime.strftime(datetime.datetime.now(),
+                                                  t_format),
+               "Slaves": []}
 
     # Process each member in replica set.
     for member in rep_status.get("members"):
@@ -393,29 +364,79 @@ def chk_mem_rep_lag(rep_status, **kwargs):
         if member.get("state") in [1, 7]:
             continue
 
-        if not json_fmt:
-            print("\nSource: {0}".format(member.get("name")))
-
         # Fetch rep lag time.
         if member.get("optime"):
-            if json_fmt:
-                sec_ago = fetch_rep_lag(member.get("optimeDate"), **kwargs)
-
-                outdata["slaves"].append({"name": member.get("name"),
-                                          "syncTo":
-                                          datetime.datetime.strftime(
-                                              member.get("optimeDate"),
-                                              t_format),
-                                          "lagTime": sec_ago})
-
-            else:
-                fetch_rep_lag(member.get("optimeDate"), **kwargs)
+            sec_ago = gen_libs.get_secs(
+                kwargs["optdt"] - member.get("optimeDate"))
+            outdata["Slaves"].append(
+                {"Name": member.get("name"),
+                 "SyncTo": datetime.datetime.strftime(
+                     member.get("optimeDate"), t_format),
+                 "LagTime": sec_ago})
 
         else:
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
 
     if json_fmt:
         _process_json(outdata, **kwargs)
+
+    else:
+        _process_std(outdata, **kwargs)
+
+
+def _process_std(outdata, **kwargs):
+
+    """Function:  _process_std
+
+    Description:  Private function for chk_mem_rep_lag().  Process standard out
+        formatted data.
+
+    Arguments:
+        (input) outdata -> JSON document from chk_mem_rep_lag function.
+        (input) **kwargs:
+            suf -> Primary|Freshest Secondary who has latest date time.
+            args_array -> Array of command line options and values.
+
+    """
+
+    mode = "w"
+    mongo_cfg = kwargs.get("class_cfg", None)
+    db_tbl = kwargs.get("db_tbl", None)
+    ofile = kwargs.get("ofile", None)
+    mail = kwargs.get("mail", None)
+    args_array = dict(kwargs.get("args_array", {}))
+    body = []
+
+    if args_array.get("-a", False):
+        mode = "a"
+
+    body.append("\nReplication lag for Replica set: %s." % (outdata["RepSet"]))
+
+    for item in outdata["Slaves"]:
+        body.append("\nSource: {0}".format(item["Name"]))
+        body.append("\tsynced to:  {0}".format(item["SyncTo"]))
+        body.append("\t{0} secs ({1} hrs) behind the {2}".format(
+            item["LagTime"], (item["LagTime"] / 36) / 100, kwargs["suf"]))
+
+    if mongo_cfg and db_tbl:
+        dbs, tbl = db_tbl.split(":")
+        mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
+
+    if ofile:
+        f_hldr = gen_libs.openfile(ofile, mode)
+
+        for line in body:
+            gen_libs.write_file2(f_hldr, line)
+
+    if mail:
+        for line in body:
+            mail.add_2_msg(line)
+
+        mail.send_mail()
+
+    if not args_array.get("-z", False):
+        for item in body:
+            print(item)
 
 
 def _process_json(outdata, **kwargs):
@@ -499,9 +520,10 @@ def chk_rep_lag(repset, args_array, **kwargs):
         optime_date = get_optimedate(rep_status)
         suffix = "freshest secondary"
 
-    chk_mem_rep_lag(rep_status, optdt=optime_date, suf=suffix,
-                    json=json_fmt, ofile=outfile, db_tbl=db_tbl,
-                    class_cfg=mongo_cfg, args_array=args_array, **kwargs)
+    chk_mem_rep_lag(
+        rep_status, optdt=optime_date, suf=suffix, json=json_fmt,
+        ofile=outfile, db_tbl=db_tbl, class_cfg=mongo_cfg,
+        args_array=args_array, **kwargs)
 
 
 def run_program(args_array, func_dict, **kwargs):
@@ -520,10 +542,10 @@ def run_program(args_array, func_dict, **kwargs):
     func_dict = dict(func_dict)
     mail = None
     server = gen_libs.load_module(args_array["-c"], args_array["-d"])
-    coll = mongo_class.Coll(server.name, server.user, server.passwd,
-                            host=server.host, port=server.port, db="local",
-                            coll="system.replset", auth=server.auth,
-                            conf_file=server.conf_file)
+    coll = mongo_class.Coll(
+        server.name, server.user, server.passwd, host=server.host,
+        port=server.port, db="local", coll="system.replset", auth=server.auth,
+        conf_file=server.conf_file)
     coll.connect()
 
     # Is replication setup.
@@ -536,9 +558,10 @@ def run_program(args_array, func_dict, **kwargs):
         else:
             rep_set = coll.coll_find1().get("_id")
 
-        repinst = mongo_class.RepSet(server.name, server.user, server.passwd,
-                                     host=server.host, port=server.port,
-                                     auth=server.auth, repset=rep_set)
+        repinst = mongo_class.RepSet(
+            server.name, server.user, server.passwd, host=server.host,
+            port=server.port, auth=server.auth, repset=rep_set,
+            repset_hosts=server.repset_hosts)
         repinst.connect()
 
         if args_array.get("-e", None):
