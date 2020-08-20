@@ -21,13 +21,14 @@ pipeline {
                 virtualenv test_env
                 source test_env/bin/activate
                 pip2 install mock==2.0.0 --user
+                pip2 install psutil==5.4.3 --user
                 pip2 install pymongo==3.2.0 --user
+                ./test/unit/mongo_rep_admin/_process_std.py
                 ./test/unit/mongo_rep_admin/chk_mem_rep_lag.py
                 ./test/unit/mongo_rep_admin/chk_rep_lag.py
                 ./test/unit/mongo_rep_admin/chk_rep_stat.py
                 ./test/unit/mongo_rep_admin/fetch_members.py
                 ./test/unit/mongo_rep_admin/fetch_priority.py
-                ./test/unit/mongo_rep_admin/fetch_rep_lag.py
                 ./test/unit/mongo_rep_admin/get_master.py
                 ./test/unit/mongo_rep_admin/get_optimedate.py
                 ./test/unit/mongo_rep_admin/help_message.py
