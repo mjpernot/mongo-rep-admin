@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.4.0] - 2020-10-19
+### Changed
+- config/mongo.py.TEMPLATE:  Changed configuration entry.
+
+
 ## [3.3.0] - 2020-07-13
 ### Added
 - Added email, mongo insertion, write to file and suppression capability for the -L option in standard out format.
