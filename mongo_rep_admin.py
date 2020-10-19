@@ -63,7 +63,7 @@
 
             # Single Configuration file for Mongo Database Server.
             user = "USER"
-            passwd = "PASSWORD"
+            japd = "PSWORD"
             host = "IP_ADDRESS"
             name = "HOSTNAME"
             port = PORT_NUMBER (default of mysql is 27017)
@@ -543,7 +543,7 @@ def run_program(args_array, func_dict, **kwargs):
     mail = None
     server = gen_libs.load_module(args_array["-c"], args_array["-d"])
     coll = mongo_class.Coll(
-        server.name, server.user, server.passwd, host=server.host,
+        server.name, server.user, server.japd, host=server.host,
         port=server.port, db="local", coll="system.replset", auth=server.auth,
         conf_file=server.conf_file)
     coll.connect()
@@ -559,7 +559,7 @@ def run_program(args_array, func_dict, **kwargs):
             rep_set = coll.coll_find1().get("_id")
 
         repinst = mongo_class.RepSet(
-            server.name, server.user, server.passwd, host=server.host,
+            server.name, server.user, server.japd, host=server.host,
             port=server.port, auth=server.auth, repset=rep_set,
             repset_hosts=server.repset_hosts)
         repinst.connect()

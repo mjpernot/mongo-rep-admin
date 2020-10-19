@@ -6,6 +6,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [3.4.0] - 2020-10-19
 ### Changed
+- run_program:  Changed configuration entry match configuration file.
 - config/mongo.py.TEMPLATE:  Changed configuration entry.
 
 
