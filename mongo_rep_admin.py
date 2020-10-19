@@ -13,8 +13,9 @@
     Usage:
         mongo_rep_admin.py -c file -d path
             {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i db:coll -m file]
-                [-e toEmail {toEmail2, [...]} [-s subject]]} |
-            {-M | -P | -S | -T }
+                [-e toEmail {toEmail2, [...]} [-s subject]] |
+             -N [ [-e toEmail {toEmail2, [...]} [-s subject]] [-z] |
+             -M | -P | -S | -T }
             [-v | -h]
 
     Arguments:
@@ -38,6 +39,8 @@
             subject line if one is not provided.
         -z => Suppress standard out.
         -M => Show current members in replication set.
+        -N => Node health check.  Only returns something if a node is down or a
+            problem is detected.  Can use the email option to send.
         -P => Show priority for members in replication set.
         -S => Check status of rep for members in rep set, but will only print
             the status if errors are detected.
@@ -47,7 +50,6 @@
         -h => Help and usage message.
 
         NOTE 1:  -v and -h overrides all other options.
-        NOTE 2:  -o, -j, -e, and -z options are only available for -L option.
 
     Notes:
         Mongo configuration file format (config/mongo.py.TEMPLATE).  The
