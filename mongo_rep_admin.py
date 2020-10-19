@@ -14,7 +14,7 @@
         mongo_rep_admin.py -c file -d path
             {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i db:coll -m file]
                 [-e toEmail {toEmail2, [...]} [-s subject]] |
-             -N [ [-e toEmail {toEmail2, [...]} [-s subject]] [-z] |
+             -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject]] [-z] |
              -M | -P | -S | -T }
             [-v | -h]
 
@@ -526,6 +526,64 @@ def chk_rep_lag(repset, args_array, **kwargs):
         rep_status, optdt=optime_date, suf=suffix, json=json_fmt,
         ofile=outfile, db_tbl=db_tbl, class_cfg=mongo_cfg,
         args_array=args_array, **kwargs)
+
+
+def node_chk(mongo, args_array, **kwargs):
+
+    """Function:  node_chk
+
+    Description:  Check the status of all Mongo nodes.  Will only output
+        something if a node is down or an error is detected.
+
+    Arguments:
+        (input) mongo -> Mongo instance.
+        (input) args_array -> Array of command line options and values.
+        (input) **kwargs:
+            mail -> Mail instance.
+
+    """
+
+    # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter).
+    good_state = [1, 2, 7]
+    indent = 4
+    args_array = dict(args_array)
+    mail = kwargs.get("mail", None)
+    data = "Node Status Check for Rep Set:  %s" % mongo.repset
+    node_status = {}
+
+    if args_array.get("-f", False):
+        indent = None
+
+    # Check each node.
+    for node in mongo.adm_cmd("replSetGetStatus").get("members"):
+        status = {}
+
+        if not node.get("health"):
+            status["Health"] = "Bad"
+            
+        if node.get("state") not in good_state:
+            status["State"] = node.get("state")
+            status["State_Message"] = node.get("stateStr")
+
+        if node.get("infoMessage"):
+            status["Error_Message"] = node.get("infoMessage")
+
+        if status:
+            node_name = "Node: %s" % node.get("name")
+            node_status[node_name] = status
+
+    if node_status:
+        jnode_status = json.dumps(node_status, indent=indent)
+
+        if not args_array.get("-z", False):
+            gen_libs.display_data(jnode_status)
+
+        if mail:
+            if not mail.subj:
+                mail.create_subject(subj=data)
+
+            mail.add_2_msg(jnode_status)
+            mail.send_mail()
 
 
 def run_program(args_array, func_dict, **kwargs):

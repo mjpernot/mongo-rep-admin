@@ -6,6 +6,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [3.4.0] - 2020-10-19
 ### Added
+- node_chk:  Check the status of all Mongo nodes.
 - Added -N option to run a node health check on all Mongo nodes.
 
 ### Changed
