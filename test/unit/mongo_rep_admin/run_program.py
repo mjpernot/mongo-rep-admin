@@ -163,7 +163,7 @@ class RepSet(object):
 
         self.name = "name"
         self.user = "user"
-        self.passwd = None
+        self.japd = None
         self.host = "host"
         self.port = 27017
         self.auth = "auth"
@@ -230,7 +230,7 @@ class UnitTest(unittest.TestCase):
 
                 self.name = "name"
                 self.user = "user"
-                self.passwd = None
+                self.japd = None
                 self.host = "host"
                 self.port = 27017
                 self.auth = "auth"
