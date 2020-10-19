@@ -6,9 +6,10 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [3.4.0] - 2020-10-19
 ### Added
-- Added -N option to runa node health check on all Mongo nodes.
+- Added -N option to run a node health check on all Mongo nodes.
 
 ### Changed
+- main: Added -N option to function dictionary.
 - run_program:  Changed configuration entry match configuration file.
 - config/mongo.py.TEMPLATE:  Changed configuration entry.
 
