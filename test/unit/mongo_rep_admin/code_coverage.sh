@@ -18,6 +18,7 @@ coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/get_master.py
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/get_optimedate.py
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/help_message.py
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/main.py
+coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/node_chk.py
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/process_json.py
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/prt_rep_stat.py
 coverage run -a --source=mongo_rep_admin test/unit/mongo_rep_admin/rep_health_chk.py
