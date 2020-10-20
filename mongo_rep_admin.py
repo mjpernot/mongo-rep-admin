@@ -548,7 +548,6 @@ def node_chk(mongo, args_array, **kwargs):
     indent = 4
     args_array = dict(args_array)
     mail = kwargs.get("mail", None)
-    data = "Node Status Check for Rep Set:  %s" % mongo.repset
     node_status = {}
 
     if args_array.get("-f", False):
@@ -580,7 +579,8 @@ def node_chk(mongo, args_array, **kwargs):
 
         if mail:
             if not mail.subj:
-                mail.create_subject(subj=data)
+                subj = "Node Status Check for Rep Set:  %s" % mongo.repset
+                mail.create_subject(subj=subj)
 
             mail.add_2_msg(jnode_status)
             mail.send_mail()
