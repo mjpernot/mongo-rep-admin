@@ -621,7 +621,8 @@ def run_program(args_array, func_dict, **kwargs):
     coll = mongo_class.Coll(
         server.name, server.user, server.japd, host=server.host,
         port=server.port, db="local", coll="system.replset", auth=server.auth,
-        conf_file=server.conf_file)
+        conf_file=server.conf_file, auth_db=server.auth_db,
+        use_arg=server.use_arg, use_uri=server.use_uri)
     coll.connect()
 
     # Is replication setup.
@@ -637,7 +638,8 @@ def run_program(args_array, func_dict, **kwargs):
         repinst = mongo_class.RepSet(
             server.name, server.user, server.japd, host=server.host,
             port=server.port, auth=server.auth, repset=rep_set,
-            repset_hosts=server.repset_hosts)
+            repset_hosts=server.repset_hosts, auth_db=server.auth_db,
+            use_arg=server.use_arg, use_uri=server.use_uri)
         repinst.connect()
 
         if args_array.get("-e", None):
