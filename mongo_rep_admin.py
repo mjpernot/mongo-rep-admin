@@ -260,7 +260,8 @@ def fetch_priority(repset, args_array, **kwargs):
     coll = mongo_class.Coll(
         repset.name, repset.user, repset.japd, host=repset.host,
         port=repset.port, db="local", coll="system.replset", auth=repset.auth,
-        conf_file=repset.conf_file)
+        conf_file=repset.conf_file, auth_db=repset.auth_db,
+        use_arg=repset.use_arg, use_uri=repset.use_uri)
     coll.connect()
 
     for item in coll.coll_find1()["members"]:
