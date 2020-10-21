@@ -114,6 +114,9 @@ class Server(object):
         self.port = 27017
         self.auth = "auth"
         self.conf_file = "conffile"
+        self.auth_db = "authentication_db"
+        self.use_arg = True
+        self.use_uri = False
 
 
 class UnitTest(unittest.TestCase):
