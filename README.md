@@ -78,17 +78,35 @@ cp mongo.py.TEMPLATE mongo.py
 Make the appropriate change to the environment.
   * Make the appropriate changes to connect to a Mongo database.
     - user = "USER"
-    - passwd = "PASSWORD"
+    - japd = "PWORD"
     - host = "IP_ADDRESS"
     - name = "HOSTNAME"
     - port = 27017
+      -> Default port for Mongo database.
     - conf_file = None
+      -> Only set if using a different Mongo configuration file.
     - auth = True
+      -> Only set to False if no authentication is taking place.
+    - auth_db = "admin"
+      -> Name of database to authenticate the user in.
+    - use_arg = True
+      -> Type of connection format using parameter based.
+      -> Recommended choice.
+      -> Do not change unless you know the Mongo library modules.
+    - use_uri = False
+      -> Type of connection format using url command line.
+      -> Do not change unless you know the Mongo library modules.
 
   * If connecting to a Mongo replica set, otherwise set to None.
-    - repset = "REPLICA_SET_NAME"
-    - repset_hosts = "HOST_1:PORT, HOST_2:PORT, ..."
-    - db_auth = "AUTHENTICATION_DATABASE"
+    - repset = None
+      -> Replica set name.
+      -> Format:  repset = "REPLICA_SET_NAME"
+    - repset_hosts = None
+      -> Replica host listing.
+      -> Format:  repset_hosts = "HOST_1:PORT, HOST_2:PORT, ..."
+    - db_auth = None
+      -> Database to authentication to.
+      -> Format:  db_auth = "AUTHENTICATION_DATABASE"
 
 ```
 vim mongo.py
@@ -104,13 +122,31 @@ Make the appropriate change to the environment.
     - host = "IP_ADDRESS"
     - name = "HOSTNAME"
     - port = 27017
+      -> Default port for Mongo database.
     - conf_file = None
+      -> Only set if using a different Mongo configuration file.
     - auth = True
+      -> Only set to False if no authentication is taking place.
+    - auth_db = "admin"
+      -> Name of database to authenticate the user in.
+    - use_arg = True
+      -> Type of connection format using parameter based.
+      -> Recommended choice.
+      -> Do not change unless you know the Mongo library modules.
+    - use_uri = False
+      -> Type of connection format using url command line.
+      -> Do not change unless you know the Mongo library modules.
 
   * If connecting to a Mongo replica set, otherwise set to None.
-    - repset = "REPLICA_SET_NAME"
-    - repset_hosts = "HOST_1:PORT, HOST_2:PORT, ..."
-    - db_auth = "AUTHENTICATION_DATABASE"
+    - repset = None
+      -> Replica set name.
+      -> Format:  repset = "REPLICA_SET_NAME"
+    - repset_hosts = None
+      -> Replica host listing.
+      -> Format:  repset_hosts = "HOST_1:PORT, HOST_2:PORT, ..."
+    - db_auth = None
+      -> Database to authentication to.
+      -> Format:  db_auth = "AUTHENTICATION_DATABASE"
 
 ```
 cp mongo.py.TEMPLATE mongo_insert.py
