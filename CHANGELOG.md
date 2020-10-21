@@ -10,9 +10,11 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Added -N option to run a node health check on all Mongo nodes.
 
 ### Changed
+- fetch_priority:  Updated configuration settings for mongo_libs v4.0.0.
 - main: Added -N option to function dictionary.
 - run_program:  Changed configuration entry match configuration file.
 - config/mongo.py.TEMPLATE:  Changed configuration entry and added three new entries.
+- Documentation updates.
 
 
 ## [3.3.0] - 2020-07-13
