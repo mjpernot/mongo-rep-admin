@@ -576,7 +576,7 @@ def node_chk(mongo, args_array, **kwargs):
 
         if not node.get("health"):
             status["Health"] = "Bad"
-            
+
         if node.get("state") not in good_state:
             status["State"] = node.get("state")
             status["State_Message"] = node.get("stateStr")
