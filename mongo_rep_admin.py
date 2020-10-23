@@ -13,8 +13,9 @@
     Usage:
         mongo_rep_admin.py -c file -d path
             {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i db:coll -m file]
-                [-e toEmail {toEmail2, [...]} [-s subject]]} |
-            {-M | -P | -S | -T }
+                [-e toEmail {toEmail2, [...]} [-s subject]] |
+             -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject]] [-z] |
+             -M | -P | -S | -T }
             [-v | -h]
 
     Arguments:
@@ -38,6 +39,8 @@
             subject line if one is not provided.
         -z => Suppress standard out.
         -M => Show current members in replication set.
+        -N => Node health check.  Only returns something if a node is down or a
+            problem is detected.  Can use the email option to send.
         -P => Show priority for members in replication set.
         -S => Check status of rep for members in rep set, but will only print
             the status if errors are detected.
@@ -47,7 +50,6 @@
         -h => Help and usage message.
 
         NOTE 1:  -v and -h overrides all other options.
-        NOTE 2:  -o, -j, -e, and -z options are only available for -L option.
 
     Notes:
         Mongo configuration file format (config/mongo.py.TEMPLATE).  The
@@ -63,19 +65,35 @@
 
             # Single Configuration file for Mongo Database Server.
             user = "USER"
-            passwd = "PASSWORD"
+            japd = "PSWORD"
+            # Mongo DB host information
             host = "IP_ADDRESS"
             name = "HOSTNAME"
-            port = PORT_NUMBER (default of mysql is 27017)
+            # Mongo database port (default is 27017)
+            port = 27017
+            # Mongo configuration settings
             conf_file = None
+            # Authentication required:  True|False
             auth = True
+            # Authentication database
+            auth_db = "admin"
+            # Use Mongo client arguments
+            use_arg = True
+            # Use Mongo client uri
+            use_uri = False
 
             2.)  Replica Set connection:  Same format as above, but with these
                 additional entries at the end of the configuration file:
 
-            repset = "REPLICA_SET_NAME"
-            repset_hosts = "HOST1:PORT, HOST2:PORT, HOST3:PORT, [...]"
-            db_auth = "AUTHENTICATION_DATABASE"
+            # Replica set name.
+            #    Format:  repset = "REPLICA_SET_NAME"
+            repset = None
+            # Replica host listing.
+            #    Format:  repset_hosts = "HOST1:PORT, HOST2:PORT, [...]"
+            repset_hosts = None
+            # Database to authentication to.
+            #    Format:  db_auth = "AUTHENTICATION_DATABASE"
+            db_auth = None
 
         Configuration modules -> Name is runtime dependent as it can be used to
             connect to different databases with different names.
@@ -240,9 +258,10 @@ def fetch_priority(repset, args_array, **kwargs):
     args_array = dict(args_array)
     print("\nMembers => priority of replica set: %s" % (repset.repset))
     coll = mongo_class.Coll(
-        repset.name, repset.user, repset.passwd, host=repset.host,
+        repset.name, repset.user, repset.japd, host=repset.host,
         port=repset.port, db="local", coll="system.replset", auth=repset.auth,
-        conf_file=repset.conf_file)
+        conf_file=repset.conf_file, auth_db=repset.auth_db,
+        use_arg=repset.use_arg, use_uri=repset.use_uri)
     coll.connect()
 
     for item in coll.coll_find1()["members"]:
@@ -526,6 +545,64 @@ def chk_rep_lag(repset, args_array, **kwargs):
         args_array=args_array, **kwargs)
 
 
+def node_chk(mongo, args_array, **kwargs):
+
+    """Function:  node_chk
+
+    Description:  Check the status of all Mongo nodes.  Will only output
+        something if a node is down or an error is detected.
+
+    Arguments:
+        (input) mongo -> Mongo instance.
+        (input) args_array -> Array of command line options and values.
+        (input) **kwargs:
+            mail -> Mail instance.
+
+    """
+
+    # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter).
+    good_state = [1, 2, 7]
+    indent = 4
+    args_array = dict(args_array)
+    mail = kwargs.get("mail", None)
+    node_status = {}
+
+    if args_array.get("-f", False):
+        indent = None
+
+    # Check each node.
+    for node in mongo.adm_cmd("replSetGetStatus").get("members"):
+        status = {}
+
+        if not node.get("health"):
+            status["Health"] = "Bad"
+
+        if node.get("state") not in good_state:
+            status["State"] = node.get("state")
+            status["State_Message"] = node.get("stateStr")
+
+        if node.get("infoMessage"):
+            status["Error_Message"] = node.get("infoMessage")
+
+        if status:
+            node_name = "Node: %s" % node.get("name")
+            node_status[node_name] = status
+
+    if node_status:
+        jnode_status = json.dumps(node_status, indent=indent)
+
+        if not args_array.get("-z", False):
+            gen_libs.display_data(jnode_status)
+
+        if mail:
+            if not mail.subj:
+                subj = "Node Status Check for Rep Set:  %s" % mongo.repset
+                mail.create_subject(subj=subj)
+
+            mail.add_2_msg(jnode_status)
+            mail.send_mail()
+
+
 def run_program(args_array, func_dict, **kwargs):
 
     """Function:  run_program
@@ -543,9 +620,10 @@ def run_program(args_array, func_dict, **kwargs):
     mail = None
     server = gen_libs.load_module(args_array["-c"], args_array["-d"])
     coll = mongo_class.Coll(
-        server.name, server.user, server.passwd, host=server.host,
+        server.name, server.user, server.japd, host=server.host,
         port=server.port, db="local", coll="system.replset", auth=server.auth,
-        conf_file=server.conf_file)
+        conf_file=server.conf_file, auth_db=server.auth_db,
+        use_arg=server.use_arg, use_uri=server.use_uri)
     coll.connect()
 
     # Is replication setup.
@@ -559,9 +637,10 @@ def run_program(args_array, func_dict, **kwargs):
             rep_set = coll.coll_find1().get("_id")
 
         repinst = mongo_class.RepSet(
-            server.name, server.user, server.passwd, host=server.host,
+            server.name, server.user, server.japd, host=server.host,
             port=server.port, auth=server.auth, repset=rep_set,
-            repset_hosts=server.repset_hosts)
+            repset_hosts=server.repset_hosts, auth_db=server.auth_db,
+            use_arg=server.use_arg, use_uri=server.use_uri)
         repinst.connect()
 
         if args_array.get("-e", None):
@@ -607,7 +686,7 @@ def main():
     file_chk_list = ["-o"]
     file_crt_list = ["-o"]
     func_dict = {"-L": chk_rep_lag, "-M": fetch_members, "-S": chk_rep_stat,
-                 "-P": fetch_priority, "-T": prt_rep_stat}
+                 "-P": fetch_priority, "-T": prt_rep_stat, "-N": node_chk}
     opt_con_req_list = {"-i": ["-m"], "-s": ["-e"]}
     opt_def_dict = {"-j": False, "-i": "sysmon:mongo_rep_lag"}
     opt_multi_list = ["-e", "-s"]

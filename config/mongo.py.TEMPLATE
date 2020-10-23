@@ -4,7 +4,7 @@
 
 # All Mongo configuration settings.
 user = "USER"
-passwd = "PASSWORD"
+japd = "PSWORD"
 # Mongo DB host information
 host = "IP_ADDRESS"
 name = "HOSTNAME"
@@ -14,15 +14,24 @@ port = 27017
 conf_file = None
 # Authentication required:  True|False
 auth = True
+# Authentication database
+auth_db = "admin"
+# Use Mongo client arguments
+use_arg = True
+# Use Mongo client uri
+use_uri = False
 
 # Replica Set Mongo configuration settings.
+# By default all settings are set to None.
+#    None means the Mongo database is not part of a replica set.
+#
 # Replica set name.
-#    None means the Mongo database is not part of a replica set.
-repset = "REPLICA_SET_NAME"
+#    Format:  repset = "REPLICA_SET_NAME"
+repset = None
 # Replica host listing.
-#    None means the Mongo database is not part of a replica set.
-repset_hosts = "HOST1:PORT, HOST2:PORT, [...]"
+#    Format:  repset_hosts = "HOST1:PORT, HOST2:PORT, [...]"
+repset_hosts = None
 # Database to authentication to.
-#    None means the Mongo database is not part of a replica set.
-db_auth = "AUTHENTICATION_DATABASE"
+#    Format:  db_auth = "AUTHENTICATION_DATABASE"
+db_auth = None
 

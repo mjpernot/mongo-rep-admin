@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.4.0] - 2020-10-19
+### Added
+- node_chk:  Check the status of all Mongo nodes.
+- Added -N option to run a node health check on all Mongo nodes.
+
+### Changed
+- fetch_priority:  Updated parameter settings to mongo_class to use in mongo_libs v4.0.0.
+- run_program:  Updated parameter settings to mongo_class to use in mongo_libs v4.0.0.
+- fetch_priority:  Updated configuration settings for mongo_libs v4.0.0.
+- main: Added -N option to function dictionary.
+- run_program:  Changed configuration entry match configuration file.
+- config/mongo.py.TEMPLATE:  Changed configuration entry and added three new entries.
+- Documentation updates.
+
+
 ## [3.3.0] - 2020-07-13
 ### Added
 - Added email, mongo insertion, write to file and suppression capability for the -L option in standard out format.

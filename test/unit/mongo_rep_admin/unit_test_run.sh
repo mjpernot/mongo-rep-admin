@@ -16,6 +16,7 @@ test/unit/mongo_rep_admin/get_master.py
 test/unit/mongo_rep_admin/get_optimedate.py
 test/unit/mongo_rep_admin/help_message.py
 test/unit/mongo_rep_admin/main.py
+test/unit/mongo_rep_admin/node_chk.py
 test/unit/mongo_rep_admin/process_json.py
 test/unit/mongo_rep_admin/prt_rep_stat.py
 test/unit/mongo_rep_admin/rep_health_chk.py
