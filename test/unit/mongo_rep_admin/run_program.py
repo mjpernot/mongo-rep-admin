@@ -163,11 +163,14 @@ class RepSet(object):
 
         self.name = "name"
         self.user = "user"
-        self.passwd = None
+        self.japd = None
         self.host = "host"
         self.port = 27017
         self.auth = "auth"
         self.conf_file = "conffile"
+        self.auth_db = "authentication_db"
+        self.use_arg = True
+        self.use_uri = False
 
     def connect(self):
 
@@ -230,13 +233,16 @@ class UnitTest(unittest.TestCase):
 
                 self.name = "name"
                 self.user = "user"
-                self.passwd = None
+                self.japd = None
                 self.host = "host"
                 self.port = 27017
                 self.auth = "auth"
                 self.conf_file = "conffile"
                 self.repset = "repsetname"
                 self.repset_hosts = "localhost:27017,localhost:27016"
+                self.auth_db = "authentication_db"
+                self.use_arg = True
+                self.use_uri = False
 
         self.server = CfgTest()
         self.server2 = CfgTest()
