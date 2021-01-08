@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.5.0] - 2021-01-08
+### Changed
+- Documentation updates.
+
+
 ## [3.4.0] - 2020-10-19
 ### Added
 - node_chk:  Check the status of all Mongo nodes.

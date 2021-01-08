@@ -66,33 +66,20 @@
             # Single Configuration file for Mongo Database Server.
             user = "USER"
             japd = "PSWORD"
-            # Mongo DB host information
             host = "IP_ADDRESS"
             name = "HOSTNAME"
-            # Mongo database port (default is 27017)
             port = 27017
-            # Mongo configuration settings
             conf_file = None
-            # Authentication required:  True|False
             auth = True
-            # Authentication database
             auth_db = "admin"
-            # Use Mongo client arguments
             use_arg = True
-            # Use Mongo client uri
             use_uri = False
 
             2.)  Replica Set connection:  Same format as above, but with these
                 additional entries at the end of the configuration file:
 
-            # Replica set name.
-            #    Format:  repset = "REPLICA_SET_NAME"
             repset = None
-            # Replica host listing.
-            #    Format:  repset_hosts = "HOST1:PORT, HOST2:PORT, [...]"
             repset_hosts = None
-            # Database to authentication to.
-            #    Format:  db_auth = "AUTHENTICATION_DATABASE"
             db_auth = None
 
         Configuration modules -> Name is runtime dependent as it can be used to
