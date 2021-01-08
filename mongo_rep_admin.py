@@ -12,7 +12,7 @@
 
     Usage:
         mongo_rep_admin.py -c file -d path
-            {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i db:coll -m file]
+            {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i [db:coll] -m file]
                 [-e toEmail {toEmail2, [...]} [-s subject]] |
              -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject]] [-z] |
              -M | -P | -S | -T }
@@ -21,31 +21,37 @@
     Arguments:
         -c file => Server configuration file.  Required arg.
         -d dir path => Directory path to config file (-c). Required arg.
+
         -L => Check Replication lag.
-        -j => Set output to JSON format.
-        -f => Flatten the JSON data structure to file and standard out.
-        -i database:collection => Name of database and collection.
-            Delimited by colon (:).  Default: sysmon:mongo_rep_lag
-        -m file => Mongo config file used for the insertion into a Mongo
-            database.  Do not include the .py extension.  Used only with the
-            -i option.
-        -o path/file => Directory path and file name for output.
-            Default is to overwrite the file.
-            Use the -a option to append to an existing file.
-        -a => Append output to output file.
-        -e to_email_addresses => Enables emailing capability for an option if
-            the option allows it.  Sends output to one or more email addresses.
-        -s subject_line => Subject line of email.  Optional, will create own
-            subject line if one is not provided.
-        -z => Suppress standard out.
+            -j => Set output to JSON format.
+            -f => Flatten the JSON data structure to file and standard out.
+            -i [database:collection] => Name of database and collection.
+                Delimited by colon (:).  Default: sysmon:mongo_rep_lag
+            -m file => Mongo config file used for the insertion into a Mongo
+                database.  Do not include the .py extension.
+            -o path/file => Directory path and file name for output.
+                Default is to overwrite the file.
+            -a => Append output to output file.
+            -e to_email_addresses => Sends output to one or more email
+                addresses.  Email addresses are space delimited.
+            -s subject_line => Subject line of email.
+            -z => Suppress standard out.
+
         -M => Show current members in replication set.
-        -N => Node health check.  Only returns something if a node is down or a
-            problem is detected.  Can use the email option to send.
+
+        -N => Node health check.  Returns if a node has a problem or is down.
+            -e to_email_addresses => Sends output to one or more email
+                addresses.  Email addresses are space delimited.
+            -s subject_line => Subject line of email.
+
         -P => Show priority for members in replication set.
+
         -S => Check status of rep for members in rep set, but will only print
             the status if errors are detected.
+
         -T => Check status of rep for members in rep set and will print the
             status in all checks.
+
         -v => Display version of this program.
         -h => Help and usage message.
 
