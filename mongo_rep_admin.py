@@ -261,7 +261,7 @@ def fetch_priority(repset, args_array, **kwargs):
     for item in coll.coll_find1()["members"]:
         print("\t{0} => {1}".format(item["host"], item["priority"]))
 
-    cmds_gen.disconnect([coll])
+    mongo_libs.disconnect([coll])
 
 
 def fetch_members(repset, args_array, **kwargs):
