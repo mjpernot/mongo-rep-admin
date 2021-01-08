@@ -255,10 +255,12 @@ def fetch_priority(repset, args_array, **kwargs):
         repset.name, repset.user, repset.japd, host=repset.host,
         port=repset.port, db="local", coll="system.replset", auth=repset.auth,
         conf_file=repset.conf_file, auth_db=repset.auth_db,
-        use_arg=repset.use_arg, use_uri=repset.use_uri)
+        use_arg=repset.use_arg, use_uri=repset.use_uri,
+        auth_mech=repset.auth_mech)
     status = coll.connect()
 
     if status[0]:
+
         for item in coll.coll_find1()["members"]:
             print("\t{0} => {1}".format(item["host"], item["priority"]))
 
