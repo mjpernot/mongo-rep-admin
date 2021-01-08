@@ -58,7 +58,8 @@ class Coll(object):
 
         """
 
-        pass
+        self.members = {"members": [{"host": "HostName", "priority": 1}]}
+        self.conn = True
 
     def connect(self):
 
@@ -70,7 +71,7 @@ class Coll(object):
 
         """
 
-        return True
+        return self.conn
 
     def coll_find1(self):
 
@@ -82,7 +83,7 @@ class Coll(object):
 
         """
 
-        return {"members": [{"host": "HostName", "priority": 1}]}
+        return self.members
 
 
 class Server(object):
@@ -127,6 +128,8 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_multiple_list -> Test return multiple members.
+        test_empty_list -> Test return no members.
         test_fetch_priority -> Test fetch_priority function.
 
     """
@@ -145,9 +148,53 @@ class UnitTest(unittest.TestCase):
         self.coll = Coll()
         self.args_array = {"-T": "TimeLag"}
 
-    @mock.patch("mongo_rep_admin.cmds_gen.disconnect")
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.mongo_class.Coll")
-    def test_fetch_priority(self, mock_coll, mock_cmd):
+    def test_multiple_list(self, mock_coll):
+
+        """Function:  test_multiple_list
+
+        Description:  Test return multiple members.
+
+        Arguments:
+
+        """
+
+        self.coll.members["members"].append(
+            {"host": "HostName2", "priority": 1})
+
+        mock_coll.return_value = self.coll
+
+        with gen_libs.no_std_out():
+            self.assertFalse(mongo_rep_admin.fetch_priority(self.server,
+                                                            self.args_array))
+
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.mongo_class.Coll")
+    def test_empty_list(self, mock_coll):
+
+        """Function:  test_empty_list
+
+        Description:  Test return no members.
+
+        Arguments:
+
+        """
+
+        self.coll.members["members"] = []
+
+        mock_coll.return_value = self.coll
+
+        with gen_libs.no_std_out():
+            self.assertFalse(mongo_rep_admin.fetch_priority(self.server,
+                                                            self.args_array))
+
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.mongo_class.Coll")
+    def test_fetch_priority(self, mock_coll):
 
         """Function:  test_fetch_priority
 
@@ -158,7 +205,6 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_coll.return_value = self.coll
-        mock_cmd.return_value = True
 
         with gen_libs.no_std_out():
             self.assertFalse(mongo_rep_admin.fetch_priority(self.server,
