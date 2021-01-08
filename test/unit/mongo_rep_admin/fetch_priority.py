@@ -60,6 +60,7 @@ class Coll(object):
 
         self.members = {"members": [{"host": "HostName", "priority": 1}]}
         self.conn = True
+        self.errmsg = None
 
     def connect(self):
 
@@ -71,7 +72,7 @@ class Coll(object):
 
         """
 
-        return self.conn
+        return self.conn, self.errmsg
 
     def coll_find1(self):
 
@@ -128,6 +129,8 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_failed_connection -> Test with failed connection.
+        test_succesful_connection -> Test with successful connection.
         test_multiple_list -> Test return multiple members.
         test_empty_list -> Test return no members.
         test_fetch_priority -> Test fetch_priority function.
@@ -147,6 +150,47 @@ class UnitTest(unittest.TestCase):
         self.server = Server()
         self.coll = Coll()
         self.args_array = {"-T": "TimeLag"}
+
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.mongo_class.Coll")
+    def test_failed_connection(self, mock_coll):
+
+        """Function:  test_failed_connection
+
+        Description:  Test with failed connection.
+
+        Arguments:
+
+        """
+
+        self.coll.conn = False
+        self.coll.errmsg = "Error Message"
+
+        mock_coll.return_value = self.coll
+
+        with gen_libs.no_std_out():
+            self.assertFalse(mongo_rep_admin.fetch_priority(self.server,
+                                                            self.args_array))
+
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.mongo_class.Coll")
+    def test_succesful_connection(self, mock_coll):
+
+        """Function:  test_succesful_connection
+
+        Description:  Test with successful connection.
+
+        Arguments:
+
+        """
+
+        mock_coll.return_value = self.coll
+
+        with gen_libs.no_std_out():
+            self.assertFalse(mongo_rep_admin.fetch_priority(self.server,
+                                                            self.args_array))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
