@@ -174,6 +174,8 @@ class RepSet(object):
         self.auth_db = "authentication_db"
         self.use_arg = True
         self.use_uri = False
+        self.conn = True
+        self.errmsg = None
 
     def connect(self):
 
@@ -185,7 +187,7 @@ class RepSet(object):
 
         """
 
-        return True
+        return self.conn, self.errmsg
 
 
 class CfgTest(object):
@@ -267,8 +269,10 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
-        test_failed_connection -> Test with failed connection.
-        test_successful_connection -> Test with successful connection.
+        test_failed_conn_repset -> Test with failed connection.
+        test_successful_conn_repset -> Test with successful connection.
+        test_failed_conn_coll -> Test with failed connection.
+        test_successful_conn_coll -> Test with successful connection.
         test_repset_not_set -> Test with repset name not set in config.
         test_email -> Test with setting up email.
         test_replication -> Test with replication setup.
@@ -299,10 +303,58 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
+    @mock.patch("mongo_rep_admin.mongo_class.RepSet")
     @mock.patch("mongo_rep_admin.mongo_class.Coll")
-    def test_failed_connection(self, mock_coll, mock_load):
+    def test_failed_conn_repset(self, mock_coll, mock_repset, mock_load):
 
-        """Function:  test_failed_connection
+        """Function:  test_failed_conn_repset
+
+        Description:  Test with failed connection.
+
+        Arguments:
+
+        """
+
+        self.repset.conn = False
+        self.repset.errmsg = "Error Message"
+
+        mock_coll.return_value = self.coll
+        mock_repset.return_value = self.repset
+        mock_load.return_value = self.server
+
+        with gen_libs.no_std_out():
+            self.assertFalse(mongo_rep_admin.run_program(self.args_array,
+                                                         self.func_dict))
+
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.gen_libs.load_module")
+    @mock.patch("mongo_rep_admin.mongo_class.RepSet")
+    @mock.patch("mongo_rep_admin.mongo_class.Coll")
+    def test_successful_conn_repset(self, mock_coll, mock_repset, mock_load):
+
+        """Function:  test_successful_conn_repset
+
+        Description:  Test with successful connection.
+
+        Arguments:
+
+        """
+
+        mock_coll.return_value = self.coll
+        mock_repset.return_value = self.repset
+        mock_load.return_value = self.server
+
+        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
+                                                     self.func_dict))
+
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.gen_libs.load_module")
+    @mock.patch("mongo_rep_admin.mongo_class.Coll")
+    def test_failed_conn_coll(self, mock_coll, mock_load):
+
+        """Function:  test_failed_conn_coll
 
         Description:  Test with failed connection.
 
@@ -325,9 +377,9 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
     @mock.patch("mongo_rep_admin.mongo_class.RepSet")
     @mock.patch("mongo_rep_admin.mongo_class.Coll")
-    def test_successful_connection(self, mock_coll, mock_repset, mock_load):
+    def test_successful_conn_coll(self, mock_coll, mock_repset, mock_load):
 
-        """Function:  test_successful_connection
+        """Function:  test_successful_conn_coll
 
         Description:  Test with successful connection.
 
