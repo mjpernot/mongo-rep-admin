@@ -254,11 +254,12 @@ class UnitTest(unittest.TestCase):
                             "-e": "Email_Address"}
         self.func_dict = {"-P": fetch_priority, "-T": prt_rep_stat}
 
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
     @mock.patch("mongo_rep_admin.mongo_class.RepSet")
-    @mock.patch("mongo_rep_admin.cmds_gen.disconnect")
     @mock.patch("mongo_rep_admin.mongo_class.Coll")
-    def test_repset_not_set(self, mock_coll, mock_cmd, mock_repset, mock_load):
+    def test_repset_not_set(self, mock_coll, mock_repset, mock_load):
 
         """Function:  test_repset_not_set
 
@@ -269,19 +270,19 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_coll.return_value = self.coll
-        mock_cmd.return_value = True
         mock_repset.return_value = self.repset
         mock_load.return_value = self.server2
 
         self.assertFalse(mongo_rep_admin.run_program(self.args_array,
                                                      self.func_dict))
 
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.gen_class.setup_mail")
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
     @mock.patch("mongo_rep_admin.mongo_class.RepSet")
-    @mock.patch("mongo_rep_admin.cmds_gen.disconnect")
     @mock.patch("mongo_rep_admin.mongo_class.Coll")
-    def test_email(self, mock_coll, mock_cmd, mock_repset, mock_load,
+    def test_email(self, mock_coll, mock_repset, mock_load,
                    mock_mail):
 
         """Function:  test_email
@@ -293,7 +294,6 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_coll.return_value = self.coll
-        mock_cmd.return_value = True
         mock_repset.return_value = self.repset
         mock_load.return_value = self.server
         mock_mail.return_value = "Mail Instance"
@@ -301,13 +301,13 @@ class UnitTest(unittest.TestCase):
         self.assertFalse(mongo_rep_admin.run_program(self.args_array2,
                                                      self.func_dict))
 
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.gen_libs.prt_msg",
+                mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
-    @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
-    @mock.patch("mongo_rep_admin.mongo_class.RepSet")
-    @mock.patch("mongo_rep_admin.cmds_gen.disconnect")
     @mock.patch("mongo_rep_admin.mongo_class.Coll")
-    def test_no_replication(self, mock_coll, mock_cmd, mock_repset, mock_prt,
-                            mock_load):
+    def test_no_replication(self, mock_coll, mock_load):
 
         """Function:  test_no_replication
 
@@ -319,19 +319,17 @@ class UnitTest(unittest.TestCase):
 
         self.coll.count = 0
         mock_coll.return_value = self.coll
-        mock_cmd.return_value = True
-        mock_repset.return_value = self.repset
-        mock_prt.return_value = True
         mock_load.return_value = self.server
 
         self.assertFalse(mongo_rep_admin.run_program(self.args_array,
                                                      self.func_dict))
 
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
     @mock.patch("mongo_rep_admin.mongo_class.RepSet")
-    @mock.patch("mongo_rep_admin.cmds_gen.disconnect")
     @mock.patch("mongo_rep_admin.mongo_class.Coll")
-    def test_replication(self, mock_coll, mock_cmd, mock_repset, mock_load):
+    def test_replication(self, mock_coll, mock_repset, mock_load):
 
         """Function:  test_replication
 
@@ -342,7 +340,6 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_coll.return_value = self.coll
-        mock_cmd.return_value = True
         mock_repset.return_value = self.repset
         mock_load.return_value = self.server
 
