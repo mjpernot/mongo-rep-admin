@@ -643,17 +643,23 @@ def run_program(args_array, func_dict, **kwargs):
                 port=server.port, auth=server.auth, repset=rep_set,
                 repset_hosts=server.repset_hosts, auth_db=server.auth_db,
                 use_arg=server.use_arg, use_uri=server.use_uri)
-            repinst.connect()
+            status2 = repinst.connect()
 
-            if args_array.get("-e", None):
-                mail = gen_class.setup_mail(args_array.get("-e"),
-                                            subj=args_array.get("-s", None))
+            if status2[0]:
 
-            # Call function(s): Intersection of command line & function dict.
-            for item in set(args_array.keys()) & set(func_dict.keys()):
-                func_dict[item](repinst, args_array, mail=mail, **kwargs)
+                if args_array.get("-e", None):
+                    mail = gen_class.setup_mail(
+                        args_array.get("-e"), subj=args_array.get("-s", None))
 
-            mongo_libs.disconnect([repinst])
+                # Call function: Intersection of command line & function dict.
+                for item in set(args_array.keys()) & set(func_dict.keys()):
+                    func_dict[item](repinst, args_array, mail=mail, **kwargs)
+
+                mongo_libs.disconnect([repinst])
+
+            else:
+                print("run_program.RepSet: Connection failure:  %s"
+                      % (status2[1]))
 
         else:
             gen_libs.prt_msg("Error", "No replication found.", 0)
