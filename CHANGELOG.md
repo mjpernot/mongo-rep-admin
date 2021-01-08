@@ -16,8 +16,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Added -N option to run a node health check on all Mongo nodes.
 
 ### Changed
-- fetch_priority:  Updated parameter settings to mongo_class to use in mongo_libs v4.0.0.
-- run_program:  Updated parameter settings to mongo_class to use in mongo_libs v4.0.0.
+- run_program, fetch_priority:  Updated parameter settings to mongo_class to use in mongo_libs v4.0.0.
 - fetch_priority:  Updated configuration settings for mongo_libs v4.0.0.
 - main: Added -N option to function dictionary.
 - run_program:  Changed configuration entry match configuration file.
@@ -37,20 +36,17 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Documentation updates.
 
 ### Removed
-- fetch_rep_lag:  No longer required.
+- fetch_rep_lag
 
 
 ## [3.2.1] - 2020-05-05
 ### Fixed
 - fetch_members:  Refactored function to use adm_cmd("replSetGetStatus") call to get the replica set data.
 - \_process_json:  Sent correct formatted data to gen_libs.display_data call.
-- Documentation correction for -T and -S options.
+- Documentation updates.
 
 ### Changed
-- \_process_json:  Changed variable name to standard naming convention.
-- run_program:  Changed variable name to standard naming convention.
-- fetch_priority:  Changed variable name to standard naming convention.
-- chk_rep_stat:  Changed variable name to standard naming convention.
+- run_program, fetch_priority, chk_rep_stat, \_process_json:  Changed variable name to standard naming convention.
 
 ### Removed
 - Removed non-used module libraries.
@@ -65,7 +61,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - chk_mem_rep_lag: Set the time format string to a variable to reduce literals.
 - \_process_json:  Added -f option to set the indentation setting for the JSON structure.
 - \_process_json:  Added -a option to set the file mode for writing to out file.
-- Documentation changes.
+- Documentation updates.
 
 ### Fixed
 - main:  Fixed handling command line arguments from SonarQube scan finding.
@@ -78,13 +74,12 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ### Changed
 - \_process_json:  Added standard out suppression.
 - chk_rep_lag:  Added args_array to chk_mem_rep_lag() call.
-- Updated documentation.
 - Added -z option to program - to suppres standard out for -L option.
 - run_program:  Use repset name from config file first before querying for it.
 - run_program:  Replaced setup_mail() call with gen_class.setup_mail() call.
-- run_program:  Changed a number of arguments from positional to keyword arguments.
-- fetch_priority:  Changed a number of arguments from positional to keyword arguments.
+- fetch_priority, run_program:  Changed a number of arguments from positional to keyword arguments.
 - fetch_priority:  Changed variable name to standard naming convention.
+- Documentation updates.
 
 ### Removed
 - setup_mail:  Replaced by gen_class.setup_mail function.
@@ -92,18 +87,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [3.1.0] - 2019-08-12
 ### Fixed
-- rep_health_chk:  Fixed mutable list/dictionary argument issue.
-- rep_state_chk:  Fixed mutable list/dictionary argument issue.
-- rep_msg_chk:  Fixed mutable list/dictionary argument issue.
-- get_master:  Fixed mutable list/dictionary argument issue.
-- get_optimedate:  Fixed mutable list/dictionary argument issue.
-- chk_mem_rep_lag:  Fixed mutable list/dictionary argument issue.
-- chk_rep_stat:  Fixed mutable list/dictionary argument issue.
-- prt_rep_stat:  Fixed mutable list/dictionary argument issue.
-- fetch_priority:  Fixed mutable list/dictionary argument issue.
-- fetch_members:  Fixed mutable list/dictionary argument issue.
-- chk_rep_lag:  Fixed mutable list/dictionary argument issue.
-- run_program:  Fixed mutable list/dictionary argument issue.
+- Changed in a large number of functions:  Fixed mutable list/dictionary argument issue.
 
 ### Added
 - \_process_json:  Private function for chk_mem_rep_lag().  Process JSON data.
@@ -119,20 +103,10 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - chk_rep_lag:  Passing mail instance to chk_mem_rep_lag function.
 - run_program:  Added setup of mail instance and passing mail instance to functions.
 - main:  Added '-e' and '-s' options to allow for email capability for some options.
-- rep_state_chk:  Refactored the "if" statements logic.
-- main:  Refactored the "if" statements logic.
-- run_program:  Changed variables to standard naming convention.
-- chk_rep_lag:  Changed variables to standard naming convention.
-- fetch_members:  Changed variable to standard naming convention.
-- fetch_priority:  Changed variable to standard naming convention.
-- prt_rep_stat:  Changed variable to standard naming convention.
-- chk_rep_stat:  Changed variable to standard naming convention.
+- main, rep_state_chk:  Refactored the "if" statements logic.
+- chk_rep_lag, fetch_members, fetch_priority, prt_rep_stat, chk_rep_stat, run_program:  Changed variables to standard naming convention.
 - chk_mem_rep_lag:  Converted JSON output to camelCase.
-- get_optimedate:  Added \*\*kwargs to argument list.
-- get_master:  Added \*\*kwargs to argument list.
-- rep_msg_chk:  Added \*\*kwargs to argument list.
-- rep_state_chk:  Added \*\*kwargs to argument list.
-- rep_health_chk:  Added \*\*kwargs to argument list.
+- get_master, rep_msg_chk, rep_state_chk, rep_health_chk, get_optimedate:  Added \*\*kwargs to argument list.
 
 
 ## [3.0.1] - 2018-11-30
@@ -144,13 +118,8 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 Breaking Change
 
 ### Changed
-- Changed "mongo_class" calls to new naming schema.
-- Changed "mongo_libs" calls to new naming schema.
-- Changed "cmds_gen" calls to new naming schema.
-- Changed "gen_libs" calls to new naming schema.
-- Changed "arg_parser" calls to new naming schema.
+- Changed "mongo_class", "mongo_libs", "cmds_gen", "gen_libs", "arg_parser" calls to new naming schema.
 - Changed function names from uppercase to lowercase.
-- Setup single-source version control.
 
 
 ## [2.2.0] - 2018-04-26
@@ -188,7 +157,7 @@ Breaking Change
 - main:  Added "I" option to process steps.
 - Chk_Rep_Lag:  Processing the "-I" option.
 - Chk_Mem_Rep_Lag:  If a database and table is present, then call function to insert document.
-- Help_Message:  Added documentation for new option.
+- Documentation update.
 
 ### Added
 - Added new option ("-I") for the Check Replication Lag function to write the JSON document to a database collection.
@@ -203,13 +172,12 @@ Breaking Change
 - Chk_Rep_Lag:  Processed the "-F" and "-O" options and passed them to the functions as named arguments (kwargs).
 - Chk_Mem_Rep_Lag:  Setup new format as dictionary, printed out as normal or to the dictionary, converted the dictionary to JSON and then called Print_Data function to print the data to the correct output location (i.e. screen, file).
 - Fetch_Rep_Lag:  Returns seconds ago if a JSON format or prints out if standard output.
-- Help_Message:  Added documentation for new options.
+- Documentation update.
 
 
 ## [1.1.0] - 2016-03-04
 ### Changed
-- Run_Program:  Corrected an error in argument line in the call to the svr_mongo.Coll class call.
-- Fetch_Priority:  Corrected an error in argument line in the call to the svr_mongo.Coll class call.
+- Fetch_Priority, Run_Program:  Corrected an error in argument line in the call to the svr_mongo.Coll class call.
 - main:  Removed some obsolete commented out code.
 
 
