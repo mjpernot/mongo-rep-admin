@@ -267,7 +267,7 @@ def fetch_priority(repset, args_array, **kwargs):
         mongo_libs.disconnect([coll])
 
     else:
-        print("Connection failure:  %s" % (status[1]))
+        print("fetch_priority:  Connection failure:  %s" % (status[1]))
 
 
 def fetch_members(repset, args_array, **kwargs):
@@ -661,7 +661,7 @@ def run_program(args_array, func_dict, **kwargs):
         mongo_libs.disconnect([coll])
 
     else:
-        print("Connection failure:  %s" % (status[1]))
+        print("run_program.Coll: Connection failure:  %s" % (status[1]))
 
 
 def main():
