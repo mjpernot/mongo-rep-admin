@@ -624,39 +624,44 @@ def run_program(args_array, func_dict, **kwargs):
         port=server.port, db="local", coll="system.replset", auth=server.auth,
         conf_file=server.conf_file, auth_db=server.auth_db,
         use_arg=server.use_arg, use_uri=server.use_uri)
-    coll.connect()
+    status = coll.connect()
 
-    # Is replication setup.
-    if coll.coll_cnt() != 0:
+    if status[0]:
 
-        # Get replica set name if not in config.
-        if server.repset:
-            rep_set = server.repset
+        # Is replication setup.
+        if coll.coll_cnt() != 0:
+
+            # Get replica set name if not in config.
+            if server.repset:
+                rep_set = server.repset
+
+            else:
+                rep_set = coll.coll_find1().get("_id")
+
+            repinst = mongo_class.RepSet(
+                server.name, server.user, server.japd, host=server.host,
+                port=server.port, auth=server.auth, repset=rep_set,
+                repset_hosts=server.repset_hosts, auth_db=server.auth_db,
+                use_arg=server.use_arg, use_uri=server.use_uri)
+            repinst.connect()
+
+            if args_array.get("-e", None):
+                mail = gen_class.setup_mail(args_array.get("-e"),
+                                            subj=args_array.get("-s", None))
+
+            # Call function(s): Intersection of command line & function dict.
+            for item in set(args_array.keys()) & set(func_dict.keys()):
+                func_dict[item](repinst, args_array, mail=mail, **kwargs)
+
+            mongo_libs.disconnect([repinst])
 
         else:
-            rep_set = coll.coll_find1().get("_id")
+            gen_libs.prt_msg("Error", "No replication found.", 0)
 
-        repinst = mongo_class.RepSet(
-            server.name, server.user, server.japd, host=server.host,
-            port=server.port, auth=server.auth, repset=rep_set,
-            repset_hosts=server.repset_hosts, auth_db=server.auth_db,
-            use_arg=server.use_arg, use_uri=server.use_uri)
-        repinst.connect()
-
-        if args_array.get("-e", None):
-            mail = gen_class.setup_mail(args_array.get("-e"),
-                                        subj=args_array.get("-s", None))
-
-        # Call function(s) - intersection of command line and function dict.
-        for item in set(args_array.keys()) & set(func_dict.keys()):
-            func_dict[item](repinst, args_array, mail=mail, **kwargs)
-
-        mongo_libs.disconnect([repinst])
+        mongo_libs.disconnect([coll])
 
     else:
-        gen_libs.prt_msg("Error", "No replication found.", 0)
-
-    mongo_libs.disconnect([coll])
+        print("Connection failure:  %s" % (status[1]))
 
 
 def main():
