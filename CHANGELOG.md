@@ -6,6 +6,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [3.5.0] - 2021-01-08
 ### Changed
+- config/mongo.py.TEMPLATE:  Added authentication mechanism entries to config file.
 - Documentation updates.
 
 
