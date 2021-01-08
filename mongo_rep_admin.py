@@ -72,6 +72,7 @@
             conf_file = None
             auth = True
             auth_db = "admin"
+            auth_mech = "SCRAM-SHA-1"
             use_arg = True
             use_uri = False
 
