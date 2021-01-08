@@ -645,12 +645,12 @@ def run_program(args_array, func_dict, **kwargs):
         for item in set(args_array.keys()) & set(func_dict.keys()):
             func_dict[item](repinst, args_array, mail=mail, **kwargs)
 
-        cmds_gen.disconnect([repinst])
+        mongo_libs.disconnect([repinst])
 
     else:
         gen_libs.prt_msg("Error", "No replication found.", 0)
 
-    cmds_gen.disconnect([coll])
+    mongo_libs.disconnect([coll])
 
 
 def main():
