@@ -6,6 +6,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [3.5.0] - 2021-01-08
 ### Changed
+- fetch_priority:  Capture and process connection status on Mongo connect call.
 - run_program, fetch_priority:  Replaced "cmds_gen.disconnect" with "mongo_libs.disconnect".
 - config/mongo.py.TEMPLATE:  Added authentication mechanism entries to config file.
 - Documentation updates.

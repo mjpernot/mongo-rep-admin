@@ -256,12 +256,16 @@ def fetch_priority(repset, args_array, **kwargs):
         port=repset.port, db="local", coll="system.replset", auth=repset.auth,
         conf_file=repset.conf_file, auth_db=repset.auth_db,
         use_arg=repset.use_arg, use_uri=repset.use_uri)
-    coll.connect()
+    status = coll.connect()
 
-    for item in coll.coll_find1()["members"]:
-        print("\t{0} => {1}".format(item["host"], item["priority"]))
+    if status[0]:
+        for item in coll.coll_find1()["members"]:
+            print("\t{0} => {1}".format(item["host"], item["priority"]))
 
-    mongo_libs.disconnect([coll])
+        mongo_libs.disconnect([coll])
+
+    else:
+        print("Connection failure:  %s" % (status[1]))
 
 
 def fetch_members(repset, args_array, **kwargs):
