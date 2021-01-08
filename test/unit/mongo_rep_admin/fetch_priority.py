@@ -119,6 +119,7 @@ class Server(object):
         self.auth_db = "authentication_db"
         self.use_arg = True
         self.use_uri = False
+        self.auth_mech = "SCRAM-SHA-1"
 
 
 class UnitTest(unittest.TestCase):
