@@ -450,6 +450,9 @@ def _process_std(outdata, **kwargs):
         dbs, tbl = db_tbl.split(":")
         status = mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
 
+    if not status[0]:
+        status = (status[0], "_process_std: " + status[1])
+
     if ofile:
         f_hldr = gen_libs.openfile(ofile, mode)
 
@@ -509,6 +512,9 @@ def _process_json(outdata, **kwargs):
     if mongo_cfg and db_tbl:
         dbs, tbl = db_tbl.split(":")
         status = mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
+
+    if not status[0]:
+        status = (status[0], "_process_json: " + status[1])
 
     if ofile:
         gen_libs.write_file(ofile, mode, jdata)
