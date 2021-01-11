@@ -134,7 +134,7 @@ class UnitTest(unittest.TestCase):
         self.conn = (True, None)
         self.conn2 = (False, "Error Message")
         self.status = (True, None)
-        self.status2 = (False, "Error Message")
+        self.status2 = (False, "_process_json: Error Message")
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     def test_mongo_failure(self, mock_mongo):
