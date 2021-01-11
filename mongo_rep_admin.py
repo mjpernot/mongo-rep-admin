@@ -539,6 +539,9 @@ def chk_rep_lag(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
@@ -562,10 +565,12 @@ def chk_rep_lag(repset, args_array, **kwargs):
         optime_date = get_optimedate(rep_status)
         suffix = "freshest secondary"
 
-    chk_mem_rep_lag(
+    status = chk_mem_rep_lag(
         rep_status, optdt=optime_date, suf=suffix, json=json_fmt,
         ofile=outfile, db_tbl=db_tbl, class_cfg=mongo_cfg,
         args_array=args_array, **kwargs)
+
+    return status
 
 
 def node_chk(mongo, args_array, **kwargs):
