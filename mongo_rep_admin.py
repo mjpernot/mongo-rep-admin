@@ -415,9 +415,13 @@ def _process_std(outdata, **kwargs):
         (input) **kwargs:
             suf -> Primary|Freshest Secondary who has latest date time.
             args_array -> Array of command line options and values.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
+    status = (True, None)
     mode = "w"
     mongo_cfg = kwargs.get("class_cfg", None)
     db_tbl = kwargs.get("db_tbl", None)
@@ -439,7 +443,7 @@ def _process_std(outdata, **kwargs):
 
     if mongo_cfg and db_tbl:
         dbs, tbl = db_tbl.split(":")
-        mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
+        status = mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
 
     if ofile:
         f_hldr = gen_libs.openfile(ofile, mode)
@@ -456,6 +460,8 @@ def _process_std(outdata, **kwargs):
     if not args_array.get("-z", False):
         for item in body:
             print(item)
+
+    return status
 
 
 def _process_json(outdata, **kwargs):
