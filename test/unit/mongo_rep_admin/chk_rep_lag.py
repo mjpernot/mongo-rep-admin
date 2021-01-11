@@ -83,6 +83,9 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_mongo_json_fail -> Test with failed connection to Mongo for json.
+        test_mongo_std_fail -> Test with failed connection to Mongo for std.
+        test_mongo_successful -> Test with successful connection.
         test_secondary_chk -> Test with time lag for secondary check.
         test_primary_chk -> Test with time lag for primary check.
 
@@ -101,12 +104,82 @@ class UnitTest(unittest.TestCase):
         self.get_master = {"optimeDate": "2019-07-26 11:13:02"}
         self.server = Server()
         self.args_array = {"-m": "config", "-d": "directory/path"}
+        self.status = (True, None)
+        self.status2 = (False, "_process_std: Error Message")
+        self.status3 = (False, "_process_json: Error Message")
+        self.results = (True, None)
+        self.results2 = (False, "_process_std: Error Message")
+        self.results3 = (False, "_process_json: Error Message")
 
+    @mock.patch("mongo_rep_admin.gen_libs.load_module",
+                mock.Mock(return_value="Mongo_Cfg"))
+    @mock.patch("mongo_rep_admin.chk_mem_rep_lag")
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_mongo_json_fail(self, mock_mst, mock_lag):
+
+        """Function:  test_mongo_json_fail
+
+        Description:  Test with failed connection to Mongo for json.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+        mock_lag.return_value = self.status3
+
+        self.assertEqual(
+            mongo_rep_admin.chk_rep_lag(self.server, self.args_array),
+            self.results3)
+
+    @mock.patch("mongo_rep_admin.gen_libs.load_module",
+                mock.Mock(return_value="Mongo_Cfg"))
+    @mock.patch("mongo_rep_admin.chk_mem_rep_lag")
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_mongo_std_fail(self, mock_mst, mock_lag):
+
+        """Function:  test_mongo_std_fail
+
+        Description:  Test with failed connection to Mongo for std.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+        mock_lag.return_value = self.status2
+
+        self.assertEqual(
+            mongo_rep_admin.chk_rep_lag(self.server, self.args_array),
+            self.results2)
+
+    @mock.patch("mongo_rep_admin.gen_libs.load_module",
+                mock.Mock(return_value="Mongo_Cfg"))
+    @mock.patch("mongo_rep_admin.chk_mem_rep_lag")
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_mongo_successful(self, mock_mst, mock_lag):
+
+        """Function:  test_mongo_successful
+
+        Description:  Test with successful connection.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+        mock_lag.return_value = self.status
+
+        self.assertEqual(
+            mongo_rep_admin.chk_rep_lag(self.server, self.args_array),
+            self.results)
+
+    @mock.patch("mongo_rep_admin.gen_libs.load_module",
+                mock.Mock(return_value="Mongo_Cfg"))
     @mock.patch("mongo_rep_admin.get_optimedate")
     @mock.patch("mongo_rep_admin.chk_mem_rep_lag")
-    @mock.patch("mongo_rep_admin.gen_libs.load_module")
     @mock.patch("mongo_rep_admin.get_master")
-    def test_secondary_chk(self, mock_mst, mock_load, mock_lag, mock_time):
+    def test_secondary_chk(self, mock_mst, mock_lag, mock_time):
 
         """Function:  test_secondary_chk
 
@@ -117,17 +190,18 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_mst.return_value = {}
-        mock_load.return_value = "Mongo_Cfg"
-        mock_lag.return_value = True
+        mock_lag.return_value = self.status
         mock_time.return_value = "2019-07-26 11:13:02"
 
-        self.assertFalse(mongo_rep_admin.chk_rep_lag(self.server,
-                                                     self.args_array))
+        self.assertEqual(
+            mongo_rep_admin.chk_rep_lag(self.server, self.args_array),
+            self.results)
 
+    @mock.patch("mongo_rep_admin.gen_libs.load_module",
+                mock.Mock(return_value="Mongo_Cfg"))
     @mock.patch("mongo_rep_admin.chk_mem_rep_lag")
-    @mock.patch("mongo_rep_admin.gen_libs.load_module")
     @mock.patch("mongo_rep_admin.get_master")
-    def test_primary_chk(self, mock_mst, mock_load, mock_lag):
+    def test_primary_chk(self, mock_mst, mock_lag):
 
         """Function:  test_primary_chk
 
@@ -138,11 +212,11 @@ class UnitTest(unittest.TestCase):
         """
 
         mock_mst.return_value = self.get_master
-        mock_load.return_value = "Mongo_Cfg"
-        mock_lag.return_value = True
+        mock_lag.return_value = self.status
 
-        self.assertFalse(mongo_rep_admin.chk_rep_lag(self.server,
-                                                     self.args_array))
+        self.assertEqual(
+            mongo_rep_admin.chk_rep_lag(self.server, self.args_array),
+            self.results)
 
 
 if __name__ == "__main__":
