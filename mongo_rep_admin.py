@@ -472,9 +472,13 @@ def _process_json(outdata, **kwargs):
             class_cfg -> Server class configuration settings.
             mail -> Mail instance.
             args_array -> Array of command line options and values.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
+    status = (True, None)
     mode = "w"
     indent = 4
     mongo_cfg = kwargs.get("class_cfg", None)
@@ -493,7 +497,7 @@ def _process_json(outdata, **kwargs):
 
     if mongo_cfg and db_tbl:
         dbs, tbl = db_tbl.split(":")
-        mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
+        status = mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
 
     if ofile:
         gen_libs.write_file(ofile, mode, jdata)
@@ -504,6 +508,8 @@ def _process_json(outdata, **kwargs):
 
     if not args_array.get("-z", False):
         gen_libs.display_data(jdata)
+
+    return status
 
 
 def chk_rep_lag(repset, args_array, **kwargs):

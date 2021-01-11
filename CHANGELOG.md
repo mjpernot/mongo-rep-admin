@@ -6,6 +6,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ## [3.5.0] - 2021-01-08
 ### Changed
+- \_process_json:  Capture and process connection status on Mongo call.
 - run_program, fetch_priority:  Added "auth_mech" to mongo_class instance call.
 - run_program, fetch_priority:  Capture and process connection status on Mongo connect call.
 - run_program, fetch_priority:  Replaced "cmds_gen.disconnect" with "mongo_libs.disconnect".
