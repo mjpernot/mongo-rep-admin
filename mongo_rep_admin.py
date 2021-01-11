@@ -619,11 +619,16 @@ def run_program(args_array, func_dict, **kwargs):
     func_dict = dict(func_dict)
     mail = None
     server = gen_libs.load_module(args_array["-c"], args_array["-d"])
+
+    # Only pass authorization mechanism if present.
+    auth_mech = {"auth_mech": server.auth_mech} if hasattr(
+        server, "auth_mech") else {}
+
     coll = mongo_class.Coll(
         server.name, server.user, server.japd, host=server.host,
         port=server.port, db="local", coll="system.replset", auth=server.auth,
         conf_file=server.conf_file, auth_db=server.auth_db,
-        use_arg=server.use_arg, use_uri=server.use_uri)
+        use_arg=server.use_arg, use_uri=server.use_uri, **auth_mech)
     status = coll.connect()
 
     if status[0]:
@@ -642,7 +647,7 @@ def run_program(args_array, func_dict, **kwargs):
                 server.name, server.user, server.japd, host=server.host,
                 port=server.port, auth=server.auth, repset=rep_set,
                 repset_hosts=server.repset_hosts, auth_db=server.auth_db,
-                use_arg=server.use_arg, use_uri=server.use_uri)
+                use_arg=server.use_arg, use_uri=server.use_uri, **auth_mech)
             status2 = repinst.connect()
 
             if status2[0]:
