@@ -158,7 +158,8 @@ class UnitTest(unittest.TestCase):
         self.conn = (True, None)
         self.conn2 = (False, "Error Message")
         self.status = (True, None)
-        self.status2 = (False, "Error Message")
+        self.status2 = (False, "_process_std: Error Message")
+        self.status3 = (False, "_process_json: Error Message")
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     @mock.patch("mongo_rep_admin.get_master")
@@ -179,7 +180,7 @@ class UnitTest(unittest.TestCase):
             mongo_rep_admin.chk_mem_rep_lag(
                 self.rep_status, json=True, class_cfg="mongocfg",
                 db_tbl="db:tbl", args_array=self.args_array, optdt=self.optdt),
-            self.status2)
+            self.status3)
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     @mock.patch("mongo_rep_admin.get_master")
