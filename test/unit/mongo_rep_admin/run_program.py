@@ -269,6 +269,8 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_auth_mech -> Test with auth_mech passed.
+        test_no_auth_mech -> Test with no auth_mech passed.
         test_failed_conn_repset -> Test with failed connection.
         test_successful_conn_repset -> Test with successful connection.
         test_failed_conn_coll -> Test with failed connection.
@@ -293,12 +295,57 @@ class UnitTest(unittest.TestCase):
         self.server = CfgTest()
         self.server2 = CfgTest()
         self.server2.repset = None
+        self.server3 = CfgTest2()
         self.repset = RepSet()
         self.coll = Coll()
         self.args_array = {"-T": True, "-c": "config", "-d": "dir/path"}
         self.args_array2 = {"-T": True, "-c": "config", "-d": "dir/path",
                             "-e": "Email_Address"}
         self.func_dict = {"-P": fetch_priority, "-T": prt_rep_stat}
+
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.gen_libs.load_module")
+    @mock.patch("mongo_rep_admin.mongo_class.RepSet")
+    @mock.patch("mongo_rep_admin.mongo_class.Coll")
+    def test_auth_mech(self, mock_coll, mock_repset, mock_load):
+
+        """Function:  test_auth_mech
+
+        Description:  Test with auth_mech passed.
+
+        Arguments:
+
+        """
+
+        mock_coll.return_value = self.coll
+        mock_repset.return_value = self.repset
+        mock_load.return_value = self.server3
+
+        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
+                                                     self.func_dict))
+
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.gen_libs.load_module")
+    @mock.patch("mongo_rep_admin.mongo_class.RepSet")
+    @mock.patch("mongo_rep_admin.mongo_class.Coll")
+    def test_no_auth_mech(self, mock_coll, mock_repset, mock_load):
+
+        """Function:  test_no_auth_mech
+
+        Description:  Test with no auth_mech passed.
+
+        Arguments:
+
+        """
+
+        mock_coll.return_value = self.coll
+        mock_repset.return_value = self.repset
+        mock_load.return_value = self.server
+
+        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
+                                                     self.func_dict))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
