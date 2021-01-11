@@ -349,7 +349,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
     """Function:  chk_mem_rep_lag
 
     Description:  Process each member in the replication set and check for
-               replication lag.
+        replication lag.
 
     Arguments:
         (input) rep_status -> Member document from replSetGetStatus.
@@ -362,6 +362,9 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             args_array -> Array of command line options and values.
             suf -> Primary|Freshest Secondary who has latest date time.
             optdt -> Primary|Best Oplog date time.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
@@ -397,10 +400,12 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
 
     if json_fmt:
-        _process_json(outdata, **kwargs)
+        status = _process_json(outdata, **kwargs)
 
     else:
-        _process_std(outdata, **kwargs)
+        status = _process_std(outdata, **kwargs)
+
+    return status
 
 
 def _process_std(outdata, **kwargs):
