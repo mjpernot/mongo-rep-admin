@@ -83,11 +83,13 @@
             use_uri = False
 
             2.)  Replica Set connection:  Same format as above, but with these
-                additional entries at the end of the configuration file:
+                additional entries at the end of the configuration file.  By
+                default all these entries are set to None to represent not
+                connecting to a replica set.
 
-            repset = None
-            repset_hosts = None
-            db_auth = None
+            repset = "REPLICA_SET_NAME"
+            repset_hosts = "HOST1:PORT, HOST2:PORT, HOST3:PORT, [...]"
+            db_auth = "AUTHENTICATION_DATABASE"
 
         Configuration modules -> Name is runtime dependent as it can be used to
             connect to different databases with different names.
