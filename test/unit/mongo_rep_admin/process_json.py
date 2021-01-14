@@ -135,6 +135,7 @@ class UnitTest(unittest.TestCase):
         self.conn2 = (False, "Error Message")
         self.status = (True, None)
         self.status2 = (False, "_process_json: Error Message")
+        self.db_tbl = "db:tbl"
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     def test_mongo_failure(self, mock_mongo):
@@ -151,7 +152,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertEqual(
             mongo_rep_admin._process_json(
-                self.outdata, class_cfg="mongocfg", db_tbl="db:tbl",
+                self.outdata, class_cfg="mongocfg", db_tbl=self.db_tbl,
                 args_array=self.args_array), self.status2)
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
@@ -169,7 +170,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertEqual(
             mongo_rep_admin._process_json(
-                self.outdata, class_cfg="mongocfg", db_tbl="db:tbl",
+                self.outdata, class_cfg="mongocfg", db_tbl=self.db_tbl,
                 args_array=self.args_array), self.status)
 
     @mock.patch("mongo_rep_admin.gen_libs.display_data",
@@ -234,7 +235,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertEqual(
             mongo_rep_admin._process_json(
-                self.outdata, class_cfg="mongocfg", db_tbl="db:tbl",
+                self.outdata, class_cfg="mongocfg", db_tbl=self.db_tbl,
                 args_array=self.args_array), self.status)
 
     @mock.patch("mongo_rep_admin.gen_libs.write_file",
