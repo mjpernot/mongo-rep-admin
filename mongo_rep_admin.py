@@ -592,13 +592,14 @@ def node_chk(mongo, args_array, **kwargs):
 
     # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter).
     good_state = [1, 2, 7]
-    indent = 4
+    #indent = 4
     args_array = dict(args_array)
     mail = kwargs.get("mail", None)
     node_status = {}
 
-    if args_array.get("-f", False):
-        indent = None
+    indent = None if args_array.get("-f", False) else 4
+    #if args_array.get("-f", False):
+    #    indent = None
 
     # Check each node.
     for node in mongo.adm_cmd("replSetGetStatus").get("members"):
