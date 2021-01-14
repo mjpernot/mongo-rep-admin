@@ -87,13 +87,19 @@ Make the appropriate change to the environment.
     - conf_file = None
     - auth = True
     - auth_db = "admin"
+    - auth_mech = "SCRAM-SHA-1"
     - use_arg = True
     - use_uri = False
 
-  * If connecting to a Mongo replica set, otherwise set to None.
-    - repset = None
-    - repset_hosts = None
-    - db_auth = None
+  * Notes for auth_mech configuration entry:
+    - NOTE 1:  SCRAM-SHA-256 only works for Mongodb 4.0 and better.
+    - NOTE 2:  FIPS 140-2 environment requires SCRAM-SHA-1 or SCRAM-SHA-256.
+    - NOTE 3:  MONGODB-CR is not supported in Mongodb 4.0 and better.
+
+  * If connecting to a Mongo replica set.  By default set to None to represent not connecting to replica set.
+    - repset = "REPLICA_SET_NAME"
+    - repset_hosts = "HOST_1:PORT, HOST_2:PORT, ..."
+    - db_auth = "AUTHENTICATION_DATABASE"
 
 ```
 cd config
@@ -114,13 +120,19 @@ Make the appropriate change to the environment.
     - conf_file = None
     - auth = True
     - auth_db = "admin"
+    - auth_mech = "SCRAM-SHA-1"
     - use_arg = True
     - use_uri = False
 
-  * If connecting to a Mongo replica set, otherwise set to None.
-    - repset = None
-    - repset_hosts = None
-    - db_auth = None
+  * Notes for auth_mech configuration entry:
+    - NOTE 1:  SCRAM-SHA-256 only works for Mongodb 4.0 and better.
+    - NOTE 2:  FIPS 140-2 environment requires SCRAM-SHA-1 or SCRAM-SHA-256.
+    - NOTE 3:  MONGODB-CR is not supported in Mongodb 4.0 and better.
+
+  * If connecting to a Mongo replica set.  By default set to None to represent not connecting to replica set.
+    - repset = "REPLICA_SET_NAME"
+    - repset_hosts = "HOST_1:PORT, HOST_2:PORT, ..."
+    - db_auth = "AUTHENTICATION_DATABASE"
 
 ```
 cp mongo.py.TEMPLATE mongo_insert.py
