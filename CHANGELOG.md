@@ -9,6 +9,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Updated to be used in FIPS 140-2 environment.
 
 ### Changed
+- node_chk:  Refactored indent check and removed redundant data in node status return.
 - chk_rep_lag, chk_mem_rep_lag, \_process_std, \_process_json:  Capture and return connection status on Mongo call.
 - run_program, fetch_priority:  Added "auth_mech" to mongo_class instance call.
 - run_program, fetch_priority:  Capture and process connection status on Mongo connect call.

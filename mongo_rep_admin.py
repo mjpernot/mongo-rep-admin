@@ -40,9 +40,11 @@
         -M => Show current members in replication set.
 
         -N => Node health check.  Returns if a node has a problem or is down.
+            -f => Flatten the JSON data structure to file and standard out.
             -e to_email_addresses => Sends output to one or more email
                 addresses.  Email addresses are space delimited.
             -s subject_line => Subject line of email.
+            -z => Suppress standard out.
 
         -P => Show priority for members in replication set.
 
@@ -592,14 +594,11 @@ def node_chk(mongo, args_array, **kwargs):
 
     # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter).
     good_state = [1, 2, 7]
-    #indent = 4
     args_array = dict(args_array)
     mail = kwargs.get("mail", None)
     node_status = {}
 
     indent = None if args_array.get("-f", False) else 4
-    #if args_array.get("-f", False):
-    #    indent = None
 
     # Check each node.
     for node in mongo.adm_cmd("replSetGetStatus").get("members"):
@@ -608,7 +607,7 @@ def node_chk(mongo, args_array, **kwargs):
         if not node.get("health"):
             status["Health"] = "Bad"
 
-        if node.get("state") not in good_state:
+        if node.get("state") in good_state:
             status["State"] = node.get("state")
             status["State_Message"] = node.get("stateStr")
 
@@ -616,8 +615,7 @@ def node_chk(mongo, args_array, **kwargs):
             status["Error_Message"] = node.get("infoMessage")
 
         if status:
-            node_name = "Node: %s" % node.get("name")
-            node_status[node_name] = status
+            node_status[node.get("name")] = status
 
     if node_status:
         jnode_status = json.dumps(node_status, indent=indent)
