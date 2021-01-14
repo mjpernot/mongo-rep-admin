@@ -9,6 +9,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Updated to be used in FIPS 140-2 environment.
 
 ### Changed
+- node_chk:  Replace section of code with call to single_node_chk function.
 - node_chk:  Refactored indent check and removed redundant data in node status return.
 - chk_rep_lag, chk_mem_rep_lag, \_process_std, \_process_json:  Capture and return connection status on Mongo call.
 - run_program, fetch_priority:  Added "auth_mech" to mongo_class instance call.
@@ -16,6 +17,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - run_program, fetch_priority:  Replaced "cmds_gen.disconnect" with "mongo_libs.disconnect".
 - config/mongo.py.TEMPLATE:  Added authentication mechanism entries to config file.
 - Documentation updates.
+
+### Added
+- single_node_chk:  Check the status of a single node.
 
 
 ## [3.4.0] - 2020-10-19

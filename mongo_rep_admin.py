@@ -592,27 +592,14 @@ def node_chk(mongo, args_array, **kwargs):
 
     """
 
-    # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter).
-    good_state = [1, 2, 7]
     args_array = dict(args_array)
     mail = kwargs.get("mail", None)
     node_status = {}
 
     indent = None if args_array.get("-f", False) else 4
 
-    # Check each node.
     for node in mongo.adm_cmd("replSetGetStatus").get("members"):
-        status = {}
-
-        if not node.get("health"):
-            status["Health"] = "Bad"
-
-        if node.get("state") in good_state:
-            status["State"] = node.get("state")
-            status["State_Message"] = node.get("stateStr")
-
-        if node.get("infoMessage"):
-            status["Error_Message"] = node.get("infoMessage")
+        status = single_node_chk(node)
 
         if status:
             node_status[node.get("name")] = status
@@ -630,6 +617,36 @@ def node_chk(mongo, args_array, **kwargs):
 
             mail.add_2_msg(jnode_status)
             mail.send_mail()
+
+
+def single_node_chk(node, **kwargs):
+
+    """Function:  single_node_chk
+
+    Description:  Check the status of a single node.  Will only output
+        something if a node is down or an error is detected.
+
+    Arguments:
+        (input) node -> Dictionary of Mongo node health stats.
+        (output) status -> Dictionary of node stats found.
+
+    """
+
+    # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter).
+    good_state = [1, 2, 7]
+    status = {}
+
+    if not node.get("health"):
+        status["Health"] = "Bad"
+
+    if node.get("state") not in good_state:
+        status["State"] = node.get("state")
+        status["State_Message"] = node.get("stateStr")
+
+    if node.get("infoMessage"):
+        status["Error_Message"] = node.get("infoMessage")
+
+    return status    
 
 
 def run_program(args_array, func_dict, **kwargs):
