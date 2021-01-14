@@ -5,6 +5,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ## [3.5.0] - 2021-01-08
+- Verified to work with pymongo v3.8.0.
+- Updated to be used in FIPS 140-2 environment.
+
 ### Changed
 - chk_rep_lag, chk_mem_rep_lag, \_process_std, \_process_json:  Capture and return connection status on Mongo call.
 - run_program, fetch_priority:  Added "auth_mech" to mongo_class instance call.
