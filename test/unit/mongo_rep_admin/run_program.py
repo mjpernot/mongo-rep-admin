@@ -48,10 +48,10 @@ def fetch_priority(repset, args_array, **kwargs):
     """
 
     mail = kwargs.get("mail", None)
-    status = True
+    status = (False, "Error Message")
 
     if args_array and repset and mail:
-        status = True
+        status = (False, "Error Message")
 
     return status
 
@@ -69,10 +69,10 @@ def prt_rep_stat(repset, args_array, **kwargs):
     """
 
     mail = kwargs.get("mail", None)
-    status = True
+    status = (True, None)
 
     if args_array and repset and mail:
-        status = True
+        status = (True, None)
 
     return status
 
@@ -269,6 +269,8 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_func_no_error -> Test with no error returned from function call.
+        test_func_error -> Test with error returned from function call.
         test_auth_mech -> Test with auth_mech passed.
         test_no_auth_mech -> Test with no auth_mech passed.
         test_failed_conn_repset -> Test with failed connection.
@@ -301,7 +303,53 @@ class UnitTest(unittest.TestCase):
         self.args_array = {"-T": True, "-c": "config", "-d": "dir/path"}
         self.args_array2 = {"-T": True, "-c": "config", "-d": "dir/path",
                             "-e": "Email_Address"}
+        self.args_array3 = {"-P": True, "-c": "config", "-d": "dir/path"}
         self.func_dict = {"-P": fetch_priority, "-T": prt_rep_stat}
+
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.gen_libs.load_module")
+    @mock.patch("mongo_rep_admin.mongo_class.RepSet")
+    @mock.patch("mongo_rep_admin.mongo_class.Coll")
+    def test_func_no_error(self, mock_coll, mock_repset, mock_load):
+
+        """Function:  test_func_no_error
+
+        Description:  Test with no error returned from function call.
+
+        Arguments:
+
+        """
+
+        mock_coll.return_value = self.coll
+        mock_repset.return_value = self.repset
+        mock_load.return_value = self.server3
+
+        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
+                                                     self.func_dict))
+
+    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
+                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.gen_libs.load_module")
+    @mock.patch("mongo_rep_admin.mongo_class.RepSet")
+    @mock.patch("mongo_rep_admin.mongo_class.Coll")
+    def test_func_error(self, mock_coll, mock_repset, mock_load):
+
+        """Function:  test_func_error
+
+        Description:  Test with error returned from function call.
+
+        Arguments:
+
+        """
+
+        mock_coll.return_value = self.coll
+        mock_repset.return_value = self.repset
+        mock_load.return_value = self.server3
+
+        with gen_libs.no_std_out():
+            self.assertFalse(mongo_rep_admin.run_program(self.args_array3,
+                                                         self.func_dict))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
