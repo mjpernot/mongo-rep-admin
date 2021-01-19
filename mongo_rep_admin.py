@@ -210,9 +210,13 @@ def chk_rep_stat(repset, args_array, **kwargs):
         (input) args_array -> Array of command line options and values.
         (input) **kwargs:
             prt_all -> True|False on printing all status messages.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
+    status = (True, None)
     args_array = dict(args_array)
     print("\nReplication Status Check for Rep Set:  %s" % (repset.repset))
     prt_all = kwargs.get("prt_all", False)
@@ -223,6 +227,8 @@ def chk_rep_stat(repset, args_array, **kwargs):
         rep_health_chk(item, prt_all)
         rep_state_chk(item, prt_all)
         rep_msg_chk(item)
+
+    return status
 
 
 def prt_rep_stat(repset, args_array, **kwargs):
