@@ -300,7 +300,7 @@ def fetch_members(repset, args_array, **kwargs):
         the primary server.
 
     Arguments:
-        (ininput) repset -> Replication set instance.
+        (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
@@ -680,6 +680,36 @@ def single_node_chk(node, **kwargs):
     return status    
 
 
+def _call_func(args_array, func_dict, repinst, **kwargs):
+
+    """Function:  _call_func
+
+    Description:  Private function for run_program.  Call each function
+        selected.
+
+    Arguments:
+        (input) args_array -> Dict of command line options and values.
+        (input) func_dict -> Dictionary list of functions and options.
+        (input) repset -> Replication set instance.
+
+    """
+
+    args_array = dict(args_array)
+    func_dict = dict(func_dict)
+    mail = None
+
+    if args_array.get("-e", None):
+        mail = gen_class.setup_mail(
+            args_array.get("-e"), subj=args_array.get("-s", None))
+
+    # Call function: Intersection of command line & function dict.
+    for item in set(args_array.keys()) & set(func_dict.keys()):
+        status3 = func_dict[item](repinst, args_array, mail=mail)
+
+        if not status3[0]:
+            print("Error detected:  %s" % (status3[1]))
+
+
 def run_program(args_array, func_dict, **kwargs):
 
     """Function:  run_program
@@ -694,7 +724,6 @@ def run_program(args_array, func_dict, **kwargs):
 
     args_array = dict(args_array)
     func_dict = dict(func_dict)
-    mail = None
     server = gen_libs.load_module(args_array["-c"], args_array["-d"])
 
     # Only pass authorization mechanism if present.
@@ -729,17 +758,7 @@ def run_program(args_array, func_dict, **kwargs):
 
             if status2[0]:
 
-                if args_array.get("-e", None):
-                    mail = gen_class.setup_mail(
-                        args_array.get("-e"), subj=args_array.get("-s", None))
-
-                # Call function: Intersection of command line & function dict.
-                for item in set(args_array.keys()) & set(func_dict.keys()):
-                    status3 = func_dict[item](repinst, args_array, mail=mail)
-
-                    if not status3[0]:
-                        print("Error detected:  %s" % (status3[1]))
-
+                _call_func(args_array, func_dict, repinst)
                 mongo_libs.disconnect([repinst])
 
             else:

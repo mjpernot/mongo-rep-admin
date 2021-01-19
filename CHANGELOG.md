@@ -9,7 +9,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Updated to be used in FIPS 140-2 environment.
 
 ### Changed
-- run_program:  Capture and process status return from function calls.
+- run_program:  Capture and process status return from function calls and replaced section of code with call to \_call_func function.
 - fetch_priority:  Returned status of Collection connection to calling function.
 - node_chk, prt_rep_stat, chk_rep_stat, fetch_members:  Added return status code.
 - node_chk:  Replace section of code with call to single_node_chk function.
@@ -22,6 +22,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Documentation updates.
 
 ### Added
+- \_call_func:  Private function for run_program and call each function selected.
 - single_node_chk:  Check the status of a single node.
 
 
