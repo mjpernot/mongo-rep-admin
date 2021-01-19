@@ -47,11 +47,12 @@ def fetch_priority(repset, args_array, **kwargs):
 
     """
 
+    err_msg = "Error Message"
     mail = kwargs.get("mail", None)
-    status = (False, "Error Message")
+    status = (False, err_msg)
 
     if args_array and repset and mail:
-        status = (False, "Error Message")
+        status = (False, err_msg)
 
     return status
 
@@ -300,10 +301,11 @@ class UnitTest(unittest.TestCase):
         self.server3 = CfgTest2()
         self.repset = RepSet()
         self.coll = Coll()
-        self.args_array = {"-T": True, "-c": "config", "-d": "dir/path"}
-        self.args_array2 = {"-T": True, "-c": "config", "-d": "dir/path",
+        self.err_msg = "Error Message"
+        self.args_array = {"-T": True, "-c": "config", "-d": "dirpath"}
+        self.args_array2 = {"-T": True, "-c": "config", "-d": "dirpath",
                             "-e": "Email_Address"}
-        self.args_array3 = {"-P": True, "-c": "config", "-d": "dir/path"}
+        self.args_array3 = {"-P": True, "-c": "config", "-d": "dirpath"}
         self.func_dict = {"-P": fetch_priority, "-T": prt_rep_stat}
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
@@ -411,7 +413,7 @@ class UnitTest(unittest.TestCase):
         """
 
         self.repset.conn = False
-        self.repset.errmsg = "Error Message"
+        self.repset.errmsg = self.err_msg
 
         mock_coll.return_value = self.coll
         mock_repset.return_value = self.repset
@@ -458,7 +460,7 @@ class UnitTest(unittest.TestCase):
         """
 
         self.coll.conn = False
-        self.coll.errmsg = "Error Message"
+        self.coll.errmsg = self.err_msg
 
         mock_coll.return_value = self.coll
         mock_load.return_value = self.server
