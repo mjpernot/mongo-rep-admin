@@ -735,7 +735,10 @@ def run_program(args_array, func_dict, **kwargs):
 
                 # Call function: Intersection of command line & function dict.
                 for item in set(args_array.keys()) & set(func_dict.keys()):
-                    func_dict[item](repinst, args_array, mail=mail, **kwargs)
+                    status3 = func_dict[item](repinst, args_array, mail=mail)
+
+                    if not status3[0]:
+                        print("Error detected:  %s" % (status3[1]))
 
                 mongo_libs.disconnect([repinst])
 
