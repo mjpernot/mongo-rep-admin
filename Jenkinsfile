@@ -23,6 +23,7 @@ pipeline {
                 pip2 install mock==2.0.0 --user
                 pip2 install psutil==5.4.3 --user
                 pip2 install pymongo==3.8.0 --user
+                ./test/unit/mongo_rep_admin/_call_func.py
                 ./test/unit/mongo_rep_admin/_process_std.py
                 ./test/unit/mongo_rep_admin/chk_mem_rep_lag.py
                 ./test/unit/mongo_rep_admin/chk_rep_lag.py
