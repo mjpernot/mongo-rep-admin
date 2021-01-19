@@ -101,6 +101,7 @@ class UnitTest(unittest.TestCase):
 
         self.server = Server()
         self.args_array = {"-T": "TimeLag"}
+        self.status = (True, None)
 
     def test_fetch_members(self):
 
@@ -113,8 +114,9 @@ class UnitTest(unittest.TestCase):
         """
 
         with gen_libs.no_std_out():
-            self.assertFalse(mongo_rep_admin.fetch_members(self.server,
-                                                           self.args_array))
+            self.assertEqual(
+                mongo_rep_admin.fetch_members(
+                    self.server, self.args_array), self.status)
 
 
 if __name__ == "__main__":
