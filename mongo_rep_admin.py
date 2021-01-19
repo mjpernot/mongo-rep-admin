@@ -240,11 +240,17 @@ def prt_rep_stat(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
+    status = (True, None)
     args_array = dict(args_array)
     chk_rep_stat(repset, args_array, prt_all=args_array["-T"])
+
+    return status
 
 
 def fetch_priority(repset, args_array, **kwargs):
