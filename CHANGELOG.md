@@ -9,6 +9,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Updated to be used in FIPS 140-2 environment.
 
 ### Changed
+- fetch_priority:  Returned status of Collection connection to calling function.
 - chk_rep_stat, fetch_members:  Added return status code.
 - node_chk:  Replace section of code with call to single_node_chk function.
 - node_chk:  Refactored indent check and removed redundant data in node status return.

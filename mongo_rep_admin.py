@@ -256,11 +256,13 @@ def fetch_priority(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
     args_array = dict(args_array)
-    print("\nMembers => priority of replica set: %s" % (repset.repset))
     coll = mongo_class.Coll(
         repset.name, repset.user, repset.japd, host=repset.host,
         port=repset.port, db="local", coll="system.replset", auth=repset.auth,
@@ -270,6 +272,7 @@ def fetch_priority(repset, args_array, **kwargs):
     status = coll.connect()
 
     if status[0]:
+        print("\nMembers => priority of replica set: %s" % (repset.repset))
 
         for item in coll.coll_find1()["members"]:
             print("\t{0} => {1}".format(item["host"], item["priority"]))
@@ -277,7 +280,10 @@ def fetch_priority(repset, args_array, **kwargs):
         mongo_libs.disconnect([coll])
 
     else:
-        print("fetch_priority:  Connection failure:  %s" % (status[1]))
+        status = (status[0],
+                  "fetch_priority:  Connection failure:  %s" % (status[1]))
+
+    return status
 
 
 def fetch_members(repset, args_array, **kwargs):
