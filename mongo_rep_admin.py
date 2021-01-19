@@ -284,9 +284,13 @@ def fetch_members(repset, args_array, **kwargs):
     Arguments:
         (ininput) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
+    status = (True, None)
     args_array = dict(args_array)
     print("\nMembers of replica set: %s" % (repset.repset))
     rep_status = repset.adm_cmd("replSetGetStatus")
@@ -298,6 +302,8 @@ def fetch_members(repset, args_array, **kwargs):
 
     for second in secondaries:
         print("\t%s" % (second["name"]))
+
+    return status
 
 
 def get_master(rep_status, **kwargs):
