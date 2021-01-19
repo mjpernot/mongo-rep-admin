@@ -634,6 +634,7 @@ def single_node_chk(node, **kwargs):
 
     # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter).
     good_state = [1, 2, 7]
+    node = dict(node)
     status = {}
 
     if not node.get("health"):
