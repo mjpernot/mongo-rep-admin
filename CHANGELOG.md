@@ -10,7 +10,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ### Changed
 - fetch_priority:  Returned status of Collection connection to calling function.
-- prt_rep_stat, chk_rep_stat, fetch_members:  Added return status code.
+- node_chk, prt_rep_stat, chk_rep_stat, fetch_members:  Added return status code.
 - node_chk:  Replace section of code with call to single_node_chk function.
 - node_chk:  Refactored indent check and removed redundant data in node status return.
 - chk_rep_lag, chk_mem_rep_lag, \_process_std, \_process_json:  Capture and return connection status on Mongo call.

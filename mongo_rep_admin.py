@@ -613,9 +613,13 @@ def node_chk(mongo, args_array, **kwargs):
         (input) args_array -> Array of command line options and values.
         (input) **kwargs:
             mail -> Mail instance.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
+    status = (True, None)
     args_array = dict(args_array)
     mail = kwargs.get("mail", None)
     node_status = {}
@@ -623,10 +627,10 @@ def node_chk(mongo, args_array, **kwargs):
     indent = None if args_array.get("-f", False) else 4
 
     for node in mongo.adm_cmd("replSetGetStatus").get("members"):
-        status = single_node_chk(node)
+        status2 = single_node_chk(node)
 
-        if status:
-            node_status[node.get("name")] = status
+        if status2:
+            node_status[node.get("name")] = status2
 
     if node_status:
         jnode_status = json.dumps(node_status, indent=indent)
@@ -641,6 +645,8 @@ def node_chk(mongo, args_array, **kwargs):
 
             mail.add_2_msg(jnode_status)
             mail.send_mail()
+
+    return status
 
 
 def single_node_chk(node, **kwargs):
