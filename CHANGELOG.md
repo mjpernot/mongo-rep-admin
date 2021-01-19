@@ -25,6 +25,9 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - \_call_func:  Private function for run_program and call each function selected.
 - single_node_chk:  Check the status of a single node.
 
+### Removed
+- cmds_gen module library.
+
 
 ## [3.4.0] - 2020-10-19
 ### Added

@@ -113,7 +113,6 @@ import json
 # Local
 import lib.arg_parser as arg_parser
 import lib.gen_libs as gen_libs
-import lib.cmds_gen as cmds_gen
 import lib.gen_class as gen_class
 import mongo_lib.mongo_libs as mongo_libs
 import mongo_lib.mongo_class as mongo_class
@@ -677,7 +676,7 @@ def single_node_chk(node, **kwargs):
     if node.get("infoMessage"):
         status["Error_Message"] = node.get("infoMessage")
 
-    return status    
+    return status
 
 
 def _call_func(args_array, func_dict, repinst, **kwargs):
