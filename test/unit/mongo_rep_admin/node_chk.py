@@ -180,6 +180,7 @@ class UnitTest(unittest.TestCase):
         self.args_array = {}
         self.args_array2 = {"-z": True}
         self.args_array3 = {"-f": True}
+        self.status = (True, None)
 
     def test_mail_no_subj(self):
 
@@ -194,8 +195,8 @@ class UnitTest(unittest.TestCase):
         self.server.status["members"][0]["state"] = 8
         self.mail.subj = None
 
-        self.assertFalse(mongo_rep_admin.node_chk(
-            self.server, self.args_array2, mail=self.mail))
+        self.assertEqual(mongo_rep_admin.node_chk(
+            self.server, self.args_array2, mail=self.mail), self.status)
 
     def test_mail_fail(self):
 
@@ -209,8 +210,8 @@ class UnitTest(unittest.TestCase):
 
         self.server.status["members"][0]["state"] = 8
 
-        self.assertFalse(mongo_rep_admin.node_chk(
-            self.server, self.args_array2, mail=self.mail))
+        self.assertEqual(mongo_rep_admin.node_chk(
+            self.server, self.args_array2, mail=self.mail), self.status)
 
     @mock.patch("mongo_rep_admin.gen_libs.display_data",
                 mock.Mock(return_value=True))
@@ -226,8 +227,9 @@ class UnitTest(unittest.TestCase):
 
         self.server.status["members"][0]["health"] = 0.0
 
-        self.assertFalse(mongo_rep_admin.node_chk(self.server,
-                                                  self.args_array3))
+        self.assertEqual(
+            mongo_rep_admin.node_chk(
+                self.server, self.args_array3), self.status)
 
     def test_suppression_fail(self):
 
@@ -241,8 +243,9 @@ class UnitTest(unittest.TestCase):
 
         self.server.status["members"][0]["health"] = 0.0
 
-        self.assertFalse(mongo_rep_admin.node_chk(self.server,
-                                                  self.args_array2))
+        self.assertEqual(
+            mongo_rep_admin.node_chk(
+                self.server, self.args_array2), self.status)
 
     @mock.patch("mongo_rep_admin.gen_libs.display_data",
                 mock.Mock(return_value=True))
@@ -258,8 +261,9 @@ class UnitTest(unittest.TestCase):
 
         self.server.status["members"][0]["infoMessage"] = "Error Message Here"
 
-        self.assertFalse(mongo_rep_admin.node_chk(self.server,
-                                                  self.args_array))
+        self.assertEqual(
+            mongo_rep_admin.node_chk(
+                self.server, self.args_array), self.status)
 
     @mock.patch("mongo_rep_admin.gen_libs.display_data",
                 mock.Mock(return_value=True))
@@ -275,8 +279,9 @@ class UnitTest(unittest.TestCase):
 
         self.server.status["members"][0]["state"] = 8
 
-        self.assertFalse(mongo_rep_admin.node_chk(self.server,
-                                                  self.args_array))
+        self.assertEqual(
+            mongo_rep_admin.node_chk(
+                self.server, self.args_array), self.status)
 
     @mock.patch("mongo_rep_admin.gen_libs.display_data",
                 mock.Mock(return_value=True))
@@ -292,8 +297,9 @@ class UnitTest(unittest.TestCase):
 
         self.server.status["members"][0]["health"] = 0.0
 
-        self.assertFalse(mongo_rep_admin.node_chk(self.server,
-                                                  self.args_array))
+        self.assertEqual(
+            mongo_rep_admin.node_chk(
+                self.server, self.args_array), self.status)
 
     def test_good(self):
 
@@ -305,8 +311,9 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        self.assertFalse(mongo_rep_admin.node_chk(self.server,
-                                                  self.args_array))
+        self.assertEqual(
+            mongo_rep_admin.node_chk(
+                self.server, self.args_array), self.status)
 
 
 if __name__ == "__main__":

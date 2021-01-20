@@ -82,6 +82,7 @@ class UnitTest(unittest.TestCase):
 
         self.server = Server()
         self.args_array = {"-T": "TimeLag"}
+        self.status = (True, None)
 
     @mock.patch("mongo_rep_admin.chk_rep_stat")
     def test_prt_rep_stat(self, mock_stat):
@@ -96,8 +97,9 @@ class UnitTest(unittest.TestCase):
 
         mock_stat.return_value = True
 
-        self.assertFalse(mongo_rep_admin.prt_rep_stat(self.server,
-                                                      self.args_array))
+        self.assertEqual(
+            mongo_rep_admin.prt_rep_stat(
+                self.server, self.args_array), self.status)
 
 
 if __name__ == "__main__":

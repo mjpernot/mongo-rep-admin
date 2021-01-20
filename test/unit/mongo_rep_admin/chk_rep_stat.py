@@ -100,6 +100,7 @@ class UnitTest(unittest.TestCase):
 
         self.server = Server()
         self.args_array = {"-c": "config"}
+        self.status = (True, None)
 
     @mock.patch("mongo_rep_admin.rep_msg_chk")
     @mock.patch("mongo_rep_admin.rep_state_chk")
@@ -119,8 +120,9 @@ class UnitTest(unittest.TestCase):
         mock_msg.return_value = True
 
         with gen_libs.no_std_out():
-            self.assertFalse(mongo_rep_admin.chk_rep_stat(self.server,
-                                                          self.args_array))
+            self.assertEqual(
+                mongo_rep_admin.chk_rep_stat(
+                    self.server, self.args_array), self.status)
 
 
 if __name__ == "__main__":

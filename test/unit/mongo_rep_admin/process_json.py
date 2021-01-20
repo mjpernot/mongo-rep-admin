@@ -97,6 +97,8 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp -> Initialize testing environment.
+        test_mongo_failure -> Test with failed connection to Mongo.
+        test_mongo_successful -> Test with successful connection to Mongo.
         test_json_flatten -> Test with JSON format to standard out suppression.
         test_json_stdout_suppress -> Test with JSON format std out suppression.
         test_json_stdout -> Test with JSON format to standard out.
@@ -129,9 +131,51 @@ class UnitTest(unittest.TestCase):
         self.args_array2 = {}
         self.args_array3 = {"-z": True, "-a": True}
         self.args_array4 = {"-z": True, "-f": True}
+        self.conn = (True, None)
+        self.conn2 = (False, "Error Message")
+        self.status = (True, None)
+        self.status2 = (False, "_process_json: Error Message")
+        self.db_tbl = "db:tbl"
 
-    @mock.patch("mongo_rep_admin.gen_libs.display_data")
-    def test_json_flatten(self, mock_prt):
+    @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
+    def test_mongo_failure(self, mock_mongo):
+
+        """Function:  test_mongo_failure
+
+        Description:  Test with failed connection to Mongo.
+
+        Arguments:
+
+        """
+
+        mock_mongo.return_value = self.conn2
+
+        self.assertEqual(
+            mongo_rep_admin._process_json(
+                self.outdata, class_cfg="mongocfg", db_tbl=self.db_tbl,
+                args_array=self.args_array), self.status2)
+
+    @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
+    def test_mongo_successful(self, mock_mongo):
+
+        """Function:  test_mongo_successful
+
+        Description:  Test with successful connection to Mongo.
+
+        Arguments:
+
+        """
+
+        mock_mongo.return_value = self.conn
+
+        self.assertEqual(
+            mongo_rep_admin._process_json(
+                self.outdata, class_cfg="mongocfg", db_tbl=self.db_tbl,
+                args_array=self.args_array), self.status)
+
+    @mock.patch("mongo_rep_admin.gen_libs.display_data",
+                mock.Mock(return_value=True))
+    def test_json_flatten(self):
 
         """Function:  test_json_flatten
 
@@ -141,10 +185,10 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_prt.return_value = True
-
-        self.assertFalse(mongo_rep_admin._process_json(
-            self.outdata, args_array=self.args_array4))
+        self.assertEqual(
+            mongo_rep_admin._process_json(
+                self.outdata, args_array=self.args_array4),
+            self.status)
 
     def test_json_stdout_suppress(self):
 
@@ -156,11 +200,13 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        self.assertFalse(mongo_rep_admin._process_json(
-            self.outdata, args_array=self.args_array))
+        self.assertEqual(
+            mongo_rep_admin._process_json(
+                self.outdata, args_array=self.args_array), self.status)
 
-    @mock.patch("mongo_rep_admin.gen_libs.display_data")
-    def test_json_stdout(self, mock_prt):
+    @mock.patch("mongo_rep_admin.gen_libs.display_data",
+                mock.Mock(return_value=True))
+    def test_json_stdout(self):
 
         """Function:  test_json_stdout
 
@@ -170,10 +216,9 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_prt.return_value = True
-
-        self.assertFalse(mongo_rep_admin._process_json(
-            self.outdata, args_array=self.args_array2))
+        self.assertEqual(
+            mongo_rep_admin._process_json(
+                self.outdata, args_array=self.args_array2), self.status)
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     def test_mongo(self, mock_mongo):
@@ -186,14 +231,16 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_mongo.return_value = True
+        mock_mongo.return_value = self.conn
 
-        self.assertFalse(mongo_rep_admin._process_json(
-            self.outdata, class_cfg="mongocfg", db_tbl="db:tbl",
-            args_array=self.args_array))
+        self.assertEqual(
+            mongo_rep_admin._process_json(
+                self.outdata, class_cfg="mongocfg", db_tbl=self.db_tbl,
+                args_array=self.args_array), self.status)
 
-    @mock.patch("mongo_rep_admin.gen_libs.write_file")
-    def test_file_append(self, mock_file):
+    @mock.patch("mongo_rep_admin.gen_libs.write_file",
+                mock.Mock(return_value=True))
+    def test_file_append(self):
 
         """Function:  test_file_append
 
@@ -203,13 +250,14 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_file.return_value = True
+        self.assertEqual(
+            mongo_rep_admin._process_json(
+                self.outdata, ofile="Filename", args_array=self.args_array3),
+            self.status)
 
-        self.assertFalse(mongo_rep_admin._process_json(
-            self.outdata, ofile="Filename", args_array=self.args_array3))
-
-    @mock.patch("mongo_rep_admin.gen_libs.write_file")
-    def test_file(self, mock_file):
+    @mock.patch("mongo_rep_admin.gen_libs.write_file",
+                mock.Mock(return_value=True))
+    def test_file(self):
 
         """Function:  test_file
 
@@ -219,10 +267,10 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_file.return_value = True
-
-        self.assertFalse(mongo_rep_admin._process_json(
-            self.outdata, ofile="Filename", args_array=self.args_array))
+        self.assertEqual(
+            mongo_rep_admin._process_json(
+                self.outdata, ofile="Filename", args_array=self.args_array),
+            self.status)
 
     def test_email(self):
 
@@ -234,8 +282,10 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        self.assertFalse(mongo_rep_admin._process_json(
-            self.outdata, mail=self.mail, args_array=self.args_array))
+        self.assertEqual(
+            mongo_rep_admin._process_json(
+                self.outdata, mail=self.mail, args_array=self.args_array),
+            self.status)
 
 
 if __name__ == "__main__":
