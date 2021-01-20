@@ -12,7 +12,7 @@
 
     Usage:
         mongo_rep_admin.py -c file -d path
-            {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i db:coll -m file]
+            {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i [db:coll] -m file]
                 [-e toEmail {toEmail2, [...]} [-s subject]] |
              -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject]] [-z] |
              -M | -P | -S | -T }
@@ -21,31 +21,39 @@
     Arguments:
         -c file => Server configuration file.  Required arg.
         -d dir path => Directory path to config file (-c). Required arg.
+
         -L => Check Replication lag.
-        -j => Set output to JSON format.
-        -f => Flatten the JSON data structure to file and standard out.
-        -i database:collection => Name of database and collection.
-            Delimited by colon (:).  Default: sysmon:mongo_rep_lag
-        -m file => Mongo config file used for the insertion into a Mongo
-            database.  Do not include the .py extension.  Used only with the
-            -i option.
-        -o path/file => Directory path and file name for output.
-            Default is to overwrite the file.
-            Use the -a option to append to an existing file.
-        -a => Append output to output file.
-        -e to_email_addresses => Enables emailing capability for an option if
-            the option allows it.  Sends output to one or more email addresses.
-        -s subject_line => Subject line of email.  Optional, will create own
-            subject line if one is not provided.
-        -z => Suppress standard out.
+            -j => Set output to JSON format.
+            -f => Flatten the JSON data structure to file and standard out.
+            -i [database:collection] => Name of database and collection.
+                Delimited by colon (:).  Default: sysmon:mongo_rep_lag
+            -m file => Mongo config file used for the insertion into a Mongo
+                database.  Do not include the .py extension.
+            -o path/file => Directory path and file name for output.
+                Default is to overwrite the file.
+            -a => Append output to output file.
+            -e to_email_addresses => Sends output to one or more email
+                addresses.  Email addresses are space delimited.
+            -s subject_line => Subject line of email.
+            -z => Suppress standard out.
+
         -M => Show current members in replication set.
-        -N => Node health check.  Only returns something if a node is down or a
-            problem is detected.  Can use the email option to send.
+
+        -N => Node health check.  Returns if a node has a problem or is down.
+            -f => Flatten the JSON data structure to file and standard out.
+            -e to_email_addresses => Sends output to one or more email
+                addresses.  Email addresses are space delimited.
+            -s subject_line => Subject line of email.
+            -z => Suppress standard out.
+
         -P => Show priority for members in replication set.
+
         -S => Check status of rep for members in rep set, but will only print
             the status if errors are detected.
+
         -T => Check status of rep for members in rep set and will print the
             status in all checks.
+
         -v => Display version of this program.
         -h => Help and usage message.
 
@@ -66,34 +74,24 @@
             # Single Configuration file for Mongo Database Server.
             user = "USER"
             japd = "PSWORD"
-            # Mongo DB host information
             host = "IP_ADDRESS"
             name = "HOSTNAME"
-            # Mongo database port (default is 27017)
             port = 27017
-            # Mongo configuration settings
             conf_file = None
-            # Authentication required:  True|False
             auth = True
-            # Authentication database
             auth_db = "admin"
-            # Use Mongo client arguments
+            auth_mech = "SCRAM-SHA-1"
             use_arg = True
-            # Use Mongo client uri
             use_uri = False
 
             2.)  Replica Set connection:  Same format as above, but with these
-                additional entries at the end of the configuration file:
+                additional entries at the end of the configuration file.  By
+                default all these entries are set to None to represent not
+                connecting to a replica set.
 
-            # Replica set name.
-            #    Format:  repset = "REPLICA_SET_NAME"
-            repset = None
-            # Replica host listing.
-            #    Format:  repset_hosts = "HOST1:PORT, HOST2:PORT, [...]"
-            repset_hosts = None
-            # Database to authentication to.
-            #    Format:  db_auth = "AUTHENTICATION_DATABASE"
-            db_auth = None
+            repset = "REPLICA_SET_NAME"
+            repset_hosts = "HOST1:PORT, HOST2:PORT, HOST3:PORT, [...]"
+            db_auth = "AUTHENTICATION_DATABASE"
 
         Configuration modules -> Name is runtime dependent as it can be used to
             connect to different databases with different names.
@@ -115,7 +113,6 @@ import json
 # Local
 import lib.arg_parser as arg_parser
 import lib.gen_libs as gen_libs
-import lib.cmds_gen as cmds_gen
 import lib.gen_class as gen_class
 import mongo_lib.mongo_libs as mongo_libs
 import mongo_lib.mongo_class as mongo_class
@@ -212,9 +209,13 @@ def chk_rep_stat(repset, args_array, **kwargs):
         (input) args_array -> Array of command line options and values.
         (input) **kwargs:
             prt_all -> True|False on printing all status messages.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
+    status = (True, None)
     args_array = dict(args_array)
     print("\nReplication Status Check for Rep Set:  %s" % (repset.repset))
     prt_all = kwargs.get("prt_all", False)
@@ -226,6 +227,8 @@ def chk_rep_stat(repset, args_array, **kwargs):
         rep_state_chk(item, prt_all)
         rep_msg_chk(item)
 
+    return status
+
 
 def prt_rep_stat(repset, args_array, **kwargs):
 
@@ -236,11 +239,17 @@ def prt_rep_stat(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
+    status = (True, None)
     args_array = dict(args_array)
     chk_rep_stat(repset, args_array, prt_all=args_array["-T"])
+
+    return status
 
 
 def fetch_priority(repset, args_array, **kwargs):
@@ -252,22 +261,34 @@ def fetch_priority(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
     args_array = dict(args_array)
-    print("\nMembers => priority of replica set: %s" % (repset.repset))
     coll = mongo_class.Coll(
         repset.name, repset.user, repset.japd, host=repset.host,
         port=repset.port, db="local", coll="system.replset", auth=repset.auth,
         conf_file=repset.conf_file, auth_db=repset.auth_db,
-        use_arg=repset.use_arg, use_uri=repset.use_uri)
-    coll.connect()
+        use_arg=repset.use_arg, use_uri=repset.use_uri,
+        auth_mech=repset.auth_mech)
+    status = coll.connect()
 
-    for item in coll.coll_find1()["members"]:
-        print("\t{0} => {1}".format(item["host"], item["priority"]))
+    if status[0]:
+        print("\nMembers => priority of replica set: %s" % (repset.repset))
 
-    cmds_gen.disconnect([coll])
+        for item in coll.coll_find1()["members"]:
+            print("\t{0} => {1}".format(item["host"], item["priority"]))
+
+        mongo_libs.disconnect([coll])
+
+    else:
+        status = (status[0],
+                  "fetch_priority:  Connection failure:  %s" % (status[1]))
+
+    return status
 
 
 def fetch_members(repset, args_array, **kwargs):
@@ -278,11 +299,15 @@ def fetch_members(repset, args_array, **kwargs):
         the primary server.
 
     Arguments:
-        (ininput) repset -> Replication set instance.
+        (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
+    status = (True, None)
     args_array = dict(args_array)
     print("\nMembers of replica set: %s" % (repset.repset))
     rep_status = repset.adm_cmd("replSetGetStatus")
@@ -294,6 +319,8 @@ def fetch_members(repset, args_array, **kwargs):
 
     for second in secondaries:
         print("\t%s" % (second["name"]))
+
+    return status
 
 
 def get_master(rep_status, **kwargs):
@@ -349,7 +376,7 @@ def chk_mem_rep_lag(rep_status, **kwargs):
     """Function:  chk_mem_rep_lag
 
     Description:  Process each member in the replication set and check for
-               replication lag.
+        replication lag.
 
     Arguments:
         (input) rep_status -> Member document from replSetGetStatus.
@@ -362,6 +389,9 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             args_array -> Array of command line options and values.
             suf -> Primary|Freshest Secondary who has latest date time.
             optdt -> Primary|Best Oplog date time.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
@@ -397,10 +427,12 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
 
     if json_fmt:
-        _process_json(outdata, **kwargs)
+        status = _process_json(outdata, **kwargs)
 
     else:
-        _process_std(outdata, **kwargs)
+        status = _process_std(outdata, **kwargs)
+
+    return status
 
 
 def _process_std(outdata, **kwargs):
@@ -415,9 +447,13 @@ def _process_std(outdata, **kwargs):
         (input) **kwargs:
             suf -> Primary|Freshest Secondary who has latest date time.
             args_array -> Array of command line options and values.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
+    status = (True, None)
     mode = "w"
     mongo_cfg = kwargs.get("class_cfg", None)
     db_tbl = kwargs.get("db_tbl", None)
@@ -439,7 +475,10 @@ def _process_std(outdata, **kwargs):
 
     if mongo_cfg and db_tbl:
         dbs, tbl = db_tbl.split(":")
-        mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
+        status = mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
+
+    if not status[0]:
+        status = (status[0], "_process_std: " + status[1])
 
     if ofile:
         f_hldr = gen_libs.openfile(ofile, mode)
@@ -457,6 +496,8 @@ def _process_std(outdata, **kwargs):
         for item in body:
             print(item)
 
+    return status
+
 
 def _process_json(outdata, **kwargs):
 
@@ -472,9 +513,13 @@ def _process_json(outdata, **kwargs):
             class_cfg -> Server class configuration settings.
             mail -> Mail instance.
             args_array -> Array of command line options and values.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
+    status = (True, None)
     mode = "w"
     indent = 4
     mongo_cfg = kwargs.get("class_cfg", None)
@@ -493,7 +538,10 @@ def _process_json(outdata, **kwargs):
 
     if mongo_cfg and db_tbl:
         dbs, tbl = db_tbl.split(":")
-        mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
+        status = mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
+
+    if not status[0]:
+        status = (status[0], "_process_json: " + status[1])
 
     if ofile:
         gen_libs.write_file(ofile, mode, jdata)
@@ -504,6 +552,8 @@ def _process_json(outdata, **kwargs):
 
     if not args_array.get("-z", False):
         gen_libs.display_data(jdata)
+
+    return status
 
 
 def chk_rep_lag(repset, args_array, **kwargs):
@@ -516,6 +566,9 @@ def chk_rep_lag(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
@@ -539,10 +592,12 @@ def chk_rep_lag(repset, args_array, **kwargs):
         optime_date = get_optimedate(rep_status)
         suffix = "freshest secondary"
 
-    chk_mem_rep_lag(
+    status = chk_mem_rep_lag(
         rep_status, optdt=optime_date, suf=suffix, json=json_fmt,
         ofile=outfile, db_tbl=db_tbl, class_cfg=mongo_cfg,
         args_array=args_array, **kwargs)
+
+    return status
 
 
 def node_chk(mongo, args_array, **kwargs):
@@ -557,36 +612,24 @@ def node_chk(mongo, args_array, **kwargs):
         (input) args_array -> Array of command line options and values.
         (input) **kwargs:
             mail -> Mail instance.
+        (output) status -> Tuple on connection status.
+            status[0] - True|False - Connection successful.
+            status[1] - Error message if connection failed.
 
     """
 
-    # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter).
-    good_state = [1, 2, 7]
-    indent = 4
+    status = (True, None)
     args_array = dict(args_array)
     mail = kwargs.get("mail", None)
     node_status = {}
 
-    if args_array.get("-f", False):
-        indent = None
+    indent = None if args_array.get("-f", False) else 4
 
-    # Check each node.
     for node in mongo.adm_cmd("replSetGetStatus").get("members"):
-        status = {}
+        status2 = single_node_chk(node)
 
-        if not node.get("health"):
-            status["Health"] = "Bad"
-
-        if node.get("state") not in good_state:
-            status["State"] = node.get("state")
-            status["State_Message"] = node.get("stateStr")
-
-        if node.get("infoMessage"):
-            status["Error_Message"] = node.get("infoMessage")
-
-        if status:
-            node_name = "Node: %s" % node.get("name")
-            node_status[node_name] = status
+        if status2:
+            node_status[node.get("name")] = status2
 
     if node_status:
         jnode_status = json.dumps(node_status, indent=indent)
@@ -601,6 +644,69 @@ def node_chk(mongo, args_array, **kwargs):
 
             mail.add_2_msg(jnode_status)
             mail.send_mail()
+
+    return status
+
+
+def single_node_chk(node, **kwargs):
+
+    """Function:  single_node_chk
+
+    Description:  Check the status of a single node.  Will only output
+        something if a node is down or an error is detected.
+
+    Arguments:
+        (input) node -> Dictionary of Mongo node health stats.
+        (output) status -> Dictionary of node stats found.
+
+    """
+
+    # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter).
+    good_state = [1, 2, 7]
+    node = dict(node)
+    status = {}
+
+    if not node.get("health"):
+        status["Health"] = "Bad"
+
+    if node.get("state") not in good_state:
+        status["State"] = node.get("state")
+        status["State_Message"] = node.get("stateStr")
+
+    if node.get("infoMessage"):
+        status["Error_Message"] = node.get("infoMessage")
+
+    return status
+
+
+def _call_func(args_array, func_dict, repinst, **kwargs):
+
+    """Function:  _call_func
+
+    Description:  Private function for run_program.  Call each function
+        selected.
+
+    Arguments:
+        (input) args_array -> Dict of command line options and values.
+        (input) func_dict -> Dictionary list of functions and options.
+        (input) repset -> Replication set instance.
+
+    """
+
+    args_array = dict(args_array)
+    func_dict = dict(func_dict)
+    mail = None
+
+    if args_array.get("-e", None):
+        mail = gen_class.setup_mail(
+            args_array.get("-e"), subj=args_array.get("-s", None))
+
+    # Call function: Intersection of command line & function dict.
+    for item in set(args_array.keys()) & set(func_dict.keys()):
+        status3 = func_dict[item](repinst, args_array, mail=mail)
+
+        if not status3[0]:
+            print("Error detected:  %s" % (status3[1]))
 
 
 def run_program(args_array, func_dict, **kwargs):
@@ -617,46 +723,54 @@ def run_program(args_array, func_dict, **kwargs):
 
     args_array = dict(args_array)
     func_dict = dict(func_dict)
-    mail = None
     server = gen_libs.load_module(args_array["-c"], args_array["-d"])
+
+    # Only pass authorization mechanism if present.
+    auth_mech = {"auth_mech": server.auth_mech} if hasattr(
+        server, "auth_mech") else {}
+
     coll = mongo_class.Coll(
         server.name, server.user, server.japd, host=server.host,
         port=server.port, db="local", coll="system.replset", auth=server.auth,
         conf_file=server.conf_file, auth_db=server.auth_db,
-        use_arg=server.use_arg, use_uri=server.use_uri)
-    coll.connect()
+        use_arg=server.use_arg, use_uri=server.use_uri, **auth_mech)
+    status = coll.connect()
 
-    # Is replication setup.
-    if coll.coll_cnt() != 0:
+    if status[0]:
 
-        # Get replica set name if not in config.
-        if server.repset:
-            rep_set = server.repset
+        # Is replication setup.
+        if coll.coll_cnt() != 0:
+
+            # Get replica set name if not in config.
+            if server.repset:
+                rep_set = server.repset
+
+            else:
+                rep_set = coll.coll_find1().get("_id")
+
+            repinst = mongo_class.RepSet(
+                server.name, server.user, server.japd, host=server.host,
+                port=server.port, auth=server.auth, repset=rep_set,
+                repset_hosts=server.repset_hosts, auth_db=server.auth_db,
+                use_arg=server.use_arg, use_uri=server.use_uri, **auth_mech)
+            status2 = repinst.connect()
+
+            if status2[0]:
+
+                _call_func(args_array, func_dict, repinst)
+                mongo_libs.disconnect([repinst])
+
+            else:
+                print("run_program.RepSet: Connection failure:  %s"
+                      % (status2[1]))
 
         else:
-            rep_set = coll.coll_find1().get("_id")
+            gen_libs.prt_msg("Error", "No replication found.", 0)
 
-        repinst = mongo_class.RepSet(
-            server.name, server.user, server.japd, host=server.host,
-            port=server.port, auth=server.auth, repset=rep_set,
-            repset_hosts=server.repset_hosts, auth_db=server.auth_db,
-            use_arg=server.use_arg, use_uri=server.use_uri)
-        repinst.connect()
-
-        if args_array.get("-e", None):
-            mail = gen_class.setup_mail(args_array.get("-e"),
-                                        subj=args_array.get("-s", None))
-
-        # Call function(s) - intersection of command line and function dict.
-        for item in set(args_array.keys()) & set(func_dict.keys()):
-            func_dict[item](repinst, args_array, mail=mail, **kwargs)
-
-        cmds_gen.disconnect([repinst])
+        mongo_libs.disconnect([coll])
 
     else:
-        gen_libs.prt_msg("Error", "No replication found.", 0)
-
-    cmds_gen.disconnect([coll])
+        print("run_program.Coll: Connection failure:  %s" % (status[1]))
 
 
 def main():

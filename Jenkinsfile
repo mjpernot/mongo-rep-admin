@@ -22,7 +22,8 @@ pipeline {
                 source test_env/bin/activate
                 pip2 install mock==2.0.0 --user
                 pip2 install psutil==5.4.3 --user
-                pip2 install pymongo==3.2.0 --user
+                pip2 install pymongo==3.8.0 --user
+                ./test/unit/mongo_rep_admin/_call_func.py
                 ./test/unit/mongo_rep_admin/_process_std.py
                 ./test/unit/mongo_rep_admin/chk_mem_rep_lag.py
                 ./test/unit/mongo_rep_admin/chk_rep_lag.py
@@ -40,6 +41,7 @@ pipeline {
                 ./test/unit/mongo_rep_admin/rep_msg_chk.py
                 ./test/unit/mongo_rep_admin/rep_state_chk.py
                 ./test/unit/mongo_rep_admin/run_program.py
+                ./test/unit/mongo_rep_admin/single_node_chk.py
                 deactivate
                 rm -rf test_env
                 """
