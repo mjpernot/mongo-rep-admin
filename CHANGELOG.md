@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.6.0] - 2021-09-07
+
+
 ## [3.5.0] - 2021-01-08
 - Verified to work with pymongo v3.8.0.
 - Updated to be used in FIPS 140-2 environment.
