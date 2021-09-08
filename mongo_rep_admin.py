@@ -135,7 +135,7 @@ def help_message():
     print(__doc__)
 
 
-def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
+def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1):
 
     """Function:  rep_health_chk
 
@@ -156,7 +156,7 @@ def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
         gen_libs.prt_msg("Health", "Good", prt_lvl)
 
 
-def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
+def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1):
 
     """Function:  rep_state_chk
 
@@ -179,7 +179,7 @@ def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
         gen_libs.prt_msg("State Msg", rep_stat.get("stateStr"), prt_lvl + 1)
 
 
-def rep_msg_chk(rep_stat, prt_lvl=1, **kwargs):
+def rep_msg_chk(rep_stat, prt_lvl=1):
 
     """Function:  rep_msg_chk
 
@@ -208,6 +208,7 @@ def chk_rep_stat(repset, args_array, **kwargs):
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
         (input) **kwargs:
+            mail -> Mail instance.
             prt_all -> True|False on printing all status messages.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
@@ -239,6 +240,8 @@ def prt_rep_stat(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (input) **kwargs:
+            mail -> Mail instance.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
             status[1] - Error message if connection failed.
@@ -261,6 +264,8 @@ def fetch_priority(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (input) **kwargs:
+            mail -> Mail instance.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
             status[1] - Error message if connection failed.
@@ -301,6 +306,8 @@ def fetch_members(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (input) **kwargs:
+            mail -> Mail instance.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
             status[1] - Error message if connection failed.
@@ -323,7 +330,7 @@ def fetch_members(repset, args_array, **kwargs):
     return status
 
 
-def get_master(rep_status, **kwargs):
+def get_master(rep_status):
 
     """Function:  get_master
 
@@ -347,7 +354,7 @@ def get_master(rep_status, **kwargs):
     return primary
 
 
-def get_optimedate(rep_status, **kwargs):
+def get_optimedate(rep_status):
 
     """Function:  get_optimedate
 
@@ -445,8 +452,14 @@ def _process_std(outdata, **kwargs):
     Arguments:
         (input) outdata -> JSON document from chk_mem_rep_lag function.
         (input) **kwargs:
-            suf -> Primary|Freshest Secondary who has latest date time.
+            json -> True|False - JSON format.
+            ofile -> file name - Name of output file.
+            db_tbl -> database:collection - Name of db and collection.
+            class_cfg -> Server class configuration settings.
+            mail -> Mail instance.
             args_array -> Array of command line options and values.
+            suf -> Primary|Freshest Secondary who has latest date time.
+            optdt -> Primary|Best Oplog date time.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
             status[1] - Error message if connection failed.
@@ -508,11 +521,14 @@ def _process_json(outdata, **kwargs):
     Arguments:
         (input) outdata -> JSON document from chk_mem_rep_lag function.
         (input) **kwargs:
+            json -> True|False - JSON format.
             ofile -> file name - Name of output file.
             db_tbl -> database:collection - Name of db and collection.
             class_cfg -> Server class configuration settings.
             mail -> Mail instance.
             args_array -> Array of command line options and values.
+            suf -> Primary|Freshest Secondary who has latest date time.
+            optdt -> Primary|Best Oplog date time.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
             status[1] - Error message if connection failed.
@@ -566,6 +582,8 @@ def chk_rep_lag(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (input) **kwargs:
+            mail -> Mail instance.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
             status[1] - Error message if connection failed.
@@ -648,7 +666,7 @@ def node_chk(mongo, args_array, **kwargs):
     return status
 
 
-def single_node_chk(node, **kwargs):
+def single_node_chk(node):
 
     """Function:  single_node_chk
 
@@ -679,7 +697,7 @@ def single_node_chk(node, **kwargs):
     return status
 
 
-def _call_func(args_array, func_dict, repinst, **kwargs):
+def _call_func(args_array, func_dict, repinst):
 
     """Function:  _call_func
 
@@ -709,7 +727,7 @@ def _call_func(args_array, func_dict, repinst, **kwargs):
             print("Error detected:  %s" % (status3[1]))
 
 
-def run_program(args_array, func_dict, **kwargs):
+def run_program(args_array, func_dict):
 
     """Function:  run_program
 

@@ -5,6 +5,8 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ## [3.6.0] - 2021-09-07
+### Changed
+- Removed unnesscary \*\*kwargs from argument lists.
 
 
 ## [3.5.0] - 2021-01-08
