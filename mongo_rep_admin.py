@@ -846,7 +846,7 @@ def main():
     file_crt_list = ["-o"]
     func_dict = {"-L": chk_rep_lag, "-M": fetch_members, "-S": chk_rep_stat,
                  "-P": fetch_priority, "-T": prt_rep_stat, "-N": node_chk}
-    opt_con_req_list = {"-i": ["-m"], "-s": ["-e"]}
+    opt_con_req_list = {"-i": ["-m"], "-s": ["-e"], "-u": ["-e"]}
     opt_def_dict = {"-j": False, "-i": "sysmon:mongo_rep_lag"}
     opt_multi_list = ["-e", "-s"]
     opt_req_list = ["-c", "-d"]

@@ -10,6 +10,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Added ability to override the default mail command and use mailx.
 
 ### Changed
+- main:  Add -u option to the conditional required list.
 - config/mongo.py.TEMPLATE:  Added SSL connection entries.
 - Removed unnesscary \*\*kwargs from argument lists.
 - Documentation updates.
