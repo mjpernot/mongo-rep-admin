@@ -43,9 +43,9 @@ class Mail(object):
     Description:  Class stub holder for gen_class.Mail class.
 
     Methods:
-        __init__ -> Class initialization.
-        add_2_msg -> Stub method holder for Mail.add_2_msg.
-        send_mail -> Stub method holder for Mail.send_mail.
+        __init__
+        add_2_msg
+        send_mail
 
     """
 
@@ -97,24 +97,24 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Initialize testing environment.
-        test_json_mongo_fail -> Test with failed connection to Mongo.
-        test_json_mongo_success -> Test with successful connection to Mongo.
-        test_std_out_mongo_fail -> Test with failed connection to Mongo
-        test_std_out_mongo_success -> Test with successful connection to Mongo.
-        test_std_out_email -> Test with standard out email option.
-        test_std_out_file_append -> Test standard out writing to file append.
-        test_std_out_file -> Test with standard out writing to file.
-        test_std_out_mongo -> Test with standard out writing to mongo.
-        test_std_out_suppress -> Test with standard out suppressed.
-        test_json_stdout_suppress -> Test with JSON format std out suppression.
-        test_json_stdout -> Test with JSON format to standard out.
-        test_no_rep_info -> Test with no replication information.
-        test_mongo -> Test with writing to mongo.
-        test_file -> Test with writing to file.
-        test_email -> Test with email option.
-        test_json -> Test with JSON format.
-        test_std_out -> Test with standard out.
+        setUp
+        test_json_mongo_fail
+        test_json_mongo_success
+        test_std_out_mongo_fail
+        test_std_out_mongo_success
+        test_std_out_email
+        test_std_out_file_append
+        test_std_out_file
+        test_std_out_mongo
+        test_std_out_suppress
+        test_json_stdout_suppress
+        test_json_stdout
+        test_no_rep_info
+        test_mongo
+        test_file
+        test_email
+        test_json
+        test_std_out
 
     """
 

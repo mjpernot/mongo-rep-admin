@@ -13,8 +13,8 @@
     Usage:
         mongo_rep_admin.py -c file -d path
             {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i [db:coll] -m file]
-                [-e toEmail {toEmail2, [...]} [-s subject]] |
-             -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject]] [-z] |
+                [-e toEmail {toEmail2, [...]} [-s subject] [-u]] |
+             -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject] [-u]] [-z] |
              -M | -P | -S | -T }
             [-v | -h]
 
@@ -35,6 +35,7 @@
             -e to_email_addresses => Sends output to one or more email
                 addresses.  Email addresses are space delimited.
             -s subject_line => Subject line of email.
+            -u => Override the default mail command and use mailx.
             -z => Suppress standard out.
 
         -M => Show current members in replication set.
@@ -44,6 +45,7 @@
             -e to_email_addresses => Sends output to one or more email
                 addresses.  Email addresses are space delimited.
             -s subject_line => Subject line of email.
+            -u => Override the default mail command and use mailx.
             -z => Suppress standard out.
 
         -P => Show priority for members in replication set.
@@ -69,7 +71,7 @@
             There are two ways to connect methods:  single Mongo database or a
             Mongo replica set.
 
-            1.)  Single database connection:
+            Single database connection:
 
             # Single Configuration file for Mongo Database Server.
             user = "USER"
@@ -84,7 +86,7 @@
             use_arg = True
             use_uri = False
 
-            2.)  Replica Set connection:  Same format as above, but with these
+            Replica Set connection:  Same format as above, but with these
                 additional entries at the end of the configuration file.  By
                 default all these entries are set to None to represent not
                 connecting to a replica set.
@@ -92,6 +94,31 @@
             repset = "REPLICA_SET_NAME"
             repset_hosts = "HOST1:PORT, HOST2:PORT, HOST3:PORT, [...]"
             db_auth = "AUTHENTICATION_DATABASE"
+
+            Note:  If using SSL connections then set one or more of the
+                following entries.  This will automatically enable SSL
+                connections. Below are the configuration settings for SSL
+                connections.  See configuration file for details on each entry:
+
+            ssl_client_ca = None
+            ssl_client_key = None
+            ssl_client_cert = None
+            ssl_client_phrase = None
+
+            Note:  FIPS Environment for Mongo.
+              If operating in a FIPS 104-2 environment, this package will
+              require at least a minimum of pymongo==3.8.0 or better.  It will
+              also require a manual change to the auth.py module in the pymongo
+              package.  See below for changes to auth.py.
+
+            - Locate the auth.py file python installed packages on the system
+                in the pymongo package directory.
+            - Edit the file and locate the "_password_digest" function.
+            - In the "_password_digest" function there is an line that should
+                match: "md5hash = hashlib.md5()".  Change it to
+                "md5hash = hashlib.md5(usedforsecurity=False)".
+            - Lastly, it will require the Mongo configuration file entry
+                auth_mech to be set to: SCRAM-SHA-1 or SCRAM-SHA-256.
 
         Configuration modules -> Name is runtime dependent as it can be used to
             connect to different databases with different names.

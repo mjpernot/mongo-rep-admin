@@ -85,10 +85,10 @@ class Coll(object):
     Description:  Class stub holder for mongo_class.Coll class.
 
     Methods:
-        __init__ -> Class initialization.
-        connect -> Stub holder for mongo_class.Coll.connect method.
-        coll_cnt -> Stub holder for mongo_class.Coll.coll_cnt method.
-        coll_find1 -> Stub holder for mongo_class.Coll.coll_find1 method.
+        __init__
+        connect
+        coll_cnt
+        coll_find1
 
     """
 
@@ -150,8 +150,8 @@ class RepSet(object):
     Description:  Class stub holder for mongo_class.RepSet class.
 
     Methods:
-        __init__ -> Class initialization.
-        connect -> Stub holder for mongo_class.RepSet.connect method.
+        __init__
+        connect
 
     """
 
@@ -198,7 +198,7 @@ class CfgTest(object):
     Description:  Class which is a representation of a cfg module.
 
     Methods:
-        __init__ -> Initialize configuration environment.
+        __init__
 
     """
 
@@ -233,7 +233,7 @@ class CfgTest2(object):
     Description:  Class which is a representation of a cfg module.
 
     Methods:
-        __init__ -> Initialize configuration environment.
+        __init__
 
     """
 
@@ -269,19 +269,19 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Initialize testing environment.
-        test_func_no_error -> Test with no error returned from function call.
-        test_func_error -> Test with error returned from function call.
-        test_auth_mech -> Test with auth_mech passed.
-        test_no_auth_mech -> Test with no auth_mech passed.
-        test_failed_conn_repset -> Test with failed connection.
-        test_successful_conn_repset -> Test with successful connection.
-        test_failed_conn_coll -> Test with failed connection.
-        test_successful_conn_coll -> Test with successful connection.
-        test_repset_not_set -> Test with repset name not set in config.
-        test_email -> Test with setting up email.
-        test_replication -> Test with replication setup.
-        test_no_replication -> Test with no replication setup.
+        setUp
+        test_func_no_error
+        test_func_error
+        test_auth_mech
+        test_no_auth_mech
+        test_failed_conn_repset
+        test_successful_conn_repset
+        test_failed_conn_coll
+        test_successful_conn_coll
+        test_repset_not_set
+        test_email
+        test_replication
+        test_no_replication
 
     """
 
