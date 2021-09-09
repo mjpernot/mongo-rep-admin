@@ -85,10 +85,10 @@ class Coll(object):
     Description:  Class stub holder for mongo_class.Coll class.
 
     Methods:
-        __init__ -> Class initialization.
-        connect -> Stub holder for mongo_class.Coll.connect method.
-        coll_cnt -> Stub holder for mongo_class.Coll.coll_cnt method.
-        coll_find1 -> Stub holder for mongo_class.Coll.coll_find1 method.
+        __init__
+        connect
+        coll_cnt
+        coll_find1
 
     """
 
@@ -150,8 +150,8 @@ class RepSet(object):
     Description:  Class stub holder for mongo_class.RepSet class.
 
     Methods:
-        __init__ -> Class initialization.
-        connect -> Stub holder for mongo_class.RepSet.connect method.
+        __init__
+        connect
 
     """
 
@@ -186,10 +186,10 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Initialize testing environment.
-        test_func_no_error -> Test with no error returned from function call.
-        test_func_error -> Test with error returned from function call.
-        test_email -> Test with setting up email.
+        setUp
+        test_func_no_error
+        test_func_error
+        test_email
 
     """
 

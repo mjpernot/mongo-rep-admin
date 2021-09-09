@@ -41,8 +41,8 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Initialize testing environment.
-        test_get_optimedate -> Test get_optimedate function.
+        setUp
+        test_get_optimedate
 
     """
 

@@ -41,10 +41,10 @@ class Mail(object):
     Description:  Class stub holder for gen_class.Mail class.
 
     Methods:
-        __init__ -> Class initialization.
-        create_subject -> Stub method holder for Mail.create_subject.
-        add_2_msg -> Stub method holder for Mail.add_2_msg.
-        send_mail -> Stub method holder for Mail.send_mail.
+        __init__
+        create_subject
+        add_2_msg
+        send_mail
 
     """
 
@@ -55,7 +55,6 @@ class Mail(object):
         Description:  Class initialization.
 
         Arguments:
-            None
 
         """
 
@@ -89,17 +88,23 @@ class Mail(object):
 
         return True
 
-    def send_mail(self):
+    def send_mail(self, use_mailx=False):
 
         """Method:  get_name
 
         Description:  Stub method holder for Mail.send_mail.
 
         Arguments:
+            (input) use_mailx -> True|False - To use mailx command.
 
         """
 
-        return True
+        status = True
+
+        if use_mailx:
+            status = True
+
+        return status
 
 
 class Server(object):
@@ -109,8 +114,8 @@ class Server(object):
     Description:  Class stub holder for mongo_class.Server class.
 
     Methods:
-        __init__ -> Class initialization.
-        adm_cmd -> Stub holder for mongo_class.Server.adm_cmd method.
+        __init__
+        adm_cmd
 
     """
 
@@ -153,15 +158,17 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Initialize testing environment.
-        test_mail_no_subj -> Test with mail and no subject set.
-        test_mail_fail -> Test with mail and failure.
-        test_flatten_fail -> Test with flatten JSON and failure.
-        test_suppression_fail -> Test with standard suppression and failure.
-        test_message_fail -> Test with message failure check.
-        test_state_fail -> Test with state failure check.
-        test_health_fail -> Test with health failure check.
-        test_good -> Test with good status return on all checks.
+        setUp
+        test_mail_no_subj_mailx
+        test_mail_no_subj
+        test_mail_fail_mailx
+        test_mail_fail
+        test_flatten_fail
+        test_suppression_fail
+        test_message_fail
+        test_state_fail
+        test_health_fail
+        test_good
 
     """
 
@@ -179,8 +186,25 @@ class UnitTest(unittest.TestCase):
         self.mail = Mail()
         self.args_array = {}
         self.args_array2 = {"-z": True}
+        self.args_array2a = {"-z": True, "-u": True}
         self.args_array3 = {"-f": True}
         self.status = (True, None)
+
+    def test_mail_no_subj_mailx(self):
+
+        """Function:  test_mail_no_subj_mailx
+
+        Description:  Test with mail and no subject set using mailx.
+
+        Arguments:
+
+        """
+
+        self.server.status["members"][0]["state"] = 8
+        self.mail.subj = None
+
+        self.assertEqual(mongo_rep_admin.node_chk(
+            self.server, self.args_array2a, mail=self.mail), self.status)
 
     def test_mail_no_subj(self):
 
@@ -197,6 +221,21 @@ class UnitTest(unittest.TestCase):
 
         self.assertEqual(mongo_rep_admin.node_chk(
             self.server, self.args_array2, mail=self.mail), self.status)
+
+    def test_mail_fail_mailx(self):
+
+        """Function:  test_mail_fail_mailx
+
+        Description:  Test with mail and failure using mailx.
+
+        Arguments:
+
+        """
+
+        self.server.status["members"][0]["state"] = 8
+
+        self.assertEqual(mongo_rep_admin.node_chk(
+            self.server, self.args_array2a, mail=self.mail), self.status)
 
     def test_mail_fail(self):
 

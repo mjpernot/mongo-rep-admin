@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.6.0] - 2021-09-07
+- Updated to work in Mongo 4.2.14 environment.
+- Updated to work in a SSL environment.
+- Added ability to override the default mail command and use mailx.
+
+### Changed
+- \_process_std, \_process_json, node_chk:  Added use_mailx option to send_mail function call.
+- main:  Add -u option to the conditional required list.
+- config/mongo.py.TEMPLATE:  Added SSL connection entries.
+- Removed unnesscary \*\*kwargs from argument lists.
+- Documentation updates.
+
+
 ## [3.5.0] - 2021-01-08
 - Verified to work with pymongo v3.8.0.
 - Updated to be used in FIPS 140-2 environment.
@@ -50,7 +63,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ### Changed
 - run_program:  Added repset_hosts to mongo_class.RepSet instance call.
-- chk_mem_rep_lag:  Changed dictionary to CamelCase.
+- chk_mem_rep_lag:  Changed dictionary to PascalCase.
 - chk_mem_rep_lag:  Refactored to handle only the JSON format and convert to standard out format if requested.
 - Documentation updates.
 

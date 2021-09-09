@@ -41,10 +41,10 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Initialize testing environment.
-        test_print_all -> Test with print all option.
-        test_good_health -> Test with good health.
-        test_bad_health -> Test with bad health.
+        setUp
+        test_print_all
+        test_good_health
+        test_bad_health
 
     """
 
