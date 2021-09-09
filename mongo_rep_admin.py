@@ -530,7 +530,7 @@ def _process_std(outdata, **kwargs):
         for line in body:
             mail.add_2_msg(line)
 
-        mail.send_mail()
+        mail.send_mail(use_mailx=args_array.get("-u", False))
 
     if not args_array.get("-z", False):
         for item in body:
