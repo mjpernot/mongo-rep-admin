@@ -13,8 +13,8 @@
     Usage:
         mongo_rep_admin.py -c file -d path
             {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i [db:coll] -m file]
-                [-e toEmail {toEmail2, [...]} [-s subject]] |
-             -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject]] [-z] |
+                [-e toEmail {toEmail2, [...]} [-s subject] [-u]] |
+             -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject] [-u]] [-z] |
              -M | -P | -S | -T }
             [-v | -h]
 
@@ -35,6 +35,7 @@
             -e to_email_addresses => Sends output to one or more email
                 addresses.  Email addresses are space delimited.
             -s subject_line => Subject line of email.
+            -u => Override the default mail command and use mailx.
             -z => Suppress standard out.
 
         -M => Show current members in replication set.
@@ -44,6 +45,7 @@
             -e to_email_addresses => Sends output to one or more email
                 addresses.  Email addresses are space delimited.
             -s subject_line => Subject line of email.
+            -u => Override the default mail command and use mailx.
             -z => Suppress standard out.
 
         -P => Show priority for members in replication set.
@@ -69,7 +71,7 @@
             There are two ways to connect methods:  single Mongo database or a
             Mongo replica set.
 
-            1.)  Single database connection:
+            Single database connection:
 
             # Single Configuration file for Mongo Database Server.
             user = "USER"
@@ -84,7 +86,7 @@
             use_arg = True
             use_uri = False
 
-            2.)  Replica Set connection:  Same format as above, but with these
+            Replica Set connection:  Same format as above, but with these
                 additional entries at the end of the configuration file.  By
                 default all these entries are set to None to represent not
                 connecting to a replica set.
@@ -92,6 +94,31 @@
             repset = "REPLICA_SET_NAME"
             repset_hosts = "HOST1:PORT, HOST2:PORT, HOST3:PORT, [...]"
             db_auth = "AUTHENTICATION_DATABASE"
+
+            Note:  If using SSL connections then set one or more of the
+                following entries.  This will automatically enable SSL
+                connections. Below are the configuration settings for SSL
+                connections.  See configuration file for details on each entry:
+
+            ssl_client_ca = None
+            ssl_client_key = None
+            ssl_client_cert = None
+            ssl_client_phrase = None
+
+            Note:  FIPS Environment for Mongo.
+              If operating in a FIPS 104-2 environment, this package will
+              require at least a minimum of pymongo==3.8.0 or better.  It will
+              also require a manual change to the auth.py module in the pymongo
+              package.  See below for changes to auth.py.
+
+            - Locate the auth.py file python installed packages on the system
+                in the pymongo package directory.
+            - Edit the file and locate the "_password_digest" function.
+            - In the "_password_digest" function there is an line that should
+                match: "md5hash = hashlib.md5()".  Change it to
+                "md5hash = hashlib.md5(usedforsecurity=False)".
+            - Lastly, it will require the Mongo configuration file entry
+                auth_mech to be set to: SCRAM-SHA-1 or SCRAM-SHA-256.
 
         Configuration modules -> Name is runtime dependent as it can be used to
             connect to different databases with different names.
@@ -135,7 +162,7 @@ def help_message():
     print(__doc__)
 
 
-def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
+def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1):
 
     """Function:  rep_health_chk
 
@@ -156,7 +183,7 @@ def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
         gen_libs.prt_msg("Health", "Good", prt_lvl)
 
 
-def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
+def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1):
 
     """Function:  rep_state_chk
 
@@ -179,7 +206,7 @@ def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1, **kwargs):
         gen_libs.prt_msg("State Msg", rep_stat.get("stateStr"), prt_lvl + 1)
 
 
-def rep_msg_chk(rep_stat, prt_lvl=1, **kwargs):
+def rep_msg_chk(rep_stat, prt_lvl=1):
 
     """Function:  rep_msg_chk
 
@@ -208,6 +235,7 @@ def chk_rep_stat(repset, args_array, **kwargs):
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
         (input) **kwargs:
+            mail -> Mail instance.
             prt_all -> True|False on printing all status messages.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
@@ -239,6 +267,8 @@ def prt_rep_stat(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (input) **kwargs:
+            mail -> Mail instance.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
             status[1] - Error message if connection failed.
@@ -261,6 +291,8 @@ def fetch_priority(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (input) **kwargs:
+            mail -> Mail instance.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
             status[1] - Error message if connection failed.
@@ -301,6 +333,8 @@ def fetch_members(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (input) **kwargs:
+            mail -> Mail instance.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
             status[1] - Error message if connection failed.
@@ -323,7 +357,7 @@ def fetch_members(repset, args_array, **kwargs):
     return status
 
 
-def get_master(rep_status, **kwargs):
+def get_master(rep_status):
 
     """Function:  get_master
 
@@ -347,7 +381,7 @@ def get_master(rep_status, **kwargs):
     return primary
 
 
-def get_optimedate(rep_status, **kwargs):
+def get_optimedate(rep_status):
 
     """Function:  get_optimedate
 
@@ -445,8 +479,14 @@ def _process_std(outdata, **kwargs):
     Arguments:
         (input) outdata -> JSON document from chk_mem_rep_lag function.
         (input) **kwargs:
-            suf -> Primary|Freshest Secondary who has latest date time.
+            json -> True|False - JSON format.
+            ofile -> file name - Name of output file.
+            db_tbl -> database:collection - Name of db and collection.
+            class_cfg -> Server class configuration settings.
+            mail -> Mail instance.
             args_array -> Array of command line options and values.
+            suf -> Primary|Freshest Secondary who has latest date time.
+            optdt -> Primary|Best Oplog date time.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
             status[1] - Error message if connection failed.
@@ -490,7 +530,7 @@ def _process_std(outdata, **kwargs):
         for line in body:
             mail.add_2_msg(line)
 
-        mail.send_mail()
+        mail.send_mail(use_mailx=args_array.get("-u", False))
 
     if not args_array.get("-z", False):
         for item in body:
@@ -508,11 +548,14 @@ def _process_json(outdata, **kwargs):
     Arguments:
         (input) outdata -> JSON document from chk_mem_rep_lag function.
         (input) **kwargs:
+            json -> True|False - JSON format.
             ofile -> file name - Name of output file.
             db_tbl -> database:collection - Name of db and collection.
             class_cfg -> Server class configuration settings.
             mail -> Mail instance.
             args_array -> Array of command line options and values.
+            suf -> Primary|Freshest Secondary who has latest date time.
+            optdt -> Primary|Best Oplog date time.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
             status[1] - Error message if connection failed.
@@ -548,7 +591,7 @@ def _process_json(outdata, **kwargs):
 
     if mail:
         mail.add_2_msg(jdata)
-        mail.send_mail()
+        mail.send_mail(use_mailx=args_array.get("-u", False))
 
     if not args_array.get("-z", False):
         gen_libs.display_data(jdata)
@@ -566,6 +609,8 @@ def chk_rep_lag(repset, args_array, **kwargs):
     Arguments:
         (input) repset -> Replication set instance.
         (input) args_array -> Array of command line options and values.
+        (input) **kwargs:
+            mail -> Mail instance.
         (output) status -> Tuple on connection status.
             status[0] - True|False - Connection successful.
             status[1] - Error message if connection failed.
@@ -643,12 +688,12 @@ def node_chk(mongo, args_array, **kwargs):
                 mail.create_subject(subj=subj)
 
             mail.add_2_msg(jnode_status)
-            mail.send_mail()
+            mail.send_mail(use_mailx=args_array.get("-u", False))
 
     return status
 
 
-def single_node_chk(node, **kwargs):
+def single_node_chk(node):
 
     """Function:  single_node_chk
 
@@ -679,7 +724,7 @@ def single_node_chk(node, **kwargs):
     return status
 
 
-def _call_func(args_array, func_dict, repinst, **kwargs):
+def _call_func(args_array, func_dict, repinst):
 
     """Function:  _call_func
 
@@ -709,7 +754,7 @@ def _call_func(args_array, func_dict, repinst, **kwargs):
             print("Error detected:  %s" % (status3[1]))
 
 
-def run_program(args_array, func_dict, **kwargs):
+def run_program(args_array, func_dict):
 
     """Function:  run_program
 
@@ -801,7 +846,7 @@ def main():
     file_crt_list = ["-o"]
     func_dict = {"-L": chk_rep_lag, "-M": fetch_members, "-S": chk_rep_stat,
                  "-P": fetch_priority, "-T": prt_rep_stat, "-N": node_chk}
-    opt_con_req_list = {"-i": ["-m"], "-s": ["-e"]}
+    opt_con_req_list = {"-i": ["-m"], "-s": ["-e"], "-u": ["-e"]}
     opt_def_dict = {"-j": False, "-i": "sysmon:mongo_rep_lag"}
     opt_multi_list = ["-e", "-s"]
     opt_req_list = ["-c", "-d"]

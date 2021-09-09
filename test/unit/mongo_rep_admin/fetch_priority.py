@@ -42,9 +42,9 @@ class Coll(object):
     Description:  Class stub holder for mongo_class.Coll class.
 
     Methods:
-        __init__ -> Class initialization.
-        connect -> Stub holder for mongo_class.Coll.connect method.
-        coll_find1 -> Stub holder for mongo_class.Coll.coll_find1 method.
+        __init__
+        connect
+        coll_find1
 
     """
 
@@ -94,7 +94,7 @@ class Server(object):
     Description:  Class stub holder for mongo_class.Server class.
 
     Methods:
-        __init__ -> Class initialization.
+        __init__
 
     """
 
@@ -129,12 +129,12 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Initialize testing environment.
-        test_failed_connection -> Test with failed connection.
-        test_succesful_connection -> Test with successful connection.
-        test_multiple_list -> Test return multiple members.
-        test_empty_list -> Test return no members.
-        test_fetch_priority -> Test fetch_priority function.
+        setUp
+        test_failed_connection
+        test_succesful_connection
+        test_multiple_list
+        test_empty_list
+        test_fetch_priority
 
     """
 
