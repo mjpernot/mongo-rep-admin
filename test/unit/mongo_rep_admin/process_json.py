@@ -55,7 +55,6 @@ class Mail(object):
         Description:  Class initialization.
 
         Arguments:
-            None
 
         """
 
@@ -76,17 +75,23 @@ class Mail(object):
 
         return True
 
-    def send_mail(self):
+    def send_mail(self, use_mailx=False):
 
         """Method:  get_name
 
         Description:  Stub method holder for Mail.send_mail.
 
         Arguments:
+            (input) use_mailx -> True|False - To use mailx command.
 
         """
 
-        return True
+        status = True
+
+        if use_mailx:
+            status = True
+
+        return status
 
 
 class UnitTest(unittest.TestCase):
@@ -105,6 +110,7 @@ class UnitTest(unittest.TestCase):
         test_mongo
         test_file_append
         test_file
+        test_email_mailx
         test_email
 
     """
@@ -128,6 +134,7 @@ class UnitTest(unittest.TestCase):
                                                "%Y-%m-%d %H:%M:%S"),
             "Slaves": ["slave1", "slave2"]}
         self.args_array = {"-z": True}
+        self.args_arraya = {"-z": True, "-u": True}
         self.args_array2 = {}
         self.args_array3 = {"-z": True, "-a": True}
         self.args_array4 = {"-z": True, "-f": True}
@@ -270,6 +277,21 @@ class UnitTest(unittest.TestCase):
         self.assertEqual(
             mongo_rep_admin._process_json(
                 self.outdata, ofile="Filename", args_array=self.args_array),
+            self.status)
+
+    def test_email_mailx(self):
+
+        """Function:  test_email_mailx
+
+        Description:  Test with email option using mailx.
+
+        Arguments:
+
+        """
+
+        self.assertEqual(
+            mongo_rep_admin._process_json(
+                self.outdata, mail=self.mail, args_array=self.args_arraya),
             self.status)
 
     def test_email(self):
