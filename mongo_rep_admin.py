@@ -13,8 +13,8 @@
     Usage:
         mongo_rep_admin.py -c file -d path
             {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i [db:coll] -m file]
-                [-e toEmail {toEmail2, [...]} [-s subject]] |
-             -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject]] [-z] |
+                [-e toEmail {toEmail2, [...]} [-s subject] [-u]] |
+             -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject] [-u]] [-z] |
              -M | -P | -S | -T }
             [-v | -h]
 
@@ -35,6 +35,7 @@
             -e to_email_addresses => Sends output to one or more email
                 addresses.  Email addresses are space delimited.
             -s subject_line => Subject line of email.
+            -u => Override the default mail command and use mailx.
             -z => Suppress standard out.
 
         -M => Show current members in replication set.
@@ -44,6 +45,7 @@
             -e to_email_addresses => Sends output to one or more email
                 addresses.  Email addresses are space delimited.
             -s subject_line => Subject line of email.
+            -u => Override the default mail command and use mailx.
             -z => Suppress standard out.
 
         -P => Show priority for members in replication set.

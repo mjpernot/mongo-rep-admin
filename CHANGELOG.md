@@ -5,6 +5,10 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ## [3.6.0] - 2021-09-07
+- Updated to work in Mongo 4.2.14 environment.
+- Updated to work in a SSL environment.
+- Added ability to override the default mail command and use mailx.
+
 ### Changed
 - config/mongo.py.TEMPLATE:  Added SSL connection entries.
 - Removed unnesscary \*\*kwargs from argument lists.
