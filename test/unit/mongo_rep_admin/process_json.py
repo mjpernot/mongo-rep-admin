@@ -42,9 +42,9 @@ class Mail(object):
     Description:  Class stub holder for gen_class.Mail class.
 
     Methods:
-        __init__ -> Class initialization.
-        add_2_msg -> Stub method holder for Mail.add_2_msg.
-        send_mail -> Stub method holder for Mail.send_mail.
+        __init__
+        add_2_msg
+        send_mail
 
     """
 
@@ -96,16 +96,16 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Initialize testing environment.
-        test_mongo_failure -> Test with failed connection to Mongo.
-        test_mongo_successful -> Test with successful connection to Mongo.
-        test_json_flatten -> Test with JSON format to standard out suppression.
-        test_json_stdout_suppress -> Test with JSON format std out suppression.
-        test_json_stdout -> Test with JSON format to standard out.
-        test_mongo -> Test with writing to mongo.
-        test_file_append -> Test with writing to file in append mode.
-        test_file -> Test with writing to file.
-        test_email -> Test with email option.
+        setUp
+        test_mongo_failure
+        test_mongo_successful
+        test_json_flatten
+        test_json_stdout_suppress
+        test_json_stdout
+        test_mongo
+        test_file_append
+        test_file
+        test_email
 
     """
 
