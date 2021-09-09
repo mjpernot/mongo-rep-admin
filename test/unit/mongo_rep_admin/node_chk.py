@@ -41,10 +41,10 @@ class Mail(object):
     Description:  Class stub holder for gen_class.Mail class.
 
     Methods:
-        __init__ -> Class initialization.
-        create_subject -> Stub method holder for Mail.create_subject.
-        add_2_msg -> Stub method holder for Mail.add_2_msg.
-        send_mail -> Stub method holder for Mail.send_mail.
+        __init__
+        create_subject
+        add_2_msg
+        send_mail
 
     """
 
@@ -109,8 +109,8 @@ class Server(object):
     Description:  Class stub holder for mongo_class.Server class.
 
     Methods:
-        __init__ -> Class initialization.
-        adm_cmd -> Stub holder for mongo_class.Server.adm_cmd method.
+        __init__
+        adm_cmd
 
     """
 
@@ -153,15 +153,15 @@ class UnitTest(unittest.TestCase):
     Description:  Class which is a representation of a unit testing.
 
     Methods:
-        setUp -> Initialize testing environment.
-        test_mail_no_subj -> Test with mail and no subject set.
-        test_mail_fail -> Test with mail and failure.
-        test_flatten_fail -> Test with flatten JSON and failure.
-        test_suppression_fail -> Test with standard suppression and failure.
-        test_message_fail -> Test with message failure check.
-        test_state_fail -> Test with state failure check.
-        test_health_fail -> Test with health failure check.
-        test_good -> Test with good status return on all checks.
+        setUp
+        test_mail_no_subj
+        test_mail_fail
+        test_flatten_fail
+        test_suppression_fail
+        test_message_fail
+        test_state_fail
+        test_health_fail
+        test_good
 
     """
 
