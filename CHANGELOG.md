@@ -10,7 +10,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Added ability to override the default mail command and use mailx.
 
 ### Changed
-- \_process_std, \_process_json:  Added use_mailx option to send_mail function call.
+- \_process_std, \_process_json, node_chk:  Added use_mailx option to send_mail function call.
 - main:  Add -u option to the conditional required list.
 - config/mongo.py.TEMPLATE:  Added SSL connection entries.
 - Removed unnesscary \*\*kwargs from argument lists.

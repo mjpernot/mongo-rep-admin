@@ -688,7 +688,7 @@ def node_chk(mongo, args_array, **kwargs):
                 mail.create_subject(subj=subj)
 
             mail.add_2_msg(jnode_status)
-            mail.send_mail()
+            mail.send_mail(use_mailx=args_array.get("-u", False))
 
     return status
 
