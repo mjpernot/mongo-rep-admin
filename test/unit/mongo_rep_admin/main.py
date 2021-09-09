@@ -9,7 +9,6 @@
         test/unit/mongo_rep_admin/main.py
 
     Arguments:
-        None
 
 """
 
@@ -63,7 +62,6 @@ class UnitTest(unittest.TestCase):
         Description:  Initialization for unit testing.
 
         Arguments:
-            None
 
         """
 
