@@ -76,17 +76,23 @@ class Mail(object):
 
         return True
 
-    def send_mail(self):
+    def send_mail(self, use_mailx=False):
 
         """Method:  get_name
 
         Description:  Stub method holder for Mail.send_mail.
 
         Arguments:
+            (input) use_mailx -> True|False - To use mailx command.
 
         """
 
-        return True
+        status = True
+
+        if use_mailx:
+            status = True
+
+        return status
 
 
 class UnitTest(unittest.TestCase):
@@ -111,6 +117,7 @@ class UnitTest(unittest.TestCase):
         test_no_rep_info
         test_mongo
         test_file
+        test_email_mailx
         test_email
         test_json
         test_std_out
@@ -152,6 +159,7 @@ class UnitTest(unittest.TestCase):
         self.optdt = datetime.datetime.strptime(self.date, "%Y-%m-%d %H:%M:%S")
         self.get_master = {"name": "master_server"}
         self.args_array = {"-z": True}
+        self.args_arraya = {"-z": True, "-u": True}
         self.args_array2 = {}
         self.args_array3 = {"-z": True, "-a": True}
         self.conn = (True, None)
@@ -446,6 +454,24 @@ class UnitTest(unittest.TestCase):
             mongo_rep_admin.chk_mem_rep_lag(
                 self.rep_status, json=True, ofile="Filename",
                 args_array=self.args_array, optdt=self.optdt), self.status)
+
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_email_mailx(self, mock_mst):
+
+        """Function:  test_email_mailx
+
+        Description:  Test with email option using mailx.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+
+        self.assertEqual(
+            mongo_rep_admin.chk_mem_rep_lag(
+                self.rep_status, json=True, mail=self.mail,
+                args_array=self.args_arraya, optdt=self.optdt), self.status)
 
     @mock.patch("mongo_rep_admin.get_master")
     def test_email(self, mock_mst):
