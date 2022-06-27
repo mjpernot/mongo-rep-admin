@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.6.1] - 2022-06-27
+- Upgrade python-lib to v2.9.2
+- Upgrade mongo-libs to v4.2.1
+
+### Changed
+- config/mongo.py.TEMPLATE: Removed old entries.
+
+
 ## [3.6.0] - 2021-09-07
 - Updated to work in Mongo 4.2.14 environment.
 - Updated to work in a SSL environment.
