@@ -5,6 +5,8 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ## [3.6.1] - 2022-06-27
+### Changed
+- config/mongo.py.TEMPLATE: Removed old entries.
 
 
 ## [3.6.0] - 2021-09-07
