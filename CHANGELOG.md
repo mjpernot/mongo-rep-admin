@@ -11,6 +11,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 ### Changed     
 - Converted imports to use Python 2.7 or Python 3.
+- \_process_std: Added int() to convert floating division to integer division.
 
 
 ## [3.6.1] - 2022-06-27
