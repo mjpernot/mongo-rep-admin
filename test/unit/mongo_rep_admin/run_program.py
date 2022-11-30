@@ -301,7 +301,7 @@ class UnitTest(unittest.TestCase):
         self.args_array2 = {"-T": True, "-c": "config", "-d": "dirpath",
                             "-e": "Email_Address"}
         self.args_array3 = {"-P": True, "-c": "config", "-d": "dirpath"}
-        self.func_dict = {"-P": fetch_priority, "-T": prt_rep_stat}
+        self.func_names = {"-P": fetch_priority, "-T": prt_rep_stat}
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -323,7 +323,7 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server3
 
         self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_dict))
+                                                     self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -346,7 +346,7 @@ class UnitTest(unittest.TestCase):
 
         with gen_libs.no_std_out():
             self.assertFalse(mongo_rep_admin.run_program(self.args_array3,
-                                                         self.func_dict))
+                                                         self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -368,7 +368,7 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server3
 
         self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_dict))
+                                                     self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -390,7 +390,7 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
 
         self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_dict))
+                                                     self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -416,7 +416,7 @@ class UnitTest(unittest.TestCase):
 
         with gen_libs.no_std_out():
             self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                         self.func_dict))
+                                                         self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -438,7 +438,7 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
 
         self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_dict))
+                                                     self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -462,7 +462,7 @@ class UnitTest(unittest.TestCase):
 
         with gen_libs.no_std_out():
             self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                         self.func_dict))
+                                                         self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -484,7 +484,7 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
 
         self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_dict))
+                                                     self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -506,7 +506,7 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server2
 
         self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_dict))
+                                                     self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -531,7 +531,7 @@ class UnitTest(unittest.TestCase):
         mock_mail.return_value = "Mail Instance"
 
         self.assertFalse(mongo_rep_admin.run_program(self.args_array2,
-                                                     self.func_dict))
+                                                     self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -554,7 +554,7 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
 
         self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_dict))
+                                                     self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -576,7 +576,7 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
 
         self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_dict))
+                                                     self.func_names))
 
 
 if __name__ == "__main__":
