@@ -19,8 +19,6 @@ import os
 import datetime
 import unittest
 
-# Third-party
-
 # Local
 sys.path.append(os.getcwd())
 import mongo_rep_admin

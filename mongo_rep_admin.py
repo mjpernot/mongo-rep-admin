@@ -135,8 +135,6 @@ from __future__ import absolute_import
 # Standard
 import sys
 import datetime
-
-# Third party
 import json
 
 # Local
