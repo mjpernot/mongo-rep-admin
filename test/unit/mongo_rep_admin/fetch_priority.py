@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # Classification (U)
 
 """Program:  fetch_priority.py
@@ -17,13 +16,7 @@
 # Standard
 import sys
 import os
-
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
-
-# Third-party
+import unittest
 import mock
 
 # Local
@@ -117,9 +110,11 @@ class Server(object):
         self.auth = "auth"
         self.conf_file = "conffile"
         self.auth_db = "authentication_db"
-        self.use_arg = True
-        self.use_uri = False
         self.auth_mech = "SCRAM-SHA-1"
+        self.ssl_client_ca = None
+        self.ssl_client_cert = None
+        self.ssl_client_key = None
+        self.ssl_client_phrase = None
 
 
 class UnitTest(unittest.TestCase):
