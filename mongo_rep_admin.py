@@ -83,8 +83,6 @@
             auth = True
             auth_db = "admin"
             auth_mech = "SCRAM-SHA-1"
-            use_arg = True
-            use_uri = False
 
             Replica Set connection:  Same format as above, but with these
                 additional entries at the end of the configuration file.  By
@@ -313,8 +311,10 @@ def fetch_priority(repset, args_array, **kwargs):
         repset.name, repset.user, repset.japd, host=repset.host,
         port=repset.port, db="local", coll="system.replset", auth=repset.auth,
         conf_file=repset.conf_file, auth_db=repset.auth_db,
-        use_arg=repset.use_arg, use_uri=repset.use_uri,
-        auth_mech=repset.auth_mech)
+        auth_mech=repset.auth_mech, ssl_client_ca=repset.ssl_client_ca,
+        ssl_client_cert=repset.ssl_client_cert,
+        ssl_client_key=repset.ssl_client_key,
+        ssl_client_phrase=repset.ssl_client_phrase)
     status = coll.connect()
 
     if status[0]:
@@ -779,15 +779,14 @@ def run_program(args_array, func_dict):
     func_dict = dict(func_dict)
     server = gen_libs.load_module(args_array["-c"], args_array["-d"])
 
-    # Only pass authorization mechanism if present.
-    auth_mech = {"auth_mech": server.auth_mech} if hasattr(
-        server, "auth_mech") else {}
-
     coll = mongo_class.Coll(
         server.name, server.user, server.japd, host=server.host,
         port=server.port, db="local", coll="system.replset", auth=server.auth,
         conf_file=server.conf_file, auth_db=server.auth_db,
-        use_arg=server.use_arg, use_uri=server.use_uri, **auth_mech)
+        auth_mech=server.auth_mech, ssl_client_ca=server.ssl_client_ca,
+        ssl_client_cert=server.ssl_client_cert,
+        ssl_client_key=server.ssl_client_key,
+        ssl_client_phrase=server.ssl_client_phrase)
     status = coll.connect()
 
     if status[0]:
@@ -806,7 +805,10 @@ def run_program(args_array, func_dict):
                 server.name, server.user, server.japd, host=server.host,
                 port=server.port, auth=server.auth, repset=rep_set,
                 repset_hosts=server.repset_hosts, auth_db=server.auth_db,
-                use_arg=server.use_arg, use_uri=server.use_uri, **auth_mech)
+                auth_mech=server.auth_mech, ssl_client_ca=server.ssl_client_ca,
+                ssl_client_cert=server.ssl_client_cert,
+                ssl_client_key=server.ssl_client_key,
+                ssl_client_phrase=server.ssl_client_phrase)
             status2 = repinst.connect()
 
             if status2[0]:

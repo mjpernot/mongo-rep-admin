@@ -9,9 +9,15 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 - Upgraded python-lib to v2.9.4 
 - Upgraded mongo-lib to v4.2.2
 
+### Fixed:
+- run_program, fetch_priority: Added SSL entries to the mongo_class instance calls.
+
 ### Changed     
+- run_program: Made auth_mech a required parameter, cannot be passed as an empty argument anymore.
+- run_program, fetch_priority:  Removed the use_arg and use_uri arguments.
 - Converted imports to use Python 2.7 or Python 3.
 - \_process_std: Added int() to convert floating division to integer division.
+- Documentation update.
 
 
 ## [3.6.1] - 2022-06-27

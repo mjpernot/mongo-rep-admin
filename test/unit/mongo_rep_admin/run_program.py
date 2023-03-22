@@ -166,8 +166,6 @@ class RepSet(object):
         self.auth = "auth"
         self.conf_file = "conffile"
         self.auth_db = "authentication_db"
-        self.use_arg = True
-        self.use_uri = False
         self.conn = True
         self.errmsg = None
 
@@ -215,44 +213,11 @@ class CfgTest(object):
         self.repset = "repsetname"
         self.repset_hosts = "localhost:27017,localhost:27016"
         self.auth_db = "authentication_db"
-        self.use_arg = True
-        self.use_uri = False
-
-
-class CfgTest2(object):
-
-    """Class:  CfgTest
-
-    Description:  Class which is a representation of a cfg module.
-
-    Methods:
-        __init__
-
-    """
-
-    def __init__(self):
-
-        """Method:  __init__
-
-        Description:  Initialization instance of the CfgTest class.
-
-        Arguments:
-
-        """
-
-        self.name = "name"
-        self.user = "user"
-        self.japd = None
-        self.host = "host"
-        self.port = 27017
-        self.auth = "auth"
-        self.conf_file = "conffile"
-        self.repset = "repsetname"
-        self.repset_hosts = "localhost:27017,localhost:27016"
-        self.auth_db = "authentication_db"
-        self.use_arg = True
-        self.use_uri = False
         self.auth_mech = "SCRAM-SHA-1"
+        self.ssl_client_ca = None
+        self.ssl_client_cert = None
+        self.ssl_client_key = None
+        self.ssl_client_phrase = None
 
 
 class UnitTest(unittest.TestCase):
@@ -266,7 +231,6 @@ class UnitTest(unittest.TestCase):
         test_func_no_error
         test_func_error
         test_auth_mech
-        test_no_auth_mech
         test_failed_conn_repset
         test_successful_conn_repset
         test_failed_conn_coll
@@ -291,7 +255,6 @@ class UnitTest(unittest.TestCase):
         self.server = CfgTest()
         self.server2 = CfgTest()
         self.server2.repset = None
-        self.server3 = CfgTest2()
         self.repset = RepSet()
         self.coll = Coll()
         self.err_msg = "Error Message"
@@ -318,10 +281,10 @@ class UnitTest(unittest.TestCase):
 
         mock_coll.return_value = self.coll
         mock_repset.return_value = self.repset
-        mock_load.return_value = self.server3
+        mock_load.return_value = self.server
 
-        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_names))
+        self.assertFalse(
+            mongo_rep_admin.run_program(self.args_array, self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -340,11 +303,11 @@ class UnitTest(unittest.TestCase):
 
         mock_coll.return_value = self.coll
         mock_repset.return_value = self.repset
-        mock_load.return_value = self.server3
+        mock_load.return_value = self.server
 
         with gen_libs.no_std_out():
-            self.assertFalse(mongo_rep_admin.run_program(self.args_array3,
-                                                         self.func_names))
+            self.assertFalse(
+                mongo_rep_admin.run_program(self.args_array3, self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -363,32 +326,10 @@ class UnitTest(unittest.TestCase):
 
         mock_coll.return_value = self.coll
         mock_repset.return_value = self.repset
-        mock_load.return_value = self.server3
-
-        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_names))
-
-    @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
-                mock.Mock(return_value=True))
-    @mock.patch("mongo_rep_admin.gen_libs.load_module")
-    @mock.patch("mongo_rep_admin.mongo_class.RepSet")
-    @mock.patch("mongo_rep_admin.mongo_class.Coll")
-    def test_no_auth_mech(self, mock_coll, mock_repset, mock_load):
-
-        """Function:  test_no_auth_mech
-
-        Description:  Test with no auth_mech passed.
-
-        Arguments:
-
-        """
-
-        mock_coll.return_value = self.coll
-        mock_repset.return_value = self.repset
         mock_load.return_value = self.server
 
-        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_names))
+        self.assertFalse(
+            mongo_rep_admin.run_program(self.args_array, self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -413,8 +354,8 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
 
         with gen_libs.no_std_out():
-            self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                         self.func_names))
+            self.assertFalse(
+                mongo_rep_admin.run_program(self.args_array, self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -435,8 +376,8 @@ class UnitTest(unittest.TestCase):
         mock_repset.return_value = self.repset
         mock_load.return_value = self.server
 
-        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_names))
+        self.assertFalse(
+            mongo_rep_admin.run_program(self.args_array, self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -459,8 +400,8 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
 
         with gen_libs.no_std_out():
-            self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                         self.func_names))
+            self.assertFalse(
+                mongo_rep_admin.run_program(self.args_array, self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -481,8 +422,8 @@ class UnitTest(unittest.TestCase):
         mock_repset.return_value = self.repset
         mock_load.return_value = self.server
 
-        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_names))
+        self.assertFalse(
+            mongo_rep_admin.run_program(self.args_array, self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -503,8 +444,8 @@ class UnitTest(unittest.TestCase):
         mock_repset.return_value = self.repset
         mock_load.return_value = self.server2
 
-        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_names))
+        self.assertFalse(
+            mongo_rep_admin.run_program(self.args_array, self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -528,8 +469,8 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
         mock_mail.return_value = "Mail Instance"
 
-        self.assertFalse(mongo_rep_admin.run_program(self.args_array2,
-                                                     self.func_names))
+        self.assertFalse(
+            mongo_rep_admin.run_program(self.args_array2, self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -551,8 +492,8 @@ class UnitTest(unittest.TestCase):
         mock_coll.return_value = self.coll
         mock_load.return_value = self.server
 
-        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_names))
+        self.assertFalse(
+            mongo_rep_admin.run_program(self.args_array, self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -573,8 +514,8 @@ class UnitTest(unittest.TestCase):
         mock_repset.return_value = self.repset
         mock_load.return_value = self.server
 
-        self.assertFalse(mongo_rep_admin.run_program(self.args_array,
-                                                     self.func_names))
+        self.assertFalse(
+            mongo_rep_admin.run_program(self.args_array, self.func_names))
 
 
 if __name__ == "__main__":
