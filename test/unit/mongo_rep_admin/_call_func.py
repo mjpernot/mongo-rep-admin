@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # Classification (U)
 
 """Program:  _call_func.py
@@ -17,13 +16,7 @@
 # Standard
 import sys
 import os
-
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
-
-# Third-party
+import unittest
 import mock
 
 # Local
@@ -209,7 +202,7 @@ class UnitTest(unittest.TestCase):
         self.args_array2 = {"-T": True, "-c": "config", "-d": "dirpath",
                             "-e": "Email_Address"}
         self.args_array3 = {"-P": True, "-c": "config", "-d": "dirpath"}
-        self.func_dict = {"-P": fetch_priority, "-T": prt_rep_stat}
+        self.func_names = {"-P": fetch_priority, "-T": prt_rep_stat}
 
     def test_func_no_error(self):
 
@@ -222,7 +215,7 @@ class UnitTest(unittest.TestCase):
         """
 
         self.assertFalse(mongo_rep_admin._call_func(
-            self.args_array, self.func_dict, self.repset))
+            self.args_array, self.func_names, self.repset))
 
     def test_func_error(self):
 
@@ -236,7 +229,7 @@ class UnitTest(unittest.TestCase):
 
         with gen_libs.no_std_out():
             self.assertFalse(mongo_rep_admin._call_func(
-                self.args_array3, self.func_dict, self.repset))
+                self.args_array3, self.func_names, self.repset))
 
     @mock.patch("mongo_rep_admin.gen_class.setup_mail")
     def test_email(self, mock_mail):
@@ -252,7 +245,7 @@ class UnitTest(unittest.TestCase):
         mock_mail.return_value = "Mail Instance"
 
         self.assertFalse(mongo_rep_admin._call_func(
-            self.args_array2, self.func_dict, self.repset))
+            self.args_array2, self.func_names, self.repset))
 
 
 if __name__ == "__main__":

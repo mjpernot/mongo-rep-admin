@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.6.2] - 2022-11-30
+- Updated to work in Python 3 too
+- Upgraded python-lib to v2.9.4 
+- Upgraded mongo-lib to v4.2.2
+
+### Fixed:
+- run_program, fetch_priority: Added SSL entries to the mongo_class instance calls.
+
+### Changed     
+- run_program: Made auth_mech a required parameter, cannot be passed as an empty argument anymore.
+- run_program, fetch_priority:  Removed the use_arg and use_uri arguments.
+- Converted imports to use Python 2.7 or Python 3.
+- \_process_std: Added int() to convert floating division to integer division.
+- Documentation update.
+
+
 ## [3.6.1] - 2022-06-27
 - Upgrade python-lib to v2.9.2
 - Upgrade mongo-libs to v4.2.1
