@@ -83,8 +83,6 @@
             auth = True
             auth_db = "admin"
             auth_mech = "SCRAM-SHA-1"
-            use_arg = True
-            use_uri = False
 
             Replica Set connection:  Same format as above, but with these
                 additional entries at the end of the configuration file.  By
@@ -129,21 +127,30 @@
 """
 
 # Libraries and Global Variables
+from __future__ import print_function
+from __future__ import absolute_import
 
 # Standard
 import sys
 import datetime
-
-# Third party
 import json
 
 # Local
-import lib.arg_parser as arg_parser
-import lib.gen_libs as gen_libs
-import lib.gen_class as gen_class
-import mongo_lib.mongo_libs as mongo_libs
-import mongo_lib.mongo_class as mongo_class
-import version
+try:
+    from .lib import arg_parser
+    from .lib import gen_libs
+    from .lib import gen_class
+    from .mongo_lib import mongo_libs
+    from .mongo_lib import mongo_class
+    from . import version
+
+except (ValueError, ImportError) as err:
+    import lib.arg_parser as arg_parser
+    import lib.gen_libs as gen_libs
+    import lib.gen_class as gen_class
+    import mongo_lib.mongo_libs as mongo_libs
+    import mongo_lib.mongo_class as mongo_class
+    import version
 
 __version__ = version.__version__
 
@@ -304,8 +311,10 @@ def fetch_priority(repset, args_array, **kwargs):
         repset.name, repset.user, repset.japd, host=repset.host,
         port=repset.port, db="local", coll="system.replset", auth=repset.auth,
         conf_file=repset.conf_file, auth_db=repset.auth_db,
-        use_arg=repset.use_arg, use_uri=repset.use_uri,
-        auth_mech=repset.auth_mech)
+        auth_mech=repset.auth_mech, ssl_client_ca=repset.ssl_client_ca,
+        ssl_client_cert=repset.ssl_client_cert,
+        ssl_client_key=repset.ssl_client_key,
+        ssl_client_phrase=repset.ssl_client_phrase)
     status = coll.connect()
 
     if status[0]:
@@ -511,7 +520,7 @@ def _process_std(outdata, **kwargs):
         body.append("\nSource: {0}".format(item["Name"]))
         body.append("\tsynced to:  {0}".format(item["SyncTo"]))
         body.append("\t{0} secs ({1} hrs) behind the {2}".format(
-            item["LagTime"], (item["LagTime"] / 36) / 100, kwargs["suf"]))
+            item["LagTime"], int((item["LagTime"] / 36) / 100), kwargs["suf"]))
 
     if mongo_cfg and db_tbl:
         dbs, tbl = db_tbl.split(":")
@@ -770,15 +779,14 @@ def run_program(args_array, func_dict):
     func_dict = dict(func_dict)
     server = gen_libs.load_module(args_array["-c"], args_array["-d"])
 
-    # Only pass authorization mechanism if present.
-    auth_mech = {"auth_mech": server.auth_mech} if hasattr(
-        server, "auth_mech") else {}
-
     coll = mongo_class.Coll(
         server.name, server.user, server.japd, host=server.host,
         port=server.port, db="local", coll="system.replset", auth=server.auth,
         conf_file=server.conf_file, auth_db=server.auth_db,
-        use_arg=server.use_arg, use_uri=server.use_uri, **auth_mech)
+        auth_mech=server.auth_mech, ssl_client_ca=server.ssl_client_ca,
+        ssl_client_cert=server.ssl_client_cert,
+        ssl_client_key=server.ssl_client_key,
+        ssl_client_phrase=server.ssl_client_phrase)
     status = coll.connect()
 
     if status[0]:
@@ -797,7 +805,10 @@ def run_program(args_array, func_dict):
                 server.name, server.user, server.japd, host=server.host,
                 port=server.port, auth=server.auth, repset=rep_set,
                 repset_hosts=server.repset_hosts, auth_db=server.auth_db,
-                use_arg=server.use_arg, use_uri=server.use_uri, **auth_mech)
+                auth_mech=server.auth_mech, ssl_client_ca=server.ssl_client_ca,
+                ssl_client_cert=server.ssl_client_cert,
+                ssl_client_key=server.ssl_client_key,
+                ssl_client_phrase=server.ssl_client_phrase)
             status2 = repinst.connect()
 
             if status2[0]:

@@ -9,13 +9,13 @@ pipeline {
         stage('Test') {
             steps {
                 dir ('lib') {
-                    git branch: "mod/292", credentialsId: "2cfb403c-be21-4fac-94d7-c8cd5c531feb", url: "https://gitlab.code.dicelab.net/JAC-IDM/python-lib.git"
+                    git branch: "mod/294", credentialsId: "2cfb403c-be21-4fac-94d7-c8cd5c531feb", url: "https://gitlab.code.dicelab.net/JAC-IDM/python-lib.git"
                 }
                 dir ('mongo_lib') {
-                    git branch: "mod/421", credentialsId: "2cfb403c-be21-4fac-94d7-c8cd5c531feb", url: "https://gitlab.code.dicelab.net/JAC-IDM/mongo-lib.git"
+                    git branch: "mod/422", credentialsId: "2cfb403c-be21-4fac-94d7-c8cd5c531feb", url: "https://gitlab.code.dicelab.net/JAC-IDM/mongo-lib.git"
                 }
                 dir ('mongo_lib/lib') {
-                    git branch: "mod/286", credentialsId: "2cfb403c-be21-4fac-94d7-c8cd5c531feb", url: "https://gitlab.code.dicelab.net/JAC-IDM/python-lib.git"
+                    git branch: "mod/294", credentialsId: "2cfb403c-be21-4fac-94d7-c8cd5c531feb", url: "https://gitlab.code.dicelab.net/JAC-IDM/python-lib.git"
                 }
                 sh """
                 virtualenv test_env
@@ -23,25 +23,25 @@ pipeline {
                 pip2 install mock==2.0.0 --user
                 pip2 install psutil==5.4.3 --user
                 pip2 install pymongo==3.8.0 --user
-                ./test/unit/mongo_rep_admin/_call_func.py
-                ./test/unit/mongo_rep_admin/_process_std.py
-                ./test/unit/mongo_rep_admin/chk_mem_rep_lag.py
-                ./test/unit/mongo_rep_admin/chk_rep_lag.py
-                ./test/unit/mongo_rep_admin/chk_rep_stat.py
-                ./test/unit/mongo_rep_admin/fetch_members.py
-                ./test/unit/mongo_rep_admin/fetch_priority.py
-                ./test/unit/mongo_rep_admin/get_master.py
-                ./test/unit/mongo_rep_admin/get_optimedate.py
-                ./test/unit/mongo_rep_admin/help_message.py
-                ./test/unit/mongo_rep_admin/main.py
-                ./test/unit/mongo_rep_admin/node_chk.py
-                ./test/unit/mongo_rep_admin/process_json.py
-                ./test/unit/mongo_rep_admin/prt_rep_stat.py
-                ./test/unit/mongo_rep_admin/rep_health_chk.py
-                ./test/unit/mongo_rep_admin/rep_msg_chk.py
-                ./test/unit/mongo_rep_admin/rep_state_chk.py
-                ./test/unit/mongo_rep_admin/run_program.py
-                ./test/unit/mongo_rep_admin/single_node_chk.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/_call_func.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/_process_std.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/chk_mem_rep_lag.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/chk_rep_lag.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/chk_rep_stat.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/fetch_members.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/fetch_priority.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/get_master.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/get_optimedate.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/help_message.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/main.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/node_chk.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/process_json.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/prt_rep_stat.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/rep_health_chk.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/rep_msg_chk.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/rep_state_chk.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/run_program.py
+                /usr/bin/python ./test/unit/mongo_rep_admin/single_node_chk.py
                 deactivate
                 rm -rf test_env
                 """
