@@ -28,6 +28,44 @@ import version
 __version__ = version.__version__
 
 
+class ArgParser(object):
+
+    """Class:  ArgParser
+
+    Description:  Class stub holder for gen_class.ArgParser class.
+
+    Methods:
+        __init__
+        get_val
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Class initialization.
+
+        Arguments:
+
+        """
+
+        self.cmdline = None
+        self.args_array = dict()
+
+    def get_val(self, skey, def_val=None):
+
+        """Method:  get_val
+
+        Description:  Method stub holder for gen_class.ArgParser.get_val.
+
+        Arguments:
+
+        """
+
+        return self.args_array.get(skey, def_val)
+
+
 class Mail(object):
 
     """Class:  Mail
@@ -130,10 +168,14 @@ class UnitTest(unittest.TestCase):
                        {"LagTime": 10,
                         "SyncTo": "2020-07-13 10:51:09",
                         "Name": "mongo3:27017"}]}
-        self.args_array = {}
-        self.args_array2 = {"-z": True}
-        self.args_array2a = {"-z": True, "-u": True}
-        self.args_array3 = {"-z": True, "-a": True}
+        self.args = ArgParser()
+        self.args2 = ArgParser()
+        self.args2a = ArgParser()
+        self.args3 = ArgParser()
+        self.args.args_array = {}
+        self.args2.args_array = {"-z": True}
+        self.args2a.args_array = {"-z": True, "-u": True}
+        self.args3.args_array = {"-z": True, "-a": True}
         self.conn = (True, None)
         self.conn2 = (False, "Error Message")
         self.status = (True, None)
@@ -156,7 +198,7 @@ class UnitTest(unittest.TestCase):
         self.assertEqual(
             mongo_rep_admin._process_std(
                 self.outdata, class_cfg="mongocfg", db_tbl=self.db_tbl,
-                args_array=self.args_array2, suf=self.primary), self.status2)
+                args=self.args2, suf=self.primary), self.status2)
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     def test_mongo_successful(self, mock_mongo):
@@ -174,7 +216,7 @@ class UnitTest(unittest.TestCase):
         self.assertEqual(
             mongo_rep_admin._process_std(
                 self.outdata, class_cfg="mongocfg", db_tbl=self.db_tbl,
-                args_array=self.args_array2, suf=self.primary), self.status)
+                args=self.args2, suf=self.primary), self.status)
 
     def test_std_out(self):
 
@@ -189,8 +231,8 @@ class UnitTest(unittest.TestCase):
         with gen_libs.no_std_out():
             self.assertEqual(
                 mongo_rep_admin._process_std(
-                    self.outdata, args_array=self.args_array,
-                    suf=self.primary), self.status)
+                    self.outdata, args=self.args, suf=self.primary),
+                self.status)
 
     def test_stdout_suppress(self):
 
@@ -204,7 +246,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertEqual(
             mongo_rep_admin._process_std(
-                self.outdata, args_array=self.args_array2, suf=self.primary),
+                self.outdata, args=self.args2, suf=self.primary),
             self.status)
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
@@ -223,7 +265,7 @@ class UnitTest(unittest.TestCase):
         self.assertEqual(
             mongo_rep_admin._process_std(
                 self.outdata, class_cfg="mongocfg", db_tbl=self.db_tbl,
-                args_array=self.args_array2, suf=self.primary), self.status)
+                args=self.args2, suf=self.primary), self.status)
 
     @mock.patch("mongo_rep_admin.gen_libs.openfile",
                 mock.Mock(return_value="File_Handler"))
@@ -241,7 +283,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertEqual(
             mongo_rep_admin._process_std(
-                self.outdata, ofile="Filename", args_array=self.args_array3,
+                self.outdata, ofile="Filename", args=self.args3,
                 suf=self.primary), self.status)
 
     @mock.patch("mongo_rep_admin.gen_libs.openfile",
@@ -260,7 +302,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertEqual(
             mongo_rep_admin._process_std(
-                self.outdata, ofile="Filename", args_array=self.args_array2,
+                self.outdata, ofile="Filename", args=self.args2,
                 suf=self.primary), self.status)
 
     def test_email_mailx(self):
@@ -275,7 +317,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertEqual(
             mongo_rep_admin._process_std(
-                self.outdata, mail=self.mail, args_array=self.args_array2a,
+                self.outdata, mail=self.mail, args=self.args2a,
                 suf=self.primary), self.status)
 
     def test_email(self):
@@ -290,7 +332,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertEqual(
             mongo_rep_admin._process_std(
-                self.outdata, mail=self.mail, args_array=self.args_array2,
+                self.outdata, mail=self.mail, args=self.args2a,
                 suf=self.primary), self.status)
 
 
