@@ -28,6 +28,31 @@ import version
 __version__ = version.__version__
 
 
+class ArgParser(object):
+
+    """Class:  ArgParser
+
+    Description:  Class stub holder for gen_class.ArgParser class.
+
+    Methods:
+        __init__
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Class initialization.
+
+        Arguments:
+
+        """
+
+        self.cmdline = None
+        self.args_array = dict()
+
+
 class Coll(object):
 
     """Class:  Coll
@@ -145,7 +170,8 @@ class UnitTest(unittest.TestCase):
 
         self.server = Server()
         self.coll = Coll()
-        self.args_array = {"-T": "TimeLag"}
+        self.args = ArgParser()
+        self.args.args_array = {"-T": "TimeLag"}
         self.status = (True, None)
         self.status2 = (False,
                         "fetch_priority:  Connection failure:  Error Message")
@@ -170,7 +196,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertEqual(
             mongo_rep_admin.fetch_priority(
-                self.server, self.args_array), self.status2)
+                self.server, self.args), self.status2)
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -190,7 +216,7 @@ class UnitTest(unittest.TestCase):
         with gen_libs.no_std_out():
             self.assertEqual(
                 mongo_rep_admin.fetch_priority(
-                    self.server, self.args_array), self.status)
+                    self.server, self.args), self.status)
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -213,7 +239,7 @@ class UnitTest(unittest.TestCase):
         with gen_libs.no_std_out():
             self.assertEqual(
                 mongo_rep_admin.fetch_priority(
-                    self.server, self.args_array), self.status)
+                    self.server, self.args), self.status)
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -235,7 +261,7 @@ class UnitTest(unittest.TestCase):
         with gen_libs.no_std_out():
             self.assertEqual(
                 mongo_rep_admin.fetch_priority(
-                    self.server, self.args_array), self.status)
+                    self.server, self.args), self.status)
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -255,7 +281,7 @@ class UnitTest(unittest.TestCase):
         with gen_libs.no_std_out():
             self.assertEqual(
                 mongo_rep_admin.fetch_priority(
-                    self.server, self.args_array), self.status)
+                    self.server, self.args), self.status)
 
 
 if __name__ == "__main__":

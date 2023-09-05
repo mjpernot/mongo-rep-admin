@@ -28,15 +28,15 @@ import version
 __version__ = version.__version__
 
 
-def fetch_priority(repset, args_array, **kwargs):
+def fetch_priority(repset, args, **kwargs):
 
     """Function:  fetch_priority
 
     Description:  Stub holder for mongo_rep_admin.fetch_priority function.
 
     Arguments:
-        (input) repset -> Replication set instance.
-        (input) args_array -> Array of command line options and values.
+        (input) repset -> Replication set instance
+        (input) args -> ArgParser class instance
 
     """
 
@@ -44,31 +44,69 @@ def fetch_priority(repset, args_array, **kwargs):
     mail = kwargs.get("mail", None)
     status = (False, err_msg)
 
-    if args_array and repset and mail:
+    if args and repset and mail:
         status = (False, err_msg)
 
     return status
 
 
-def prt_rep_stat(repset, args_array, **kwargs):
+def prt_rep_stat(repset, args, **kwargs):
 
     """Function:  prt_rep_stat
 
     Description:  Stub holder for mongo_rep_admin.prt_rep_stat function.
 
     Arguments:
-        (input) repset -> Replication set instance.
-        (input) args_array -> Array of command line options and values.
+        (input) repset -> Replication set instance
+        (input) args -> ArgParser class instance
 
     """
 
     mail = kwargs.get("mail", None)
     status = (True, None)
 
-    if args_array and repset and mail:
+    if args and repset and mail:
         status = (True, None)
 
     return status
+
+
+class ArgParser(object):
+
+    """Class:  ArgParser
+
+    Description:  Class stub holder for gen_class.ArgParser class.
+
+    Methods:
+        __init__
+        get_val
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Class initialization.
+
+        Arguments:
+
+        """
+
+        self.cmdline = None
+        self.args_array = dict()
+
+    def get_val(self, skey, def_val=None):
+
+        """Method:  get_val
+
+        Description:  Method stub holder for gen_class.ArgParser.get_val.
+
+        Arguments:
+
+        """
+
+        return self.args_array.get(skey, def_val)
 
 
 class Coll(object):
@@ -258,12 +296,16 @@ class UnitTest(unittest.TestCase):
         self.repset = RepSet()
         self.coll = Coll()
         self.err_msg = "Error Message"
-        self.args_array = {"-T": True, "-c": "config", "-d": "dirpath"}
-        self.args_array2 = {"-T": True, "-c": "config", "-d": "dirpath",
-                            "-e": "Email_Address"}
-        self.args_array3 = {"-P": True, "-c": "config", "-d": "dirpath"}
+        self.args = ArgParser()
+        self.args2 = ArgParser()
+        self.args3 = ArgParser()
+        self.args.args_array = {"-T": True, "-c": "config", "-d": "dirpath"}
+        self.args2.args_array = {
+            "-T": True, "-c": "config", "-d": "dirpath", "-e": "Email_Address"}
+        self.args3.args_array = {"-P": True, "-c": "config", "-d": "dirpath"}
         self.func_names = {"-P": fetch_priority, "-T": prt_rep_stat}
 
+    @mock.patch("mongo_rep_admin._call_func", mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
@@ -284,8 +326,9 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
 
         self.assertFalse(
-            mongo_rep_admin.run_program(self.args_array, self.func_names))
+            mongo_rep_admin.run_program(self.args, self.func_names))
 
+    @mock.patch("mongo_rep_admin._call_func", mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
@@ -307,8 +350,9 @@ class UnitTest(unittest.TestCase):
 
         with gen_libs.no_std_out():
             self.assertFalse(
-                mongo_rep_admin.run_program(self.args_array3, self.func_names))
+                mongo_rep_admin.run_program(self.args3, self.func_names))
 
+    @mock.patch("mongo_rep_admin._call_func", mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
@@ -329,7 +373,7 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
 
         self.assertFalse(
-            mongo_rep_admin.run_program(self.args_array, self.func_names))
+            mongo_rep_admin.run_program(self.args, self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -355,8 +399,9 @@ class UnitTest(unittest.TestCase):
 
         with gen_libs.no_std_out():
             self.assertFalse(
-                mongo_rep_admin.run_program(self.args_array, self.func_names))
+                mongo_rep_admin.run_program(self.args, self.func_names))
 
+    @mock.patch("mongo_rep_admin._call_func", mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
@@ -377,7 +422,7 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
 
         self.assertFalse(
-            mongo_rep_admin.run_program(self.args_array, self.func_names))
+            mongo_rep_admin.run_program(self.args, self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -401,8 +446,9 @@ class UnitTest(unittest.TestCase):
 
         with gen_libs.no_std_out():
             self.assertFalse(
-                mongo_rep_admin.run_program(self.args_array, self.func_names))
+                mongo_rep_admin.run_program(self.args, self.func_names))
 
+    @mock.patch("mongo_rep_admin._call_func", mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
@@ -423,8 +469,9 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
 
         self.assertFalse(
-            mongo_rep_admin.run_program(self.args_array, self.func_names))
+            mongo_rep_admin.run_program(self.args, self.func_names))
 
+    @mock.patch("mongo_rep_admin._call_func", mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
@@ -445,8 +492,9 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server2
 
         self.assertFalse(
-            mongo_rep_admin.run_program(self.args_array, self.func_names))
+            mongo_rep_admin.run_program(self.args, self.func_names))
 
+    @mock.patch("mongo_rep_admin._call_func", mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.gen_class.setup_mail")
@@ -470,7 +518,7 @@ class UnitTest(unittest.TestCase):
         mock_mail.return_value = "Mail Instance"
 
         self.assertFalse(
-            mongo_rep_admin.run_program(self.args_array2, self.func_names))
+            mongo_rep_admin.run_program(self.args2, self.func_names))
 
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
@@ -493,8 +541,9 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
 
         self.assertFalse(
-            mongo_rep_admin.run_program(self.args_array, self.func_names))
+            mongo_rep_admin.run_program(self.args, self.func_names))
 
+    @mock.patch("mongo_rep_admin._call_func", mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.mongo_libs.disconnect",
                 mock.Mock(return_value=True))
     @mock.patch("mongo_rep_admin.gen_libs.load_module")
@@ -515,7 +564,7 @@ class UnitTest(unittest.TestCase):
         mock_load.return_value = self.server
 
         self.assertFalse(
-            mongo_rep_admin.run_program(self.args_array, self.func_names))
+            mongo_rep_admin.run_program(self.args, self.func_names))
 
 
 if __name__ == "__main__":

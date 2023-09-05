@@ -71,6 +71,57 @@ def prt_rep_stat(repset, args_array, **kwargs):
     return status
 
 
+class ArgParser(object):
+
+    """Class:  ArgParser
+
+    Description:  Class stub holder for gen_class.ArgParser class.
+
+    Methods:
+        __init__
+        get_args_keys
+        get_val
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Class initialization.
+
+        Arguments:
+
+        """
+
+        self.cmdline = None
+        self.args_array = dict()
+
+    def get_args_keys(self):
+
+        """Method:  get_args_keys
+
+        Description:  Method stub holder for gen_class.ArgParser.get_args_keys.
+
+        Arguments:
+
+        """
+
+        return list(self.args_array.keys())
+
+    def get_val(self, skey, def_val=None):
+
+        """Method:  get_val
+
+        Description:  Method stub holder for gen_class.ArgParser.get_val.
+
+        Arguments:
+
+        """
+
+        return self.args_array.get(skey, def_val)
+
+
 class Coll(object):
 
     """Class:  Coll
@@ -198,10 +249,13 @@ class UnitTest(unittest.TestCase):
 
         self.repset = RepSet()
         self.err_msg = "Error Message"
-        self.args_array = {"-T": True, "-c": "config", "-d": "dirpath"}
-        self.args_array2 = {"-T": True, "-c": "config", "-d": "dirpath",
-                            "-e": "Email_Address"}
-        self.args_array3 = {"-P": True, "-c": "config", "-d": "dirpath"}
+        self.args = ArgParser()
+        self.args2 = ArgParser()
+        self.args3 = ArgParser()
+        self.args.args_array = {"-T": True, "-c": "config", "-d": "dirpath"}
+        self.args2.args_array = {
+            "-T": True, "-c": "config", "-d": "dirpath", "-e": "Email_Address"}
+        self.args3.args_array = {"-P": True, "-c": "config", "-d": "dirpath"}
         self.func_names = {"-P": fetch_priority, "-T": prt_rep_stat}
 
     def test_func_no_error(self):
@@ -214,8 +268,9 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        self.assertFalse(mongo_rep_admin._call_func(
-            self.args_array, self.func_names, self.repset))
+        self.assertFalse(
+            mongo_rep_admin._call_func(
+                self.args, self.func_names, self.repset))
 
     def test_func_error(self):
 
@@ -228,8 +283,9 @@ class UnitTest(unittest.TestCase):
         """
 
         with gen_libs.no_std_out():
-            self.assertFalse(mongo_rep_admin._call_func(
-                self.args_array3, self.func_names, self.repset))
+            self.assertFalse(
+                mongo_rep_admin._call_func(
+                    self.args3, self.func_names, self.repset))
 
     @mock.patch("mongo_rep_admin.gen_class.setup_mail")
     def test_email(self, mock_mail):
@@ -244,8 +300,9 @@ class UnitTest(unittest.TestCase):
 
         mock_mail.return_value = "Mail Instance"
 
-        self.assertFalse(mongo_rep_admin._call_func(
-            self.args_array2, self.func_names, self.repset))
+        self.assertFalse(
+            mongo_rep_admin._call_func(
+                self.args2, self.func_names, self.repset))
 
 
 if __name__ == "__main__":

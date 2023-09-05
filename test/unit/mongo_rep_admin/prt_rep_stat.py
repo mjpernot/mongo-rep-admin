@@ -27,6 +27,44 @@ import version
 __version__ = version.__version__
 
 
+class ArgParser(object):
+
+    """Class:  ArgParser
+
+    Description:  Class stub holder for gen_class.ArgParser class.
+
+    Methods:
+        __init__
+        get_val
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Class initialization.
+
+        Arguments:
+
+        """
+
+        self.cmdline = None
+        self.args_array = dict()
+
+    def get_val(self, skey, def_val=None):
+
+        """Method:  get_val
+
+        Description:  Method stub holder for gen_class.ArgParser.get_val.
+
+        Arguments:
+
+        """
+
+        return self.args_array.get(skey, def_val)
+
+
 class Server(object):
 
     """Class:  Server
@@ -74,7 +112,8 @@ class UnitTest(unittest.TestCase):
         """
 
         self.server = Server()
-        self.args_array = {"-T": "TimeLag"}
+        self.args = ArgParser()
+        self.args.args_array = {"-T": "TimeLag"}
         self.status = (True, None)
 
     @mock.patch("mongo_rep_admin.chk_rep_stat")
@@ -92,7 +131,7 @@ class UnitTest(unittest.TestCase):
 
         self.assertEqual(
             mongo_rep_admin.prt_rep_stat(
-                self.server, self.args_array), self.status)
+                self.server, self.args), self.status)
 
 
 if __name__ == "__main__":

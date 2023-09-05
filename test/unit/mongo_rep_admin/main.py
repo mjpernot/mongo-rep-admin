@@ -27,6 +27,121 @@ import version
 __version__ = version.__version__
 
 
+class ArgParser(object):
+
+    """Class:  ArgParser
+
+    Description:  Class stub holder for gen_class.ArgParser class.
+
+    Methods:
+        __init__
+        arg_cond_req
+        arg_dir_chk
+        arg_file_chk
+        arg_require
+        arg_valid_val
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Class initialization.
+
+        Arguments:
+
+        """
+
+        self.cmdline = None
+        self.args_array = dict()
+        self.opt_val = None
+        self.multi_val = None
+        self.do_parse = None
+        self.file_perm_chk = None
+        self.file_crt = None
+        self.arg_file_chk2 = True
+        self.opt_valid_val = None
+        self.arg_valid_val2 = True
+        self.opt_req = None
+        self.opt_req2 = True
+        self.opt_con_req = None
+        self.opt_con_req2 = True
+        self.dir_perms_chk = None
+        self.dir_perms_chk2 = True
+
+    def arg_cond_req(self, opt_con_req):
+
+        """Method:  arg_cond_req
+
+        Description:  Method stub holder for gen_class.ArgParser.arg_cond_req.
+
+        Arguments:
+
+        """
+
+        self.opt_con_req = opt_con_req
+
+        return self.opt_con_req2
+
+    def arg_dir_chk(self, dir_perms_chk):
+
+        """Method:  arg_dir_chk
+
+        Description:  Method stub holder for gen_class.ArgParser.arg_dir_chk.
+
+        Arguments:
+
+        """
+
+        self.dir_perms_chk = dir_perms_chk
+
+        return self.dir_perms_chk2
+
+    def arg_file_chk(self, file_perm_chk, file_crt):
+
+        """Method:  arg_file_chk
+
+        Description:  Method stub holder for gen_class.ArgParser.arg_file_chk.
+
+        Arguments:
+
+        """
+
+        self.file_perm_chk = file_perm_chk
+        self.file_crt = file_crt
+
+        return self.arg_file_chk2
+
+    def arg_require(self, opt_req):
+
+        """Method:  arg_require
+
+        Description:  Method stub holder for gen_class.ArgParser.arg_require.
+
+        Arguments:
+
+        """
+
+        self.opt_req = opt_req
+
+        return self.opt_req2
+
+    def arg_valid_val(self, opt_valid_val):
+
+        """Method:  arg_valid_val
+
+        Description:  Method stub holder for gen_class.ArgParser.arg_valid_val.
+
+        Arguments:
+
+        """
+
+        self.opt_valid_val = opt_valid_val
+
+        return self.arg_valid_val2
+
+
 class UnitTest(unittest.TestCase):
 
     """Class:  UnitTest
@@ -37,14 +152,15 @@ class UnitTest(unittest.TestCase):
         setUp
         test_help_true
         test_help_false
-        test_arg_req_true
         test_arg_req_false
+        test_arg_req_true
         test_arg_cond_false
         test_arg_cond_true
-        test_arg_dir_true
         test_arg_dir_false
-        test_arg_file_true
+        test_arg_dir_true
         test_arg_file_false
+        test_arg_file_true
+        test_run_program
 
     """
 
@@ -58,10 +174,11 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        self.args_array = {"-c": "CfgFile", "-d": "CfgDir", "-C": True}
+        self.args = ArgParser()
+        self.args.args_array = {"-c": "CfgFile", "-d": "CfgDir", "-C": True}
 
     @mock.patch("mongo_rep_admin.gen_libs.help_func")
-    @mock.patch("mongo_rep_admin.arg_parser.arg_parse2")
+    @mock.patch("mongo_rep_admin.gen_class.ArgParser")
     def test_help_true(self, mock_arg, mock_help):
 
         """Function:  test_help_true
@@ -72,15 +189,14 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_arg.return_value = self.args_array
+        mock_arg.return_value = self.args
         mock_help.return_value = True
 
         self.assertFalse(mongo_rep_admin.main())
 
-    @mock.patch("mongo_rep_admin.arg_parser.arg_require")
     @mock.patch("mongo_rep_admin.gen_libs.help_func")
-    @mock.patch("mongo_rep_admin.arg_parser.arg_parse2")
-    def test_help_false(self, mock_arg, mock_help, mock_req):
+    @mock.patch("mongo_rep_admin.gen_class.ArgParser")
+    def test_help_false(self, mock_arg, mock_help):
 
         """Function:  test_help_false
 
@@ -90,36 +206,16 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_arg.return_value = self.args_array
+        self.args.opt_req2 = False
+
+        mock_arg.return_value = self.args
         mock_help.return_value = False
-        mock_req.return_value = True
 
         self.assertFalse(mongo_rep_admin.main())
 
-    @mock.patch("mongo_rep_admin.arg_parser.arg_require")
     @mock.patch("mongo_rep_admin.gen_libs.help_func")
-    @mock.patch("mongo_rep_admin.arg_parser.arg_parse2")
-    def test_arg_req_true(self, mock_arg, mock_help, mock_req):
-
-        """Function:  test_arg_req_true
-
-        Description:  Test arg_require if returns true.
-
-        Arguments:
-
-        """
-
-        mock_arg.return_value = self.args_array
-        mock_help.return_value = False
-        mock_req.return_value = True
-
-        self.assertFalse(mongo_rep_admin.main())
-
-    @mock.patch("mongo_rep_admin.arg_parser.arg_cond_req")
-    @mock.patch("mongo_rep_admin.arg_parser.arg_require")
-    @mock.patch("mongo_rep_admin.gen_libs.help_func")
-    @mock.patch("mongo_rep_admin.arg_parser.arg_parse2")
-    def test_arg_req_false(self, mock_arg, mock_help, mock_req, mock_cond):
+    @mock.patch("mongo_rep_admin.gen_class.ArgParser")
+    def test_arg_req_false(self, mock_arg, mock_help):
 
         """Function:  test_arg_req_false
 
@@ -129,18 +225,35 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_arg.return_value = self.args_array
+        self.args.opt_req2 = False
+
+        mock_arg.return_value = self.args
         mock_help.return_value = False
-        mock_req.return_value = False
-        mock_cond.return_value = False
 
         self.assertFalse(mongo_rep_admin.main())
 
-    @mock.patch("mongo_rep_admin.arg_parser.arg_cond_req")
-    @mock.patch("mongo_rep_admin.arg_parser.arg_require")
     @mock.patch("mongo_rep_admin.gen_libs.help_func")
-    @mock.patch("mongo_rep_admin.arg_parser.arg_parse2")
-    def test_arg_cond_false(self, mock_arg, mock_help, mock_req, mock_cond):
+    @mock.patch("mongo_rep_admin.gen_class.ArgParser")
+    def test_arg_req_true(self, mock_arg, mock_help):
+
+        """Function:  test_arg_req_true
+
+        Description:  Test arg_require if returns true.
+
+        Arguments:
+
+        """
+
+        self.args.opt_con_req2 = False
+
+        mock_arg.return_value = self.args
+        mock_help.return_value = False
+
+        self.assertFalse(mongo_rep_admin.main())
+
+    @mock.patch("mongo_rep_admin.gen_libs.help_func")
+    @mock.patch("mongo_rep_admin.gen_class.ArgParser")
+    def test_arg_cond_false(self, mock_arg, mock_help):
 
         """Function:  test_arg_cond_false
 
@@ -150,20 +263,16 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_arg.return_value = self.args_array
+        self.args.opt_con_req2 = False
+
+        mock_arg.return_value = self.args
         mock_help.return_value = False
-        mock_req.return_value = False
-        mock_cond.return_value = False
 
         self.assertFalse(mongo_rep_admin.main())
 
-    @mock.patch("mongo_rep_admin.arg_parser.arg_dir_chk_crt")
-    @mock.patch("mongo_rep_admin.arg_parser.arg_file_chk")
-    @mock.patch("mongo_rep_admin.arg_parser.arg_require")
     @mock.patch("mongo_rep_admin.gen_libs.help_func")
-    @mock.patch("mongo_rep_admin.arg_parser.arg_parse2")
-    def test_arg_cond_true(self, mock_arg, mock_help, mock_req, mock_cond,
-                           mock_dir):
+    @mock.patch("mongo_rep_admin.gen_class.ArgParser")
+    def test_arg_cond_true(self, mock_arg, mock_help):
 
         """Function:  test_arg_cond_true
 
@@ -173,40 +282,15 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_arg.return_value = self.args_array
+        self.args.dir_perms_chk2 = False
+
+        mock_arg.return_value = self.args
         mock_help.return_value = False
-        mock_req.return_value = False
-        mock_cond.return_value = True
-        mock_dir.return_value = True
-
-        self.assertFalse(mongo_rep_admin.main())
-
-    @mock.patch("mongo_rep_admin.arg_parser.arg_dir_chk_crt")
-    @mock.patch("mongo_rep_admin.arg_parser.arg_file_chk")
-    @mock.patch("mongo_rep_admin.arg_parser.arg_require")
-    @mock.patch("mongo_rep_admin.gen_libs.help_func")
-    @mock.patch("mongo_rep_admin.arg_parser.arg_parse2")
-    def test_arg_dir_true(self, mock_arg, mock_help, mock_req, mock_cond,
-                          mock_dir):
-
-        """Function:  test_arg_dir_true
-
-        Description:  Test arg_dir_chk_crt if returns true.
-
-        Arguments:
-
-        """
-
-        mock_arg.return_value = self.args_array
-        mock_help.return_value = False
-        mock_req.return_value = False
-        mock_cond.return_value = True
-        mock_dir.return_value = True
 
         self.assertFalse(mongo_rep_admin.main())
 
     @mock.patch("mongo_rep_admin.gen_libs.help_func")
-    @mock.patch("mongo_rep_admin.arg_parser")
+    @mock.patch("mongo_rep_admin.gen_class.ArgParser")
     def test_arg_dir_false(self, mock_arg, mock_help):
 
         """Function:  test_arg_dir_false
@@ -217,40 +301,35 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_arg.arg_parse2.return_value = self.args_array
+        self.args.dir_perms_chk2 = False
+
+        mock_arg.return_value = self.args
         mock_help.return_value = False
-        mock_arg.arg_require.return_value = False
-        mock_arg.arg_file_chk.return_value = True
-        mock_arg.arg_dir_chk_crt.return_value = False
-        mock_arg.arg_file_chk.return_value = True
 
         self.assertFalse(mongo_rep_admin.main())
 
     @mock.patch("mongo_rep_admin.gen_libs.help_func")
-    @mock.patch("mongo_rep_admin.arg_parser")
-    def test_arg_file_true(self, mock_arg, mock_help):
+    @mock.patch("mongo_rep_admin.gen_class.ArgParser")
+    def test_arg_dir_true(self, mock_arg, mock_help):
 
-        """Function:  test_arg_file_true
+        """Function:  test_arg_dir_true
 
-        Description:  Test arg_file_chk if returns true.
+        Description:  Test arg_dir_chk_crt if returns true.
 
         Arguments:
 
         """
 
-        mock_arg.arg_parse2.return_value = self.args_array
+        self.args.arg_file_chk2 = False
+
+        mock_arg.return_value = self.args
         mock_help.return_value = False
-        mock_arg.arg_require.return_value = False
-        mock_arg.arg_file_chk.return_value = True
-        mock_arg.arg_dir_chk_crt.return_value = False
-        mock_arg.arg_file_chk.return_value = True
 
         self.assertFalse(mongo_rep_admin.main())
 
-    @mock.patch("mongo_rep_admin.run_program")
     @mock.patch("mongo_rep_admin.gen_libs.help_func")
-    @mock.patch("mongo_rep_admin.arg_parser")
-    def test_arg_file_false(self, mock_arg, mock_help, mock_run):
+    @mock.patch("mongo_rep_admin.gen_class.ArgParser")
+    def test_arg_file_false(self, mock_arg, mock_help):
 
         """Function:  test_arg_file_false
 
@@ -260,12 +339,47 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        mock_arg.arg_parse2.return_value = self.args_array
+        self.args.arg_file_chk2 = False
+
+        mock_arg.return_value = self.args
         mock_help.return_value = False
-        mock_arg.arg_require.return_value = False
-        mock_arg.arg_file_chk.return_value = True
-        mock_arg.arg_dir_chk_crt.return_value = False
-        mock_arg.arg_file_chk.return_value = False
+
+        self.assertFalse(mongo_rep_admin.main())
+
+    @mock.patch("mongo_rep_admin.run_program")
+    @mock.patch("mongo_rep_admin.gen_libs.help_func")
+    @mock.patch("mongo_rep_admin.gen_class.ArgParser")
+    def test_arg_file_true(self, mock_arg, mock_help, mock_run):
+
+        """Function:  test_arg_file_true
+
+        Description:  Test arg_file_chk if returns true.
+
+        Arguments:
+
+        """
+
+        mock_arg.arg_parse2.return_value = self.args
+        mock_help.return_value = False
+        mock_run.return_value = True
+
+        self.assertFalse(mongo_rep_admin.main())
+
+    @mock.patch("mongo_rep_admin.run_program")
+    @mock.patch("mongo_rep_admin.gen_libs.help_func")
+    @mock.patch("mongo_rep_admin.gen_class.ArgParser")
+    def test_run_program(self, mock_arg, mock_help, mock_run):
+
+        """Function:  test_run_program
+
+        Description:  Test run_program function.
+
+        Arguments:
+
+        """
+
+        mock_arg.arg_parse2.return_value = self.args
+        mock_help.return_value = False
         mock_run.return_value = True
 
         self.assertFalse(mongo_rep_admin.main())

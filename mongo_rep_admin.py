@@ -137,7 +137,6 @@ import json
 
 # Local
 try:
-    from .lib import arg_parser
     from .lib import gen_libs
     from .lib import gen_class
     from .mongo_lib import mongo_libs
@@ -145,7 +144,6 @@ try:
     from . import version
 
 except (ValueError, ImportError) as err:
-    import lib.arg_parser as arg_parser
     import lib.gen_libs as gen_libs
     import lib.gen_class as gen_class
     import mongo_lib.mongo_libs as mongo_libs
@@ -176,9 +174,9 @@ def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1):
     Description:  Checks the replication health status for a member.
 
     Arguments:
-        (input) rep_stat -> Member document from replSetGetStatus.
-        (input) prt_all -> True|False - To print all or just errors.
-        (input) prt_lvl -> Integer - Level at which to print message.
+        (input) rep_stat -> Member document from replSetGetStatus
+        (input) prt_all -> True|False - To print all or just errors
+        (input) prt_lvl -> Integer - Level at which to print message
 
     """
     rep_stat = dict(rep_stat)
@@ -198,9 +196,9 @@ def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1):
         from a "replSetGetStatus" command to be passed to the function.
 
     Arguments:
-        (input) rep_stat -> Member document from replSetGetStatus.
-        (input) prt_all -> True|False - To print all or just errors.
-        (input) prt_lvl -> Integer - Level at which to print message.
+        (input) rep_stat -> Member document from replSetGetStatus
+        (input) prt_all -> True|False - To print all or just errors
+        (input) prt_lvl -> Integer - Level at which to print message
 
     """
 
@@ -220,8 +218,8 @@ def rep_msg_chk(rep_stat, prt_lvl=1):
     Description:  Print data if the infoMessage field is present.
 
     Arguments:
-        (input) rep_stat -> Member document from replSetGetStatus.
-        (input) prt_lvl -> Integer - Level at which to print message.
+        (input) rep_stat -> Member document from replSetGetStatus
+        (input) prt_lvl -> Integer - Level at which to print message
 
     """
 
@@ -231,7 +229,7 @@ def rep_msg_chk(rep_stat, prt_lvl=1):
         gen_libs.prt_msg("Error Message", rep_stat.get("infoMessage"), prt_lvl)
 
 
-def chk_rep_stat(repset, args_array, **kwargs):
+def chk_rep_stat(repset, args, **kwargs):
 
     """Function:  chk_rep_stat
 
@@ -239,19 +237,18 @@ def chk_rep_stat(repset, args_array, **kwargs):
         set.
 
     Arguments:
-        (input) repset -> Replication set instance.
-        (input) args_array -> Array of command line options and values.
+        (input) repset -> Replication set instance
+        (input) args -> ArgParser class instance
         (input) **kwargs:
-            mail -> Mail instance.
-            prt_all -> True|False on printing all status messages.
-        (output) status -> Tuple on connection status.
-            status[0] - True|False - Connection successful.
-            status[1] - Error message if connection failed.
+            mail -> Mail instance
+            prt_all -> True|False on printing all status messages
+        (output) status -> Tuple on connection status
+            status[0] - True|False - Connection successful
+            status[1] - Error message if connection failed
 
     """
 
     status = (True, None)
-    args_array = dict(args_array)
     print("\nReplication Status Check for Rep Set:  %s" % (repset.repset))
     prt_all = kwargs.get("prt_all", False)
 
@@ -265,48 +262,46 @@ def chk_rep_stat(repset, args_array, **kwargs):
     return status
 
 
-def prt_rep_stat(repset, args_array, **kwargs):
+def prt_rep_stat(repset, args, **kwargs):
 
     """Function:  prt_rep_stat
 
     Description:  Set the print all flag and call chk_rep_stat function.
 
     Arguments:
-        (input) repset -> Replication set instance.
-        (input) args_array -> Array of command line options and values.
+        (input) repset -> Replication set instance
+        (input) args -> ArgParser class instance
         (input) **kwargs:
-            mail -> Mail instance.
-        (output) status -> Tuple on connection status.
-            status[0] - True|False - Connection successful.
-            status[1] - Error message if connection failed.
+            mail -> Mail instance
+        (output) status -> Tuple on connection status
+            status[0] - True|False - Connection successful
+            status[1] - Error message if connection failed
 
     """
 
     status = (True, None)
-    args_array = dict(args_array)
-    chk_rep_stat(repset, args_array, prt_all=args_array["-T"])
+    chk_rep_stat(repset, args, prt_all=args.get_val("-T"))
 
     return status
 
 
-def fetch_priority(repset, args_array, **kwargs):
+def fetch_priority(repset, args, **kwargs):
 
     """Function:  fetch_priority
 
     Description:  Fetch and print members in the replication set.
 
     Arguments:
-        (input) repset -> Replication set instance.
-        (input) args_array -> Array of command line options and values.
+        (input) repset -> Replication set instance
+        (input) args -> ArgParser class instance
         (input) **kwargs:
-            mail -> Mail instance.
-        (output) status -> Tuple on connection status.
-            status[0] - True|False - Connection successful.
-            status[1] - Error message if connection failed.
+            mail -> Mail instance
+        (output) status -> Tuple on connection status
+            status[0] - True|False - Connection successful
+            status[1] - Error message if connection failed
 
     """
 
-    args_array = dict(args_array)
     coll = mongo_class.Coll(
         repset.name, repset.user, repset.japd, host=repset.host,
         port=repset.port, db="local", coll="system.replset", auth=repset.auth,
@@ -332,7 +327,7 @@ def fetch_priority(repset, args_array, **kwargs):
     return status
 
 
-def fetch_members(repset, args_array, **kwargs):
+def fetch_members(repset, args, **kwargs):
 
     """Function:  fetch_members
 
@@ -340,18 +335,17 @@ def fetch_members(repset, args_array, **kwargs):
         the primary server.
 
     Arguments:
-        (input) repset -> Replication set instance.
-        (input) args_array -> Array of command line options and values.
+        (input) repset -> Replication set instance
+        (input) args -> ArgParser class instance
         (input) **kwargs:
-            mail -> Mail instance.
-        (output) status -> Tuple on connection status.
-            status[0] - True|False - Connection successful.
-            status[1] - Error message if connection failed.
+            mail -> Mail instance
+        (output) status -> Tuple on connection status
+            status[0] - True|False - Connection successful
+            status[1] - Error message if connection failed
 
     """
 
     status = (True, None)
-    args_array = dict(args_array)
     print("\nMembers of replica set: %s" % (repset.repset))
     rep_status = repset.adm_cmd("replSetGetStatus")
     primary = get_master(rep_status)
@@ -373,8 +367,8 @@ def get_master(rep_status):
     Description:  Find the Primary in the replSetGetStatus document.
 
     Arguments:
-        (input) rep_status -> Members document from replSetGetStatus.
-        (output) primary -> Primary entry from replSetGetStatus doc.
+        (input) rep_status -> Members document from replSetGetStatus
+        (output) primary -> Primary entry from replSetGetStatus doc
 
     """
 
@@ -397,8 +391,8 @@ def get_optimedate(rep_status):
     Description:  Get the Best oplog date time from one of the Secondaries.
 
     Arguments:
-        (input) rep_status -> Members document from replSetGetStatus.
-        (output) optime_date -> Best oplog datetime from Secondaries.
+        (input) rep_status -> Members document from replSetGetStatus
+        (output) optime_date -> Best oplog datetime from Secondaries
 
     """
 
@@ -422,19 +416,19 @@ def chk_mem_rep_lag(rep_status, **kwargs):
         replication lag.
 
     Arguments:
-        (input) rep_status -> Member document from replSetGetStatus.
+        (input) rep_status -> Member document from replSetGetStatus
         (input) **kwargs:
-            json -> True|False - JSON format.
-            ofile -> file name - Name of output file.
-            db_tbl -> database:collection - Name of db and collection.
-            class_cfg -> Server class configuration settings.
-            mail -> Mail instance.
-            args_array -> Array of command line options and values.
-            suf -> Primary|Freshest Secondary who has latest date time.
-            optdt -> Primary|Best Oplog date time.
-        (output) status -> Tuple on connection status.
-            status[0] - True|False - Connection successful.
-            status[1] - Error message if connection failed.
+            json -> True|False - JSON format
+            ofile -> file name - Name of output file
+            db_tbl -> database:collection - Name of db and collection
+            class_cfg -> Server class configuration settings
+            mail -> Mail instance
+            args -> ArgParser class instance
+            suf -> Primary|Freshest Secondary who has latest date time
+            optdt -> Primary|Best Oplog date time
+        (output) status -> Tuple on connection status
+            status[0] - True|False - Connection successful
+            status[1] - Error message if connection failed
 
     """
 
@@ -442,12 +436,11 @@ def chk_mem_rep_lag(rep_status, **kwargs):
     rep_status = dict(rep_status)
     json_fmt = kwargs.get("json", False)
 
-    outdata = {"Application": "Mongo Replication",
-               "RepSet": rep_status.get("set"),
-               "Master": get_master(rep_status).get("name"),
-               "AsOf": datetime.datetime.strftime(datetime.datetime.now(),
-                                                  t_format),
-               "Slaves": []}
+    outdata = {
+        "Application": "Mongo Replication", "RepSet": rep_status.get("set"),
+        "Master": get_master(rep_status).get("name"),
+        "AsOf": datetime.datetime.strftime(datetime.datetime.now(), t_format),
+        "Slaves": []}
 
     # Process each member in replica set.
     for member in rep_status.get("members"):
@@ -486,19 +479,19 @@ def _process_std(outdata, **kwargs):
         formatted data.
 
     Arguments:
-        (input) outdata -> JSON document from chk_mem_rep_lag function.
+        (input) outdata -> JSON document from chk_mem_rep_lag function
         (input) **kwargs:
-            json -> True|False - JSON format.
-            ofile -> file name - Name of output file.
-            db_tbl -> database:collection - Name of db and collection.
-            class_cfg -> Server class configuration settings.
-            mail -> Mail instance.
-            args_array -> Array of command line options and values.
-            suf -> Primary|Freshest Secondary who has latest date time.
-            optdt -> Primary|Best Oplog date time.
-        (output) status -> Tuple on connection status.
-            status[0] - True|False - Connection successful.
-            status[1] - Error message if connection failed.
+            json -> True|False - JSON format
+            ofile -> file name - Name of output file
+            db_tbl -> database:collection - Name of db and collection
+            class_cfg -> Server class configuration settings
+            mail -> Mail instance
+            args -> ArgParser class instance
+            suf -> Primary|Freshest Secondary who has latest date time
+            optdt -> Primary|Best Oplog date time
+        (output) status -> Tuple on connection status
+            status[0] - True|False - Connection successful
+            status[1] - Error message if connection failed
 
     """
 
@@ -508,10 +501,10 @@ def _process_std(outdata, **kwargs):
     db_tbl = kwargs.get("db_tbl", None)
     ofile = kwargs.get("ofile", None)
     mail = kwargs.get("mail", None)
-    args_array = dict(kwargs.get("args_array", {}))
+    args = kwargs.get("args", None)
     body = []
 
-    if args_array.get("-a", False):
+    if args.get_val("-a", def_val=False):
         mode = "a"
 
     body.append("\nReplication lag for Replica set: %s." % (outdata["RepSet"]))
@@ -539,9 +532,9 @@ def _process_std(outdata, **kwargs):
         for line in body:
             mail.add_2_msg(line)
 
-        mail.send_mail(use_mailx=args_array.get("-u", False))
+        mail.send_mail(use_mailx=args.get_val("-u", def_val=False))
 
-    if not args_array.get("-z", False):
+    if not args.get_val("-z", def_val=False):
         for item in body:
             print(item)
 
@@ -555,19 +548,19 @@ def _process_json(outdata, **kwargs):
     Description:  Private function for chk_mem_rep_lag().  Process JSON data.
 
     Arguments:
-        (input) outdata -> JSON document from chk_mem_rep_lag function.
+        (input) outdata -> JSON document from chk_mem_rep_lag function
         (input) **kwargs:
-            json -> True|False - JSON format.
-            ofile -> file name - Name of output file.
-            db_tbl -> database:collection - Name of db and collection.
-            class_cfg -> Server class configuration settings.
-            mail -> Mail instance.
-            args_array -> Array of command line options and values.
-            suf -> Primary|Freshest Secondary who has latest date time.
-            optdt -> Primary|Best Oplog date time.
-        (output) status -> Tuple on connection status.
-            status[0] - True|False - Connection successful.
-            status[1] - Error message if connection failed.
+            json -> True|False - JSON format
+            ofile -> file name - Name of output file
+            db_tbl -> database:collection - Name of db and collection
+            class_cfg -> Server class configuration settings
+            mail -> Mail instance
+            args -> ArgParser class instance
+            suf -> Primary|Freshest Secondary who has latest date time
+            optdt -> Primary|Best Oplog date time
+        (output) status -> Tuple on connection status
+            status[0] - True|False - Connection successful
+            status[1] - Error message if connection failed
 
     """
 
@@ -578,12 +571,12 @@ def _process_json(outdata, **kwargs):
     db_tbl = kwargs.get("db_tbl", None)
     ofile = kwargs.get("ofile", None)
     mail = kwargs.get("mail", None)
-    args_array = dict(kwargs.get("args_array", {}))
+    args = kwargs.get("args", None)
 
-    if args_array.get("-a", False):
+    if args.get_val("-a", def_val=False):
         mode = "a"
 
-    if args_array.get("-f", False):
+    if args.get_val("-f", def_val=False):
         indent = None
 
     jdata = json.dumps(outdata, indent=indent)
@@ -600,15 +593,15 @@ def _process_json(outdata, **kwargs):
 
     if mail:
         mail.add_2_msg(jdata)
-        mail.send_mail(use_mailx=args_array.get("-u", False))
+        mail.send_mail(use_mailx=args.get_val("-u", def_val=False))
 
-    if not args_array.get("-z", False):
+    if not args.get_val("-z", def_val=False):
         gen_libs.display_data(jdata)
 
     return status
 
 
-def chk_rep_lag(repset, args_array, **kwargs):
+def chk_rep_lag(repset, args, **kwargs):
 
     """Function:  chk_rep_lag
 
@@ -616,26 +609,26 @@ def chk_rep_lag(repset, args_array, **kwargs):
         datetime whether Primary or Secondary.
 
     Arguments:
-        (input) repset -> Replication set instance.
-        (input) args_array -> Array of command line options and values.
+        (input) repset -> Replication set instance
+        (input) args -> ArgParser class instance
         (input) **kwargs:
-            mail -> Mail instance.
-        (output) status -> Tuple on connection status.
-            status[0] - True|False - Connection successful.
-            status[1] - Error message if connection failed.
+            mail -> Mail instance
+        (output) status -> Tuple on connection status
+            status[0] - True|False - Connection successful
+            status[1] - Error message if connection failed
 
     """
 
-    args_array = dict(args_array)
-    json_fmt = args_array.get("-j", False)
-    outfile = args_array.get("-o", None)
-    db_tbl = args_array.get("-i", None)
+    json_fmt = args.get_val("-j", def_val=False)
+    outfile = args.get_val("-o", def_val=None)
+    db_tbl = args.get_val("-i", def_val=None)
     rep_status = repset.adm_cmd("replSetGetStatus")
     primary = get_master(rep_status)
     mongo_cfg = None
 
-    if args_array.get("-m", None):
-        mongo_cfg = gen_libs.load_module(args_array["-m"], args_array["-d"])
+    if args.get_val("-m", def_val=None):
+        mongo_cfg = gen_libs.load_module(
+            args.get_val("-m"), args.get_val("-d"))
 
     if primary:
         optime_date = primary.get("optimeDate")
@@ -648,13 +641,12 @@ def chk_rep_lag(repset, args_array, **kwargs):
 
     status = chk_mem_rep_lag(
         rep_status, optdt=optime_date, suf=suffix, json=json_fmt,
-        ofile=outfile, db_tbl=db_tbl, class_cfg=mongo_cfg,
-        args_array=args_array, **kwargs)
+        ofile=outfile, db_tbl=db_tbl, class_cfg=mongo_cfg, args=args, **kwargs)
 
     return status
 
 
-def node_chk(mongo, args_array, **kwargs):
+def node_chk(mongo, args, **kwargs):
 
     """Function:  node_chk
 
@@ -662,22 +654,21 @@ def node_chk(mongo, args_array, **kwargs):
         something if a node is down or an error is detected.
 
     Arguments:
-        (input) mongo -> Mongo instance.
-        (input) args_array -> Array of command line options and values.
+        (input) mongo -> Mongo instance
+        (input) args -> ArgParser class instance
         (input) **kwargs:
-            mail -> Mail instance.
-        (output) status -> Tuple on connection status.
-            status[0] - True|False - Connection successful.
-            status[1] - Error message if connection failed.
+            mail -> Mail instance
+        (output) status -> Tuple on connection status
+            status[0] - True|False - Connection successful
+            status[1] - Error message if connection failed
 
     """
 
     status = (True, None)
-    args_array = dict(args_array)
     mail = kwargs.get("mail", None)
     node_status = {}
 
-    indent = None if args_array.get("-f", False) else 4
+    indent = None if args.get_val("-f", def_val=False) else 4
 
     for node in mongo.adm_cmd("replSetGetStatus").get("members"):
         status2 = single_node_chk(node)
@@ -688,7 +679,7 @@ def node_chk(mongo, args_array, **kwargs):
     if node_status:
         jnode_status = json.dumps(node_status, indent=indent)
 
-        if not args_array.get("-z", False):
+        if not args.get_val("-z", def_val=False):
             gen_libs.display_data(jnode_status)
 
         if mail:
@@ -697,7 +688,7 @@ def node_chk(mongo, args_array, **kwargs):
                 mail.create_subject(subj=subj)
 
             mail.add_2_msg(jnode_status)
-            mail.send_mail(use_mailx=args_array.get("-u", False))
+            mail.send_mail(use_mailx=args.get_val("-u", def_val=False))
 
     return status
 
@@ -710,8 +701,8 @@ def single_node_chk(node):
         something if a node is down or an error is detected.
 
     Arguments:
-        (input) node -> Dictionary of Mongo node health stats.
-        (output) status -> Dictionary of node stats found.
+        (input) node -> Dictionary of Mongo node health stats
+        (output) status -> Dictionary of node stats found
 
     """
 
@@ -733,7 +724,7 @@ def single_node_chk(node):
     return status
 
 
-def _call_func(args_array, func_dict, repinst):
+def _call_func(args, func_dict, repinst):
 
     """Function:  _call_func
 
@@ -741,43 +732,41 @@ def _call_func(args_array, func_dict, repinst):
         selected.
 
     Arguments:
-        (input) args_array -> Dict of command line options and values.
-        (input) func_dict -> Dictionary list of functions and options.
-        (input) repset -> Replication set instance.
+        (input) args -> ArgParser class instance
+        (input) func_dict -> Dictionary list of functions and options
+        (input) repset -> Replication set instance
 
     """
 
-    args_array = dict(args_array)
     func_dict = dict(func_dict)
     mail = None
 
-    if args_array.get("-e", None):
+    if args.get_val("-e", def_val=None):
         mail = gen_class.setup_mail(
-            args_array.get("-e"), subj=args_array.get("-s", None))
+            args.get_val("-e"), subj=args.get_val("-s", def_val=None))
 
     # Call function: Intersection of command line & function dict.
-    for item in set(args_array.keys()) & set(func_dict.keys()):
-        status3 = func_dict[item](repinst, args_array, mail=mail)
+    for item in set(args.get_args_keys()) & set(func_dict.keys()):
+        status3 = func_dict[item](repinst, args, mail=mail)
 
         if not status3[0]:
             print("Error detected:  %s" % (status3[1]))
 
 
-def run_program(args_array, func_dict):
+def run_program(args, func_dict):
 
     """Function:  run_program
 
     Description:  Creates class instance(s) and controls flow of the program.
 
     Arguments:
-        (input) args_array -> Dict of command line options and values.
-        (input) func_dict -> Dictionary list of functions and options.
+        (input) args -> ArgParser class instance
+        (input) func_dict -> Dictionary list of functions and options
 
     """
 
-    args_array = dict(args_array)
     func_dict = dict(func_dict)
-    server = gen_libs.load_module(args_array["-c"], args_array["-d"])
+    server = gen_libs.load_module(args.get_val("-c"), args.get_val("-d"))
 
     coll = mongo_class.Coll(
         server.name, server.user, server.japd, host=server.host,
@@ -813,7 +802,7 @@ def run_program(args_array, func_dict):
 
             if status2[0]:
 
-                _call_func(args_array, func_dict, repinst)
+                _call_func(args, func_dict, repinst)
                 mongo_libs.disconnect([repinst])
 
             else:
@@ -837,26 +826,26 @@ def main():
         line arguments and values.
 
     Variables:
-        dir_chk_list -> contains options which will be directories.
-        file_chk_list -> contains the options which will have files included.
-        file_crt_list -> contains options which require files to be created.
-        func_dict -> dictionary list for the function calls or other options.
-        opt_con_req_list -> contains the options that require other options.
-        opt_def_dict -> contains options with their default values.
-        opt_req_list -> contains the options that are required for the program.
-        opt_val_list -> contains options which require values.
+        dir_perms_chk -> contains directories and their octal permissions
+        file_perm_chk -> file check options with their perms in octal
+        file_crt -> contains options which require files to be created
+        func_dict -> dictionary list for the function calls or other options
+        opt_con_req_list -> contains the options that require other options
+        opt_def_dict -> contains options with their default values
+        opt_req_list -> contains the options that are required for the program
+        opt_val_list -> contains options which require values
 
     Arguments:
-        (input) argv -> Arguments from the command line.
+        (input) argv -> Arguments from the command line
 
     """
 
-    cmdline = gen_libs.get_inst(sys)
-    dir_chk_list = ["-d"]
-    file_chk_list = ["-o"]
-    file_crt_list = ["-o"]
-    func_dict = {"-L": chk_rep_lag, "-M": fetch_members, "-S": chk_rep_stat,
-                 "-P": fetch_priority, "-T": prt_rep_stat, "-N": node_chk}
+    dir_perms_chk = {"-d": 5}
+    file_perm_chk = {"-o": 6}
+    file_crt = ["-o"]
+    func_dict = {
+        "-L": chk_rep_lag, "-M": fetch_members, "-S": chk_rep_stat,
+        "-P": fetch_priority, "-T": prt_rep_stat, "-N": node_chk}
     opt_con_req_list = {"-i": ["-m"], "-s": ["-e"], "-u": ["-e"]}
     opt_def_dict = {"-j": False, "-i": "sysmon:mongo_rep_lag"}
     opt_multi_list = ["-e", "-s"]
@@ -864,16 +853,16 @@ def main():
     opt_val_list = ["-c", "-d", "-i", "-m", "-o", "-e", "-s"]
 
     # Process argument list from command line.
-    args_array = arg_parser.arg_parse2(cmdline.argv, opt_val_list,
-                                       opt_def_dict, multi_val=opt_multi_list)
+    args = gen_class.ArgParser(
+        sys.argv, opt_val=opt_val_list, opt_def=opt_def_dict,
+        multi_val=opt_multi_list, do_parse=True)
 
-    if not gen_libs.help_func(args_array, __version__, help_message) \
-       and not arg_parser.arg_require(args_array, opt_req_list) \
-       and arg_parser.arg_cond_req(args_array, opt_con_req_list) \
-       and not arg_parser.arg_dir_chk_crt(args_array, dir_chk_list) \
-       and not arg_parser.arg_file_chk(args_array, file_chk_list,
-                                       file_crt_list):
-        run_program(args_array, func_dict)
+    if not gen_libs.help_func(args, __version__, help_message)              \
+       and args.arg_require(opt_req=opt_req_list)                           \
+       and args.arg_cond_req(opt_con_req=opt_con_req_list)                  \
+       and args.arg_dir_chk(dir_perms_chk=dir_perms_chk)                    \
+       and args.arg_file_chk(file_perm_chk=file_perm_chk, file_crt=file_crt):
+        run_program(args, func_dict)
 
 
 if __name__ == "__main__":
