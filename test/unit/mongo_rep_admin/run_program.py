@@ -44,7 +44,7 @@ def fetch_priority(repset, args, **kwargs):
     mail = kwargs.get("mail", None)
     status = (False, err_msg)
 
-    if args_array and repset and mail:
+    if args and repset and mail:
         status = (False, err_msg)
 
     return status
@@ -65,7 +65,7 @@ def prt_rep_stat(repset, args, **kwargs):
     mail = kwargs.get("mail", None)
     status = (True, None)
 
-    if args_array and repset and mail:
+    if args and repset and mail:
         status = (True, None)
 
     return status
