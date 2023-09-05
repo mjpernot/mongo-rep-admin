@@ -229,7 +229,7 @@ def rep_msg_chk(rep_stat, prt_lvl=1):
         gen_libs.prt_msg("Error Message", rep_stat.get("infoMessage"), prt_lvl)
 
 
-def chk_rep_stat(repset, args_array, **kwargs):
+def chk_rep_stat(repset, args, **kwargs):
 
     """Function:  chk_rep_stat
 
@@ -238,7 +238,7 @@ def chk_rep_stat(repset, args_array, **kwargs):
 
     Arguments:
         (input) repset -> Replication set instance
-        (input) args_array -> Array of command line options and values
+        (input) args -> ArgParser class instance
         (input) **kwargs:
             mail -> Mail instance
             prt_all -> True|False on printing all status messages
@@ -249,7 +249,6 @@ def chk_rep_stat(repset, args_array, **kwargs):
     """
 
     status = (True, None)
-    args_array = dict(args_array)
     print("\nReplication Status Check for Rep Set:  %s" % (repset.repset))
     prt_all = kwargs.get("prt_all", False)
 
@@ -263,7 +262,7 @@ def chk_rep_stat(repset, args_array, **kwargs):
     return status
 
 
-def prt_rep_stat(repset, args_array, **kwargs):
+def prt_rep_stat(repset, args, **kwargs):
 
     """Function:  prt_rep_stat
 
@@ -271,7 +270,7 @@ def prt_rep_stat(repset, args_array, **kwargs):
 
     Arguments:
         (input) repset -> Replication set instance
-        (input) args_array -> Array of command line options and values
+        (input) args -> ArgParser class instance
         (input) **kwargs:
             mail -> Mail instance
         (output) status -> Tuple on connection status
@@ -281,13 +280,12 @@ def prt_rep_stat(repset, args_array, **kwargs):
     """
 
     status = (True, None)
-    args_array = dict(args_array)
-    chk_rep_stat(repset, args_array, prt_all=args_array["-T"])
+    chk_rep_stat(repset, args, prt_all=args.get_val("-T"))
 
     return status
 
 
-def fetch_priority(repset, args_array, **kwargs):
+def fetch_priority(repset, args, **kwargs):
 
     """Function:  fetch_priority
 
@@ -295,7 +293,7 @@ def fetch_priority(repset, args_array, **kwargs):
 
     Arguments:
         (input) repset -> Replication set instance
-        (input) args_array -> Array of command line options and values
+        (input) args -> ArgParser class instance
         (input) **kwargs:
             mail -> Mail instance
         (output) status -> Tuple on connection status
@@ -304,7 +302,6 @@ def fetch_priority(repset, args_array, **kwargs):
 
     """
 
-    args_array = dict(args_array)
     coll = mongo_class.Coll(
         repset.name, repset.user, repset.japd, host=repset.host,
         port=repset.port, db="local", coll="system.replset", auth=repset.auth,
@@ -330,7 +327,7 @@ def fetch_priority(repset, args_array, **kwargs):
     return status
 
 
-def fetch_members(repset, args_array, **kwargs):
+def fetch_members(repset, args, **kwargs):
 
     """Function:  fetch_members
 
@@ -339,7 +336,7 @@ def fetch_members(repset, args_array, **kwargs):
 
     Arguments:
         (input) repset -> Replication set instance
-        (input) args_array -> Array of command line options and values
+        (input) args -> ArgParser class instance
         (input) **kwargs:
             mail -> Mail instance
         (output) status -> Tuple on connection status
@@ -349,7 +346,6 @@ def fetch_members(repset, args_array, **kwargs):
     """
 
     status = (True, None)
-    args_array = dict(args_array)
     print("\nMembers of replica set: %s" % (repset.repset))
     rep_status = repset.adm_cmd("replSetGetStatus")
     primary = get_master(rep_status)

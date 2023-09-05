@@ -27,6 +27,31 @@ import version
 __version__ = version.__version__
 
 
+class ArgParser(object):
+
+    """Class:  ArgParser
+
+    Description:  Class stub holder for gen_class.ArgParser class.
+
+    Methods:
+        __init__
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Class initialization.
+
+        Arguments:
+
+        """
+
+        self.cmdline = None
+        self.args_array = dict()
+
+
 class Server(object):
 
     """Class:  Server
@@ -93,7 +118,8 @@ class UnitTest(unittest.TestCase):
         """
 
         self.server = Server()
-        self.args_array = {"-T": "TimeLag"}
+        self.args = ArgParser()
+        self.args.args_array = {"-T": "TimeLag"}
         self.status = (True, None)
 
     def test_fetch_members(self):
@@ -109,7 +135,7 @@ class UnitTest(unittest.TestCase):
         with gen_libs.no_std_out():
             self.assertEqual(
                 mongo_rep_admin.fetch_members(
-                    self.server, self.args_array), self.status)
+                    self.server, self.args), self.status)
 
 
 if __name__ == "__main__":
