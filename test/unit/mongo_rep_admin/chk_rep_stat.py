@@ -28,6 +28,31 @@ import version
 __version__ = version.__version__
 
 
+class ArgParser(object):
+
+    """Class:  ArgParser
+
+    Description:  Class stub holder for gen_class.ArgParser class.
+
+    Methods:
+        __init__
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Class initialization.
+
+        Arguments:
+
+        """
+
+        self.cmdline = None
+        self.args_array = dict()
+
+
 class Server(object):
 
     """Class:  Server
@@ -92,7 +117,8 @@ class UnitTest(unittest.TestCase):
         """
 
         self.server = Server()
-        self.args_array = {"-c": "config"}
+        self.args = ArgParser()
+        self.args.args_array = {"-c": "config"}
         self.status = (True, None)
 
     @mock.patch("mongo_rep_admin.rep_msg_chk")
@@ -115,7 +141,7 @@ class UnitTest(unittest.TestCase):
         with gen_libs.no_std_out():
             self.assertEqual(
                 mongo_rep_admin.chk_rep_stat(
-                    self.server, self.args_array), self.status)
+                    self.server, self.args), self.status)
 
 
 if __name__ == "__main__":

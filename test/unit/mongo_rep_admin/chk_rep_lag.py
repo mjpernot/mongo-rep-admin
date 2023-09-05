@@ -27,6 +27,44 @@ import version
 __version__ = version.__version__
 
 
+class ArgParser(object):
+
+    """Class:  ArgParser
+
+    Description:  Class stub holder for gen_class.ArgParser class.
+
+    Methods:
+        __init__
+        get_val
+
+    """
+
+    def __init__(self):
+
+        """Method:  __init__
+
+        Description:  Class initialization.
+
+        Arguments:
+
+        """
+
+        self.cmdline = None
+        self.args_array = dict()
+
+    def get_val(self, skey, def_val=None):
+
+        """Method:  get_val
+
+        Description:  Method stub holder for gen_class.ArgParser.get_val.
+
+        Arguments:
+
+        """
+
+        return self.args_array.get(skey, def_val)
+
+
 class Server(object):
 
     """Class:  Server
@@ -96,7 +134,8 @@ class UnitTest(unittest.TestCase):
 
         self.get_master = {"optimeDate": "2019-07-26 11:13:02"}
         self.server = Server()
-        self.args_array = {"-m": "config", "-d": "directory/path"}
+        self.args = ArgParser()
+        self.args.args_array = {"-m": "config", "-d": "directory/path"}
         self.status = (True, None)
         self.status2 = (False, "_process_std: Error Message")
         self.status3 = (False, "_process_json: Error Message")
@@ -122,8 +161,7 @@ class UnitTest(unittest.TestCase):
         mock_lag.return_value = self.status3
 
         self.assertEqual(
-            mongo_rep_admin.chk_rep_lag(self.server, self.args_array),
-            self.results3)
+            mongo_rep_admin.chk_rep_lag(self.server, self.args), self.results3)
 
     @mock.patch("mongo_rep_admin.gen_libs.load_module",
                 mock.Mock(return_value="Mongo_Cfg"))
@@ -143,8 +181,7 @@ class UnitTest(unittest.TestCase):
         mock_lag.return_value = self.status2
 
         self.assertEqual(
-            mongo_rep_admin.chk_rep_lag(self.server, self.args_array),
-            self.results2)
+            mongo_rep_admin.chk_rep_lag(self.server, self.args), self.results2)
 
     @mock.patch("mongo_rep_admin.gen_libs.load_module",
                 mock.Mock(return_value="Mongo_Cfg"))
@@ -164,8 +201,7 @@ class UnitTest(unittest.TestCase):
         mock_lag.return_value = self.status
 
         self.assertEqual(
-            mongo_rep_admin.chk_rep_lag(self.server, self.args_array),
-            self.results)
+            mongo_rep_admin.chk_rep_lag(self.server, self.args), self.results)
 
     @mock.patch("mongo_rep_admin.gen_libs.load_module",
                 mock.Mock(return_value="Mongo_Cfg"))
@@ -187,8 +223,7 @@ class UnitTest(unittest.TestCase):
         mock_time.return_value = "2019-07-26 11:13:02"
 
         self.assertEqual(
-            mongo_rep_admin.chk_rep_lag(self.server, self.args_array),
-            self.results)
+            mongo_rep_admin.chk_rep_lag(self.server, self.args), self.results)
 
     @mock.patch("mongo_rep_admin.gen_libs.load_module",
                 mock.Mock(return_value="Mongo_Cfg"))
@@ -208,8 +243,7 @@ class UnitTest(unittest.TestCase):
         mock_lag.return_value = self.status
 
         self.assertEqual(
-            mongo_rep_admin.chk_rep_lag(self.server, self.args_array),
-            self.results)
+            mongo_rep_admin.chk_rep_lag(self.server, self.args), self.results)
 
 
 if __name__ == "__main__":
