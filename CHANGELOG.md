@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [3.7.4] - 2024-09-23
+
+### Fixed
+- config/mongo.py.TEMPLATE: Added missing TLS entries.
+
+
 ## [3.7.3] - 2024-09-10
 
 ### Changed
@@ -18,7 +24,6 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ### Changed
 - run_program, fetch_priority: Added TLS parameters to database instance calls.
 - Set pymongo to 3.12.3 for Python 2 and Python 3.
-- config/mongo.py.TEMPLATE: Added TLS entries.
 - Documentation updates.
 
 
