@@ -139,7 +139,11 @@
 # Standard
 import sys
 import datetime
-import json
+
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 # Local
 try:
