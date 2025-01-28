@@ -135,8 +135,6 @@
 """
 
 # Libraries and Global Variables
-from __future__ import print_function
-from __future__ import absolute_import
 
 # Standard
 import sys
@@ -152,10 +150,10 @@ try:
     from . import version
 
 except (ValueError, ImportError) as err:
-    import lib.gen_libs as gen_libs
-    import lib.gen_class as gen_class
-    import mongo_lib.mongo_libs as mongo_libs
-    import mongo_lib.mongo_class as mongo_class
+    import lib.gen_libs as gen_libs                     # pylint:disable=R0402
+    import lib.gen_class as gen_class                   # pylint:disable=R0402
+    import mongo_lib.mongo_libs as mongo_libs           # pylint:disable=R0402
+    import mongo_lib.mongo_class as mongo_class         # pylint:disable=R0402
     import version
 
 __version__ = version.__version__
@@ -237,7 +235,7 @@ def rep_msg_chk(rep_stat, prt_lvl=1):
         gen_libs.prt_msg("Error Message", rep_stat.get("infoMessage"), prt_lvl)
 
 
-def chk_rep_stat(repset, args, **kwargs):
+def chk_rep_stat(repset, args, **kwargs):               # pylint:disable=W0613
 
     """Function:  chk_rep_stat
 
@@ -257,12 +255,12 @@ def chk_rep_stat(repset, args, **kwargs):
     """
 
     status = (True, None)
-    print("\nReplication Status Check for Rep Set:  %s" % (repset.repset))
+    print(f"\nReplication Status Check for Rep Set:  {repset.repset}")
     prt_all = kwargs.get("prt_all", False)
 
     # Process each member in replica set.
     for item in repset.adm_cmd("replSetGetStatus").get("members"):
-        print("\nServer: %s" % (item.get("name")))
+        print(f'\nServer: {item.get("name")}')
         rep_health_chk(item, prt_all)
         rep_state_chk(item, prt_all)
         rep_msg_chk(item)
@@ -270,7 +268,7 @@ def chk_rep_stat(repset, args, **kwargs):
     return status
 
 
-def prt_rep_stat(repset, args, **kwargs):
+def prt_rep_stat(repset, args, **kwargs):               # pylint:disable=W0613
 
     """Function:  prt_rep_stat
 
@@ -293,7 +291,7 @@ def prt_rep_stat(repset, args, **kwargs):
     return status
 
 
-def fetch_priority(repset, args, **kwargs):
+def fetch_priority(repset, args, **kwargs):             # pylint:disable=W0613
 
     """Function:  fetch_priority
 
@@ -323,21 +321,21 @@ def fetch_priority(repset, args, **kwargs):
     status = coll.connect()
 
     if status[0]:
-        print("\nMembers => priority of replica set: %s" % (repset.repset))
+        print(f"\nMembers => priority of replica set: {repset.repset}")
 
         for item in coll.coll_find1()["members"]:
-            print("\t{0} => {1}".format(item["host"], item["priority"]))
+            print(f'\t{item["host"]} => {item["priority"]}')
 
         mongo_libs.disconnect([coll])
 
     else:
-        status = (status[0],
-                  "fetch_priority:  Connection failure:  %s" % (status[1]))
+        status = (
+            status[0], f"fetch_priority:  Connection failure:  {status[1]}")
 
     return status
 
 
-def fetch_members(repset, args, **kwargs):
+def fetch_members(repset, args, **kwargs):              # pylint:disable=W0613
 
     """Function:  fetch_members
 
@@ -356,16 +354,16 @@ def fetch_members(repset, args, **kwargs):
     """
 
     status = (True, None)
-    print("\nMembers of replica set: %s" % (repset.repset))
+    print(f"\nMembers of replica set: {repset.repset}")
     rep_status = repset.adm_cmd("replSetGetStatus")
     primary = get_master(rep_status)
-    print("\t%s (Primary)" % (primary["name"]))
+    print(f'\t{primary["name"]} (Primary)')
 
     secondaries = [member for member in rep_status.get("members")
                    if member.get("state") == 2]
 
     for second in secondaries:
-        print("\t%s" % (second["name"]))
+        print(f'\t{second["name"]}')
 
     return status
 
@@ -407,13 +405,12 @@ def get_optimedate(rep_status):
     """
 
     rep_status = dict(rep_status)
-    optime_date = datetime.datetime.strptime("1900-01-01 00:00:01",
-                                             "%Y-%m-%d %H:%M:%S")
+    optime_date = datetime.datetime.strptime(
+        "1900-01-01 00:00:01", "%Y-%m-%d %H:%M:%S")
 
     # Find best datetime from Secondary servers.
     for member in rep_status.get("members"):
-        if member.get("optimeDate") > optime_date:
-            optime_date = member.get("optimeDate")
+        optime_date = max(optime_date, member.get('optimeDate'))
 
     return optime_date
 
@@ -473,20 +470,19 @@ def chk_mem_rep_lag(rep_status, **kwargs):
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
 
     if json_fmt:
-        status = _process_json(outdata, **kwargs)
+        status = process_json(outdata, **kwargs)
 
     else:
-        status = _process_std(outdata, **kwargs)
+        status = process_std(outdata, **kwargs)
 
     return status
 
 
-def _process_std(outdata, **kwargs):
+def process_std(outdata, **kwargs):
 
-    """Function:  _process_std
+    """Function:  process_std
 
-    Description:  Private function for chk_mem_rep_lag().  Process standard out
-        formatted data.
+    Description:  Process standard out formatted data.
 
     Arguments:
         (input) outdata -> JSON document from chk_mem_rep_lag function
@@ -517,20 +513,21 @@ def _process_std(outdata, **kwargs):
     if args.get_val("-a", def_val=False):
         mode = "a"
 
-    body.append("\nReplication lag for Replica set: %s." % (outdata["RepSet"]))
+    body.append(f'\nReplication lag for Replica set: {outdata["RepSet"]}')
 
     for item in outdata["Slaves"]:
-        body.append("\nSource: {0}".format(item["Name"]))
-        body.append("\tsynced to:  {0}".format(item["SyncTo"]))
-        body.append("\t{0} secs ({1} hrs) behind the {2}".format(
-            item["LagTime"], int((item["LagTime"] / 36) / 100), kwargs["suf"]))
+        body.append(f'\nSource: {item["Name"]}')
+        body.append(f'\tsynced to:  {item["SyncTo"]}')
+        body.append(f'\t{item["LagTime"]} secs'
+                    f' ({int((item["LagTime"] / 36) / 100)} hrs) behind the'
+                    f' {kwargs["suf"]}')
 
     if mongo_cfg and db_tbl:
         dbs, tbl = db_tbl.split(":")
         status = mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
 
     if not status[0]:
-        status = (status[0], "_process_std: " + status[1])
+        status = (status[0], "process_std: " + status[1])
 
     if ofile:
         f_hldr = gen_libs.openfile(ofile, mode)
@@ -551,11 +548,11 @@ def _process_std(outdata, **kwargs):
     return status
 
 
-def _process_json(outdata, **kwargs):
+def process_json(outdata, **kwargs):
 
-    """Function:  _process_json
+    """Function:  process_json
 
-    Description:  Private function for chk_mem_rep_lag().  Process JSON data.
+    Description:  Process JSON data.
 
     Arguments:
         (input) outdata -> JSON document from chk_mem_rep_lag function
@@ -596,7 +593,7 @@ def _process_json(outdata, **kwargs):
         status = mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
 
     if not status[0]:
-        status = (status[0], "_process_json: " + status[1])
+        status = (status[0], "process_json: " + status[1])
 
     if ofile:
         gen_libs.write_file(ofile, mode, jdata)
@@ -694,7 +691,7 @@ def node_chk(mongo, args, **kwargs):
 
         if mail:
             if not mail.subj:
-                subj = "Node Status Check for Rep Set:  %s" % mongo.repset
+                subj = f"Node Status Check for Rep Set:  {mongo.repset}"
                 mail.create_subject(subj=subj)
 
             mail.add_2_msg(jnode_status)
@@ -734,12 +731,11 @@ def single_node_chk(node):
     return status
 
 
-def _call_func(args, func_dict, repinst):
+def call_func(args, func_dict, repinst):
 
-    """Function:  _call_func
+    """Function:  call_func
 
-    Description:  Private function for run_program.  Call each function
-        selected.
+    Description:  Call each function selected.
 
     Arguments:
         (input) args -> ArgParser class instance
@@ -760,7 +756,7 @@ def _call_func(args, func_dict, repinst):
         status3 = func_dict[item](repinst, args, mail=mail)
 
         if not status3[0]:
-            print("Error detected:  %s" % (status3[1]))
+            print(f"Error detected:  {status3[1]}")
 
 
 def run_program(args, func_dict):
@@ -817,12 +813,11 @@ def run_program(args, func_dict):
 
             if status2[0]:
 
-                _call_func(args, func_dict, repinst)
+                call_func(args, func_dict, repinst)
                 mongo_libs.disconnect([repinst])
 
             else:
-                print("run_program.RepSet: Connection failure:  %s"
-                      % (status2[1]))
+                print(f"run_program.RepSet: Connection failure:  {status2[1]}")
 
         else:
             gen_libs.prt_msg("Error", "No replication found.", 0)
@@ -830,7 +825,7 @@ def run_program(args, func_dict):
         mongo_libs.disconnect([coll])
 
     else:
-        print("run_program.Coll: Connection failure:  %s" % (status[1]))
+        print(f"run_program.Coll: Connection failure:  {status[1]}")
 
 
 def main():
