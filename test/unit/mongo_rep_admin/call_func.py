@@ -1,11 +1,11 @@
 # Classification (U)
 
-"""Program:  _call_func.py
+"""Program:  call_func.py
 
-    Description:  Unit testing of _call_func in mongo_rep_admin.py.
+    Description:  Unit testing of call_func in mongo_rep_admin.py.
 
     Usage:
-        test/unit/mongo_rep_admin/_call_func.py
+        test/unit/mongo_rep_admin/call_func.py
 
     Arguments:
 
@@ -21,9 +21,9 @@ import mock
 
 # Local
 sys.path.append(os.getcwd())
-import mongo_rep_admin
-import lib.gen_libs as gen_libs
-import version
+import mongo_rep_admin                          # pylint:disable=E0401,C0413
+import lib.gen_libs as gen_libs             # pylint:disable=E0401,C0413,R0402
+import version                                  # pylint:disable=E0401,C0413
 
 __version__ = version.__version__
 
@@ -71,7 +71,7 @@ def prt_rep_stat(repset, args_array, **kwargs):
     return status
 
 
-class ArgParser(object):
+class ArgParser():
 
     """Class:  ArgParser
 
@@ -95,7 +95,7 @@ class ArgParser(object):
         """
 
         self.cmdline = None
-        self.args_array = dict()
+        self.args_array = {}
 
     def get_args_keys(self):
 
@@ -122,7 +122,7 @@ class ArgParser(object):
         return self.args_array.get(skey, def_val)
 
 
-class Coll(object):
+class Coll():
 
     """Class:  Coll
 
@@ -187,7 +187,7 @@ class Coll(object):
         return {"_id": "RepSetName"}
 
 
-class RepSet(object):
+class RepSet():                                         # pylint:disable=R0903
 
     """Class:  RepSet
 
@@ -269,7 +269,7 @@ class UnitTest(unittest.TestCase):
         """
 
         self.assertFalse(
-            mongo_rep_admin._call_func(
+            mongo_rep_admin.call_func(
                 self.args, self.func_names, self.repset))
 
     def test_func_error(self):
@@ -284,7 +284,7 @@ class UnitTest(unittest.TestCase):
 
         with gen_libs.no_std_out():
             self.assertFalse(
-                mongo_rep_admin._call_func(
+                mongo_rep_admin.call_func(
                     self.args3, self.func_names, self.repset))
 
     @mock.patch("mongo_rep_admin.gen_class.setup_mail")
@@ -301,7 +301,7 @@ class UnitTest(unittest.TestCase):
         mock_mail.return_value = "Mail Instance"
 
         self.assertFalse(
-            mongo_rep_admin._call_func(
+            mongo_rep_admin.call_func(
                 self.args2, self.func_names, self.repset))
 
 

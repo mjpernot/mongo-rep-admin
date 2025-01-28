@@ -6,8 +6,8 @@
 
 echo ""
 echo "Unit test:"
-/usr/bin/python test/unit/mongo_rep_admin/_call_func.py
-/usr/bin/python test/unit/mongo_rep_admin/_process_std.py
+/usr/bin/python test/unit/mongo_rep_admin/call_func.py
+/usr/bin/python test/unit/mongo_rep_admin/process_std.py
 /usr/bin/python test/unit/mongo_rep_admin/chk_mem_rep_lag.py
 /usr/bin/python test/unit/mongo_rep_admin/chk_rep_lag.py
 /usr/bin/python test/unit/mongo_rep_admin/chk_rep_stat.py
