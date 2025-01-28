@@ -2,7 +2,7 @@
 
 """Program:  process_json.py
 
-    Description:  Unit testing of _process_json in mongo_rep_admin.py.
+    Description:  Unit testing of process_json in mongo_rep_admin.py.
 
     Usage:
         test/unit/mongo_rep_admin/process_json.py
@@ -22,13 +22,13 @@ import mock
 
 # Local
 sys.path.append(os.getcwd())
-import mongo_rep_admin
-import version
+import mongo_rep_admin                          # pylint:disable=E0401,C0413
+import version                                  # pylint:disable=E0401,C0413
 
 __version__ = version.__version__
 
 
-class ArgParser(object):
+class ArgParser():                                      # pylint:disable=R0903
 
     """Class:  ArgParser
 
@@ -51,7 +51,7 @@ class ArgParser(object):
         """
 
         self.cmdline = None
-        self.args_array = dict()
+        self.args_array = {}
 
     def get_val(self, skey, def_val=None):
 
@@ -66,7 +66,7 @@ class ArgParser(object):
         return self.args_array.get(skey, def_val)
 
 
-class Mail(object):
+class Mail():
 
     """Class:  Mail
 
@@ -177,7 +177,7 @@ class UnitTest(unittest.TestCase):
         self.conn = (True, None)
         self.conn2 = (False, "Error Message")
         self.status = (True, None)
-        self.status2 = (False, "_process_json: Error Message")
+        self.status2 = (False, "process_json: Error Message")
         self.db_tbl = "db:tbl"
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
@@ -194,7 +194,7 @@ class UnitTest(unittest.TestCase):
         mock_mongo.return_value = self.conn2
 
         self.assertEqual(
-            mongo_rep_admin._process_json(
+            mongo_rep_admin.process_json(
                 self.outdata, class_cfg="mongocfg", db_tbl=self.db_tbl,
                 args=self.args), self.status2)
 
@@ -212,7 +212,7 @@ class UnitTest(unittest.TestCase):
         mock_mongo.return_value = self.conn
 
         self.assertEqual(
-            mongo_rep_admin._process_json(
+            mongo_rep_admin.process_json(
                 self.outdata, class_cfg="mongocfg", db_tbl=self.db_tbl,
                 args=self.args), self.status)
 
@@ -229,7 +229,7 @@ class UnitTest(unittest.TestCase):
         """
 
         self.assertEqual(
-            mongo_rep_admin._process_json(
+            mongo_rep_admin.process_json(
                 self.outdata, args=self.args4), self.status)
 
     def test_json_stdout_suppress(self):
@@ -243,7 +243,7 @@ class UnitTest(unittest.TestCase):
         """
 
         self.assertEqual(
-            mongo_rep_admin._process_json(
+            mongo_rep_admin.process_json(
                 self.outdata, args=self.args), self.status)
 
     @mock.patch("mongo_rep_admin.gen_libs.display_data",
@@ -259,7 +259,7 @@ class UnitTest(unittest.TestCase):
         """
 
         self.assertEqual(
-            mongo_rep_admin._process_json(
+            mongo_rep_admin.process_json(
                 self.outdata, args=self.args2), self.status)
 
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
@@ -276,7 +276,7 @@ class UnitTest(unittest.TestCase):
         mock_mongo.return_value = self.conn
 
         self.assertEqual(
-            mongo_rep_admin._process_json(
+            mongo_rep_admin.process_json(
                 self.outdata, class_cfg="mongocfg", db_tbl=self.db_tbl,
                 args=self.args), self.status)
 
@@ -293,7 +293,7 @@ class UnitTest(unittest.TestCase):
         """
 
         self.assertEqual(
-            mongo_rep_admin._process_json(
+            mongo_rep_admin.process_json(
                 self.outdata, ofile="Filename", args=self.args3), self.status)
 
     @mock.patch("mongo_rep_admin.gen_libs.write_file",
@@ -309,7 +309,7 @@ class UnitTest(unittest.TestCase):
         """
 
         self.assertEqual(
-            mongo_rep_admin._process_json(
+            mongo_rep_admin.process_json(
                 self.outdata, ofile="Filename", args=self.args), self.status)
 
     def test_email_mailx(self):
@@ -323,7 +323,7 @@ class UnitTest(unittest.TestCase):
         """
 
         self.assertEqual(
-            mongo_rep_admin._process_json(
+            mongo_rep_admin.process_json(
                 self.outdata, mail=self.mail, args=self.argsa), self.status)
 
     def test_email(self):
@@ -337,7 +337,7 @@ class UnitTest(unittest.TestCase):
         """
 
         self.assertEqual(
-            mongo_rep_admin._process_json(
+            mongo_rep_admin.process_json(
                 self.outdata, mail=self.mail, args=self.args), self.status)
 
 

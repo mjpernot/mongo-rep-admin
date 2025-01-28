@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [4.0.0] - 2025-01-28
+Breaking Changes
+
+- Removed support for Python 2.7.
+- Add pre-header check on allowable Python versions to run.
+- Added pymongo==4.10.1 for Python 3.9 and Python 3.12.
+- Added dnspython==2.7.0 for Python 3.9 and Python 3.12.
+- Updated python-lib v4.0.0
+- Updated mongo-lib v4.4.0
+
+### Added
+- call_func: Call each function selected.
+- process_std: Process standard out formatted data.
+- process_json: Process JSON data.
+
+### Changed
+- run_program: Replaced \_call_func call with call_func call.
+- chk_mem_rep_lag: Replaced \_process_json call with process_json call.
+- chk_mem_rep_lag: Replaced \_process_std call with process_std call.
+- get_optimedate: Replaced "if" statement inside loop with max() call.
+- Converted strings to f-strings.
+- Documentation changes.
+
+### Deprecated
+- Support for Mongo 3.4
+
+### Removed
+- \_call_func function.
+- \_process_json function.
+- \_process_std function.
+
+
 ## [3.7.6] - 2024-11-21
 - Updated distro==1.9.0 for Python 3
 - Updated psutil==5.9.4 for Python 3

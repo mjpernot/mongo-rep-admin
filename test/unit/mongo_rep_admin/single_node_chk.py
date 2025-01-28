@@ -20,13 +20,13 @@ import unittest
 
 # Local
 sys.path.append(os.getcwd())
-import mongo_rep_admin
-import version
+import mongo_rep_admin                          # pylint:disable=E0401,C0413
+import version                                  # pylint:disable=E0401,C0413
 
 __version__ = version.__version__
 
 
-class Server(object):
+class Server():                                         # pylint:disable=R0903
 
     """Class:  Server
 
@@ -50,8 +50,7 @@ class Server(object):
 
         self.repset = "RepsetName"
         self.cmd = None
-        self.status = {"members":
-                       []}
+        self.status = {"members": []}
 
     def adm_cmd(self, cmd):
 

@@ -22,14 +22,14 @@ import mock
 
 # Local
 sys.path.append(os.getcwd())
-import mongo_rep_admin
-import lib.gen_libs as gen_libs
-import version
+import mongo_rep_admin                          # pylint:disable=E0401,C0413
+import lib.gen_libs as gen_libs             # pylint:disable=E0401,C0413,R0402
+import version                                  # pylint:disable=E0401,C0413
 
 __version__ = version.__version__
 
 
-class ArgParser(object):
+class ArgParser():                                      # pylint:disable=R0903
 
     """Class:  ArgParser
 
@@ -51,10 +51,10 @@ class ArgParser(object):
         """
 
         self.cmdline = None
-        self.args_array = dict()
+        self.args_array = {}
 
 
-class Mail(object):
+class Mail():
 
     """Class:  Mail
 
@@ -187,11 +187,11 @@ class UnitTest(unittest.TestCase):
         self.conn = (True, None)
         self.conn2 = (False, "Error Message")
         self.status = (True, None)
-        self.status2 = (False, "_process_std: Error Message")
-        self.status3 = (False, "_process_json: Error Message")
+        self.status2 = (False, "process_std: Error Message")
+        self.status3 = (False, "process_json: Error Message")
         self.db_tbl = "db:tbl"
 
-    @mock.patch("mongo_rep_admin._process_json")
+    @mock.patch("mongo_rep_admin.process_json")
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     @mock.patch("mongo_rep_admin.get_master")
     def test_json_mongo_fail(self, mock_mst, mock_mongo, mock_process):
@@ -214,7 +214,7 @@ class UnitTest(unittest.TestCase):
                 db_tbl=self.db_tbl, args=self.args, optdt=self.optdt),
             self.status3)
 
-    @mock.patch("mongo_rep_admin._process_json")
+    @mock.patch("mongo_rep_admin.process_json")
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     @mock.patch("mongo_rep_admin.get_master")
     def test_json_mongo_success(self, mock_mst, mock_mongo, mock_process):
@@ -237,7 +237,7 @@ class UnitTest(unittest.TestCase):
                 db_tbl=self.db_tbl, args=self.args, optdt=self.optdt),
             self.status)
 
-    @mock.patch("mongo_rep_admin._process_std")
+    @mock.patch("mongo_rep_admin.process_std")
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     @mock.patch("mongo_rep_admin.get_master")
     def test_std_out_mongo_fail(self, mock_mst, mock_mongo, mock_process):
@@ -260,7 +260,7 @@ class UnitTest(unittest.TestCase):
                 args=self.args, optdt=self.optdt, suf=self.primary),
             self.status2)
 
-    @mock.patch("mongo_rep_admin._process_std")
+    @mock.patch("mongo_rep_admin.process_std")
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     @mock.patch("mongo_rep_admin.get_master")
     def test_std_out_mongo_success(self, mock_mst, mock_mongo, mock_process):
@@ -283,7 +283,7 @@ class UnitTest(unittest.TestCase):
                 args=self.args, optdt=self.optdt, suf=self.primary),
             self.status)
 
-    @mock.patch("mongo_rep_admin._process_std")
+    @mock.patch("mongo_rep_admin.process_std")
     @mock.patch("mongo_rep_admin.get_master")
     def test_std_out_email(self, mock_mst, mock_process):
 
@@ -307,7 +307,7 @@ class UnitTest(unittest.TestCase):
                 mock.Mock(return_value="File_Handler"))
     @mock.patch("mongo_rep_admin.gen_libs.write_file2",
                 mock.Mock(return_value=True))
-    @mock.patch("mongo_rep_admin._process_std")
+    @mock.patch("mongo_rep_admin.process_std")
     @mock.patch("mongo_rep_admin.get_master")
     def test_std_out_file_append(self, mock_mst, mock_process):
 
@@ -331,7 +331,7 @@ class UnitTest(unittest.TestCase):
                 mock.Mock(return_value="File_Handler"))
     @mock.patch("mongo_rep_admin.gen_libs.write_file2",
                 mock.Mock(return_value=True))
-    @mock.patch("mongo_rep_admin._process_std")
+    @mock.patch("mongo_rep_admin.process_std")
     @mock.patch("mongo_rep_admin.get_master")
     def test_std_out_file(self, mock_mst, mock_process):
 
@@ -351,7 +351,7 @@ class UnitTest(unittest.TestCase):
                 self.rep_status, ofile="Filename", args=self.args,
                 optdt=self.optdt, suf=self.primary), self.status)
 
-    @mock.patch("mongo_rep_admin._process_std")
+    @mock.patch("mongo_rep_admin.process_std")
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     @mock.patch("mongo_rep_admin.get_master")
     def test_std_out_mongo(self, mock_mst, mock_mongo, mock_process):
@@ -374,7 +374,7 @@ class UnitTest(unittest.TestCase):
                 args=self.args, optdt=self.optdt, suf=self.primary),
             self.status)
 
-    @mock.patch("mongo_rep_admin._process_std")
+    @mock.patch("mongo_rep_admin.process_std")
     @mock.patch("mongo_rep_admin.get_master")
     def test_std_out_suppress(self, mock_mst, mock_process):
 
@@ -394,7 +394,7 @@ class UnitTest(unittest.TestCase):
                 self.rep_status, optdt=self.optdt, suf=self.primary,
                 args=self.args), self.status)
 
-    @mock.patch("mongo_rep_admin._process_json")
+    @mock.patch("mongo_rep_admin.process_json")
     @mock.patch("mongo_rep_admin.gen_libs.display_data")
     @mock.patch("mongo_rep_admin.get_master")
     def test_json_stdout_suppress(self, mock_mst, mock_prt, mock_process):
@@ -416,7 +416,7 @@ class UnitTest(unittest.TestCase):
                 self.rep_status, json=True, args=self.args, optdt=self.optdt),
             self.status)
 
-    @mock.patch("mongo_rep_admin._process_json")
+    @mock.patch("mongo_rep_admin.process_json")
     @mock.patch("mongo_rep_admin.gen_libs.display_data")
     @mock.patch("mongo_rep_admin.get_master")
     def test_json_stdout(self, mock_mst, mock_prt, mock_process):
@@ -438,7 +438,7 @@ class UnitTest(unittest.TestCase):
                 self.rep_status, json=True, args=self.args2, optdt=self.optdt),
             self.status)
 
-    @mock.patch("mongo_rep_admin._process_json")
+    @mock.patch("mongo_rep_admin.process_json")
     @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
     @mock.patch("mongo_rep_admin.get_master")
     def test_no_rep_info(self, mock_mst, mock_prt, mock_process):
@@ -460,7 +460,7 @@ class UnitTest(unittest.TestCase):
                 self.rep_status2, json=True, args=self.args, optdt=self.optdt),
             self.status)
 
-    @mock.patch("mongo_rep_admin._process_json")
+    @mock.patch("mongo_rep_admin.process_json")
     @mock.patch("mongo_rep_admin.mongo_libs.ins_doc")
     @mock.patch("mongo_rep_admin.get_master")
     def test_mongo(self, mock_mst, mock_mongo, mock_process):
@@ -483,7 +483,7 @@ class UnitTest(unittest.TestCase):
                 db_tbl=self.db_tbl, args=self.args, optdt=self.optdt),
             self.status)
 
-    @mock.patch("mongo_rep_admin._process_json")
+    @mock.patch("mongo_rep_admin.process_json")
     @mock.patch("mongo_rep_admin.gen_libs.write_file")
     @mock.patch("mongo_rep_admin.get_master")
     def test_file(self, mock_mst, mock_file, mock_process):
@@ -505,7 +505,7 @@ class UnitTest(unittest.TestCase):
                 self.rep_status, json=True, ofile="Filename",
                 args=self.args, optdt=self.optdt), self.status)
 
-    @mock.patch("mongo_rep_admin._process_json")
+    @mock.patch("mongo_rep_admin.process_json")
     @mock.patch("mongo_rep_admin.get_master")
     def test_email_mailx(self, mock_mst, mock_process):
 
@@ -525,7 +525,7 @@ class UnitTest(unittest.TestCase):
                 self.rep_status, json=True, mail=self.mail,
                 args=self.argsa, optdt=self.optdt), self.status)
 
-    @mock.patch("mongo_rep_admin._process_json")
+    @mock.patch("mongo_rep_admin.process_json")
     @mock.patch("mongo_rep_admin.get_master")
     def test_email(self, mock_mst, mock_process):
 
@@ -545,7 +545,7 @@ class UnitTest(unittest.TestCase):
                 self.rep_status, json=True, mail=self.mail,
                 args=self.args, optdt=self.optdt), self.status)
 
-    @mock.patch("mongo_rep_admin._process_json")
+    @mock.patch("mongo_rep_admin.process_json")
     @mock.patch("mongo_rep_admin.get_master")
     def test_json(self, mock_mst, mock_process):
 
@@ -565,7 +565,7 @@ class UnitTest(unittest.TestCase):
                 self.rep_status, json=True, args=self.args, optdt=self.optdt),
             self.status)
 
-    @mock.patch("mongo_rep_admin._process_std")
+    @mock.patch("mongo_rep_admin.process_std")
     @mock.patch("mongo_rep_admin.get_master")
     def test_std_out(self, mock_mst, mock_process):
 
