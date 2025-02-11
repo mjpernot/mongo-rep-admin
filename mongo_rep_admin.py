@@ -1,7 +1,25 @@
 #!/usr/bin/python
 # Classification (U)
 
-"""Program:  mongo_rep_admin.py
+# Shell commands follow
+# Next line is bilingual: it starts a comment in Python & is a no-op in shell
+""":"
+
+# Find a suitable python interpreter (can adapt for specific needs)
+# NOTE: Ignore this section if passing the -h option to the program.
+#   This code must be included in the program's initial docstring.
+for cmd in python3.12 python3.9 ; do
+   command -v > /dev/null $cmd && exec $cmd $0 "$@"
+done
+
+echo "OMG Python not found, exiting...."
+
+exit 2
+
+# Previous line is bilingual: it ends a comment in Python & is a no-op in shell
+# Shell commands end here
+
+   Program:  mongo_rep_admin.py
 
     Description:  Administration program for Mongo replica set.  The program
         has a number of functions to monitor the status of replication between
@@ -132,7 +150,9 @@
     Example:
         mongo_rep_admin.py -c mongo -d config -L -j
 
-"""
+":"""
+# Python program follows
+
 
 # Libraries and Global Variables
 
