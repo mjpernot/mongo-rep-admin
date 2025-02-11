@@ -4,11 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [4.0.1] - 2025-02-11
+
+### Fixed
+- Add pre-header check on allowable Python versions to run.
+
+
 ## [4.0.0] - 2025-01-28
 Breaking Changes
 
 - Removed support for Python 2.7.
-- Add pre-header check on allowable Python versions to run.
 - Added pymongo==4.10.1 for Python 3.9 and Python 3.12.
 - Added dnspython==2.7.0 for Python 3.9 and Python 3.12.
 - Updated python-lib v4.0.0
