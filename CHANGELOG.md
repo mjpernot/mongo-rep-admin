@@ -5,6 +5,7 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 
 
 ## [4.0.2] - 2025-03-11
+- Added support for Mongo 7.0
 - Updated mongo-libs to v4.5.1
 
 ### Fixed
