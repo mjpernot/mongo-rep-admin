@@ -49,7 +49,7 @@ exit 2
                 database.  Do not include the .py extension.
             -o path/file => Directory path and file name for output.
                 Default is to overwrite the file.
-            -a => Append output to output file.
+                -a => Append output to output file.
             -e to_email_addresses => Sends output to one or more email
                 addresses.  Email addresses are space delimited.
             -s subject_line => Subject line of email.
@@ -259,7 +259,7 @@ def rep_msg_chk(rep_stat, prt_lvl=1):
         gen_libs.prt_msg("Error Message", rep_stat.get("infoMessage"), prt_lvl)
 
 
-def chk_rep_stat(repset, args, **kwargs):               # pylint:disable=W0613
+def chk_rep_stat(repset, args, **kwargs):
 
     """Function:  chk_rep_stat
 
