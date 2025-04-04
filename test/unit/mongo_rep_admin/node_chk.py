@@ -22,120 +22,10 @@ import mock
 # Local
 sys.path.append(os.getcwd())
 import mongo_rep_admin                          # pylint:disable=E0401,C0413
+import lib.gen_class as gen_class           # pylint:disable=E0401,C0413,R0402
 import version                                  # pylint:disable=E0401,C0413
 
 __version__ = version.__version__
-
-
-class ArgParser():                                      # pylint:disable=R0903
-
-    """Class:  ArgParser
-
-    Description:  Class stub holder for gen_class.ArgParser class.
-
-    Methods:
-        __init__
-        get_val
-
-    """
-
-    def __init__(self):
-
-        """Method:  __init__
-
-        Description:  Class initialization.
-
-        Arguments:
-
-        """
-
-        self.cmdline = None
-        self.args_array = {}
-
-    def get_val(self, skey, def_val=None):
-
-        """Method:  get_val
-
-        Description:  Method stub holder for gen_class.ArgParser.get_val.
-
-        Arguments:
-
-        """
-
-        return self.args_array.get(skey, def_val)
-
-
-class Mail():
-
-    """Class:  Mail
-
-    Description:  Class stub holder for gen_class.Mail class.
-
-    Methods:
-        __init__
-        create_subject
-        add_2_msg
-        send_mail
-
-    """
-
-    def __init__(self, lag_time=1):
-
-        """Method:  __init__
-
-        Description:  Class initialization.
-
-        Arguments:
-
-        """
-
-        self.lag_time = lag_time
-        self.subj = "Test subject line"
-        self.data = None
-
-    def create_subject(self, subj):
-
-        """Method:  create_subject
-
-        Description:  Stub method holder for Mail.add_2_msg.
-
-        Arguments:
-
-        """
-
-        self.subj = subj
-
-    def add_2_msg(self, data):
-
-        """Method:  add_2_msg
-
-        Description:  Stub method holder for Mail.add_2_msg.
-
-        Arguments:
-
-        """
-
-        self.data = data
-
-        return True
-
-    def send_mail(self, use_mailx=False):
-
-        """Method:  get_name
-
-        Description:  Stub method holder for Mail.send_mail.
-
-        Arguments:
-            (input) use_mailx -> True|False - To use mailx command.
-
-        """
-
-        status = True
-
-        if use_mailx:
-            status = True
-
-        return status
 
 
 class Server():                                         # pylint:disable=R0903
@@ -190,15 +80,10 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
-        test_mail_no_subj_mailx
-        test_mail_no_subj
-        test_mail_fail_mailx
-        test_mail_fail
-        test_flatten_fail
-        test_suppression_fail
         test_message_fail
         test_state_fail
         test_health_fail
+        test_good_no_report
         test_good
 
     """
@@ -213,152 +98,15 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        self.dtg = gen_class.TimeFormat()
+        self.dtg.create_time()
         self.server = Server()
-        self.mail = Mail()
-        self.args = ArgParser()
-        self.args2 = ArgParser()
-        self.args2a = ArgParser()
-        self.args3 = ArgParser()
-        self.args.args_array = {}
-        self.args2.args_array = {"-z": True}
-        self.args2a.args_array = {"-z": True, "-u": True}
-        self.args3.args_array = {"-f": True}
+        self.data_config = {"to_addr": "ToAddress"}
+        self.data_config2 = {"to_addr": "ToAddress", "no_report": True}
         self.status = (True, None)
 
-    def test_mail_no_subj_mailx(self):
-
-        """Function:  test_mail_no_subj_mailx
-
-        Description:  Test with mail and no subject set using mailx.
-
-        Arguments:
-
-        """
-
-        self.server.status["members"][0]["state"] = 8
-        self.mail.subj = None
-
-        self.assertEqual(
-            mongo_rep_admin.node_chk(
-                self.server, self.args2a, mail=self.mail), self.status)
-
-    def test_mail_no_subj(self):
-
-        """Function:  test_mail_no_subj
-
-        Description:  Test with mail and no subject set.
-
-        Arguments:
-
-        """
-
-        self.server.status["members"][0]["state"] = 8
-        self.mail.subj = None
-
-        self.assertEqual(
-            mongo_rep_admin.node_chk(
-                self.server, self.args2, mail=self.mail), self.status)
-
-    def test_mail_fail_mailx(self):
-
-        """Function:  test_mail_fail_mailx
-
-        Description:  Test with mail and failure using mailx.
-
-        Arguments:
-
-        """
-
-        self.server.status["members"][0]["state"] = 8
-
-        self.assertEqual(
-            mongo_rep_admin.node_chk(
-                self.server, self.args2a, mail=self.mail), self.status)
-
-    def test_mail_fail(self):
-
-        """Function:  test_mail_fail
-
-        Description:  Test with mail and failure.
-
-        Arguments:
-
-        """
-
-        self.server.status["members"][0]["state"] = 8
-
-        self.assertEqual(
-            mongo_rep_admin.node_chk(
-                self.server, self.args2, mail=self.mail), self.status)
-
-    @mock.patch("mongo_rep_admin.gen_libs.display_data",
-                mock.Mock(return_value=True))
-    def test_flatten_fail(self):
-
-        """Function:  test_flatten_fail
-
-        Description:  Test with flatten JSON and failure.
-
-        Arguments:
-
-        """
-
-        self.server.status["members"][0]["health"] = 0.0
-
-        self.assertEqual(
-            mongo_rep_admin.node_chk(self.server, self.args3), self.status)
-
-    def test_suppression_fail(self):
-
-        """Function:  test_suppression_fail
-
-        Description:  Test with standard suppression and failure.
-
-        Arguments:
-
-        """
-
-        self.server.status["members"][0]["health"] = 0.0
-
-        self.assertEqual(
-            mongo_rep_admin.node_chk(self.server, self.args2), self.status)
-
-    @mock.patch("mongo_rep_admin.gen_libs.display_data",
-                mock.Mock(return_value=True))
-    def test_message_fail(self):
-
-        """Function:  test_message_fail
-
-        Description:  Test with message failure check.
-
-        Arguments:
-
-        """
-
-        self.server.status["members"][0]["infoMessage"] = "Error Message Here"
-
-        self.assertEqual(
-            mongo_rep_admin.node_chk(self.server, self.args), self.status)
-
-    @mock.patch("mongo_rep_admin.gen_libs.display_data",
-                mock.Mock(return_value=True))
-    def test_state_fail(self):
-
-        """Function:  test_state_fail
-
-        Description:  Test with health failure check.
-
-        Arguments:
-
-        """
-
-        self.server.status["members"][0]["state"] = 8
-
-        self.assertEqual(
-            mongo_rep_admin.node_chk(self.server, self.args), self.status)
-
-    @mock.patch("mongo_rep_admin.gen_libs.display_data",
-                mock.Mock(return_value=True))
+    @mock.patch("mongo_rep_admin.mongo_libs.data_out",
+                mock.Mock(return_value=(True, None)))
     def test_health_fail(self):
 
         """Function:  test_health_fail
@@ -372,8 +120,25 @@ class UnitTest(unittest.TestCase):
         self.server.status["members"][0]["health"] = 0.0
 
         self.assertEqual(
-            mongo_rep_admin.node_chk(self.server, self.args), self.status)
+            mongo_rep_admin.node_chk(
+                self.server, self.dtg, **self.data_config), self.status)
 
+    def test_good_no_report(self):
+
+        """Function:  test_good_no_report
+
+        Description:  Test with good status return on all checks.
+
+        Arguments:
+
+        """
+
+        self.assertEqual(
+            mongo_rep_admin.node_chk(
+                self.server, self.dtg, **self.data_config2), self.status)
+
+    @mock.patch("mongo_rep_admin.mongo_libs.data_out",
+                mock.Mock(return_value=(True, None)))
     def test_good(self):
 
         """Function:  test_good
@@ -385,7 +150,8 @@ class UnitTest(unittest.TestCase):
         """
 
         self.assertEqual(
-            mongo_rep_admin.node_chk(self.server, self.args), self.status)
+            mongo_rep_admin.node_chk(
+                self.server, self.dtg, **self.data_config), self.status)
 
 
 if __name__ == "__main__":

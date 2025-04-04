@@ -19,6 +19,7 @@ Breaking changes
 - create_data_config: Create data out config parameters.
 
 ### Changed
+- node_chk: Refactored function to remove any processing of arguments, replaced data out commands with call to mongo_libs.data_out and added pre-header to JSON output.
 - chk_mem_rep_lag: Refactored function to remove any processing of arguments, replaced datetime with TimeFormat class instance, removed process_std and process_json calls, replaced with mongo_libs.data_out call and replaced JSON header creation with call to create_header.
 - chk_rep_lag: Refactored function to remove any processing of arguments contained in data out configuration.
 - call_func: Refactored function to set up the data out config parameters and TimeFormat instance and removed mail setup call.

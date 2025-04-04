@@ -333,10 +333,19 @@ def chk_rep_stat(repset, args, **kwargs):
 
     Arguments:
         (input) repset -> Replication set instance
-        (input) args -> ArgParser class instance
+        (input) dtg -> DateFormat instance
         (input) **kwargs:
-            mail -> Mail instance
-            prt_all -> True|False on printing all status messages
+            to_addr -> To email address
+            subj -> Email subject line
+            mailx -> True|False - Use mailx command
+            outfile -> Name of output file name
+            mode -> w|a => Write or append mode for file
+            use_pprint -> True|False - Expand the JSON format
+            indent -> Indentation of JSON document if expanded
+            suppress -> True|False - Suppress standard out
+            db_tbl -> database:table - Database name:Table name
+            mongo -> Mongo configuration settings
+            no_report -> Only report if errors detected
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
@@ -344,11 +353,23 @@ def chk_rep_stat(repset, args, **kwargs):
     """
 
     status = (True, None)
-    print(f"\nReplication Status Check for Rep Set:  {repset.repset}")
-    prt_all = kwargs.get("prt_all", False)
+
+    data = create_header("RepStatus", dtg)
+    data["RepSet"] = repset.repset
+    data["Servers"] = []
+
+### STOPPED HERE
+#    print(f"\nReplication Status Check for Rep Set:  {repset.repset}")
+# Replaced with no_report option.
+#    prt_all = kwargs.get("prt_all", False)
 
     # Process each member in replica set.
     for item in repset.adm_cmd("replSetGetStatus").get("members"):
+        # Capture each one
+        # if not kwargs.get("no_report", False) or (
+        #    kwargs.get("no_report", False) and (return checks here)):
+        #       Create header for server
+        #       Populate header
         print(f'\nServer: {item.get("name")}')
         rep_health_chk(item, prt_all)
         rep_state_chk(item, prt_all)
@@ -782,7 +803,7 @@ def node_chk(mongo, dtg, **kwargs):
         something if a node is down or an error is detected.
 
     Arguments:
-        (input) mongo -> Mongo instance
+        (input) mongo -> Replication set instance
         (input) dtg -> DateFormat instance
         (input) **kwargs:
             to_addr -> To email address
@@ -817,7 +838,7 @@ def node_chk(mongo, dtg, **kwargs):
     if not kwargs.get("no_report", False) or (
             kwargs.get("no_report", False) and node_status):
         data = create_header("NodeCheck", dtg)
-        data["node_status"] = node_status
+        data["NodeError"] = node_status
         status = mongo_libs.data_out(data, **kwargs)
 
 #    if node_status:
