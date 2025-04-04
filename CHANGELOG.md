@@ -11,7 +11,7 @@ Breaking changes
 - Removed displaying out in standard output, all output will be JSON format.
 
 ### Added
-- Added the -k and -n options, respectively expand the JSON format and indentation spacing.
+- Added the -k, -a and -n options, respectively expand the JSON format, write to file mode and indentation spacing.
 - create_data_config: Create data out config parameters.
 
 ### Changed
