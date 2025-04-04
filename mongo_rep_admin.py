@@ -836,7 +836,7 @@ def create_data_config(args):
     data_config["mailx"] = args.get_val("-u", def_val=False)
     data_config["outfile"] = args.get_val("-o")
     data_config["mode"] = args.get_val("-a", def_val="w")
-    data_config["expand"] = args.get_val("-r", def_val=False)
+    data_config["use_pprint"] = args.get_val("-r", def_val=False)
     data_config["indent"] = args.get_val("-k")
     data_config["suppress"] = args.get_val("-z", def_val=False)
     data_config["db_tbl"] = args.get_val("-i")
