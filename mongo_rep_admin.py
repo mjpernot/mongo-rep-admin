@@ -541,7 +541,7 @@ def chk_mem_rep_lag(rep_status, dtg, **kwargs):
     data = create_header("RepTimeLag", dtg)
     data["RepSet"] = rep_status.get("set")
     data["Master"] = get_master(rep_status).get("name")
-    data["Slaves"] = "Slaves": []
+    data["Slaves"] = []
 
 #    outdata = {
 #        "Application": "Mongo Replication", "RepSet": rep_status.get("set"),
