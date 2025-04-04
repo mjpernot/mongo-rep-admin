@@ -11,7 +11,10 @@ Breaking changes
 - Removed displaying out in standard output, all output will be JSON format.
 
 ### Added
-- Added the -k, -a and -n options, respectively expand the JSON format, write to file mode and indentation spacing.
+- Added -k option: Expand JSON format using Pretty Print.
+- Added -r option: Indentation spacing for expanded JSON object.
+- Added -a option: Set write to file mode: append or write.
+- Added -n option: Do not report if no errors detected.
 - create_data_config: Create data out config parameters.
 
 ### Changed

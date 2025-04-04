@@ -60,7 +60,7 @@ exit 2
                 -s subject_line => Subject line of email.
                 -u => Override the default mail command and use mailx.
             -z => Suppress standard out.
-            -r => Expand the JSON format.
+            -r => Expand the JSON format using Pretty Print.
                 -k N => Indentation for expanded JSON format.
 ############################################################################
 # Replaced with mongo-db-admin -M option
@@ -83,14 +83,30 @@ exit 2
         -M => Show current members in replication set.
 
         -N => Node health check.  Returns if a node has a problem or is down.
+            -m file => Mongo config file.  Is loaded as a python, do not
+                include the .py extension with the name.
+                -i {database:collection} => Name of database and collection.
+                    Default: sysmon:mongo_rep_lag
+            -o path/file => Directory path and file name for output.
+                -a a|w => Append or write to output to output file. Default is
+                    write.
+            -e to_email_address(es) => Enables emailing and sends output to one
+                    or more email addresses.  Email addresses are space
+                    delimited.
+                -s subject_line => Subject line of email.
+                -u => Override the default mail command and use mailx.
+            -z => Suppress standard out.
+            -r => Expand the JSON format using Pretty Print.
+                -k N => Indentation for expanded JSON format.
+            -n => Only report if errors detected.
 ############################################################################
 # Replaced with mongo-db-admin -M option
-            -f => Flatten the JSON data structure to file and standard out.
-            -e to_email_addresses => Sends output to one or more email
-                addresses.  Email addresses are space delimited.
-            -s subject_line => Subject line of email.
-            -u => Override the default mail command and use mailx.
-            -z => Suppress standard out.
+#R            -f => Flatten the JSON data structure to file and standard out.
+#            -e to_email_addresses => Sends output to one or more email
+#                addresses.  Email addresses are space delimited.
+#            -s subject_line => Subject line of email.
+#            -u => Override the default mail command and use mailx.
+#            -z => Suppress standard out.
 ############################################################################
 
         -P => Show priority for members in replication set.
@@ -224,6 +240,27 @@ def help_message():
     print(__doc__)
 
 
+def create_header(name, dtg):
+
+    """Function:  create_header
+
+    Description:  Create standard JSON header for reports.
+
+    Arguments:
+        (input) name -> Name of check
+        (input) dtg -> TimeFormat instance
+        (output) header -> Dictionary header for reports
+
+    """
+
+    header = {
+        "Application": "Mongo_Rep_Admin",
+        "Check": name,
+        "AsOf": dtg.get_time("zulu")}
+
+    return header
+
+
 def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1):
 
     """Function:  rep_health_chk
@@ -236,6 +273,7 @@ def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1):
         (input) prt_lvl -> Integer - Level at which to print message
 
     """
+
     rep_stat = dict(rep_stat)
 
     if not rep_stat.get("health"):
@@ -482,11 +520,12 @@ def chk_mem_rep_lag(rep_status, dtg, **kwargs):
             mailx -> True|False - Use mailx command
             outfile -> Name of output file name
             mode -> w|a => Write or append mode for file
-            expand -> True|False - Expand the JSON format
+            use_pprint -> True|False - Expand the JSON format
             indent -> Indentation of JSON document if expanded
             suppress -> True|False - Suppress standard out
             db_tbl -> database:table - Database name:Table name
             mongo -> Mongo configuration settings
+            no_report -> Only report if errors detected
             suf -> Primary|Freshest Secondary who has latest date time
             optdt -> Primary|Best Oplog date time
         (output) status -> Tuple on connection status
@@ -687,11 +726,12 @@ def chk_rep_lag(repset, dtg, **kwargs):
             mailx -> True|False - Use mailx command
             outfile -> Name of output file name
             mode -> w|a => Write or append mode for file
-            expand -> True|False - Expand the JSON format
+            use_pprint -> True|False - Expand the JSON format
             indent -> Indentation of JSON document if expanded
             suppress -> True|False - Suppress standard out
             db_tbl -> database:table - Database name:Table name
             mongo -> Mongo configuration settings
+            no_report -> Only report if errors detected
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
@@ -745,32 +785,37 @@ def node_chk(mongo, dtg, **kwargs):
             mailx -> True|False - Use mailx command
             outfile -> Name of output file name
             mode -> w|a => Write or append mode for file
-            expand -> True|False - Expand the JSON format
+            use_pprint -> True|False - Expand the JSON format
             indent -> Indentation of JSON document if expanded
             suppress -> True|False - Suppress standard out
             db_tbl -> database:table - Database name:Table name
             mongo -> Mongo configuration settings
+            no_report -> Only report if errors detected
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
 
     """
 
-#    status = (True, None)
+    status = (True, None)
 #    mail = kwargs.get("mail", None)
     node_status = {}
 
 #    indent = None if args.get_val("-f", def_val=False) else 4
 
     for node in mongo.adm_cmd("replSetGetStatus").get("members"):
-        status = single_node_chk(node)
+        tstatus = single_node_chk(node)
 
-        if status:
-            node_status[node.get("name")] = status
+        if tstatus:
+            node_status[node.get("name")] = tstatus
 
-    if node_status:
-        status = mongo_libs.data_out(outdata, **kwargs)
+    if not kwargs.get("no_report", False) or (
+            kwargs.get("no_report", False) and node_status):
+        data = create_header("NodeCheck", dtg)
+        data["node_status"] = node_status
+        status = mongo_libs.data_out(data, **kwargs)
 
+#    if node_status:
 #        jnode_status = json.dumps(node_status, indent=indent)
 #
 #        if not args.get_val("-z", def_val=False):
@@ -784,7 +829,7 @@ def node_chk(mongo, dtg, **kwargs):
 #            mail.add_2_msg(jnode_status)
 #            mail.send_mail(use_mailx=args.get_val("-u", def_val=False))
 
-    return (True, None)
+    return status
 
 
 def single_node_chk(node):
@@ -840,6 +885,7 @@ def create_data_config(args):
     data_config["indent"] = args.get_val("-k")
     data_config["suppress"] = args.get_val("-z", def_val=False)
     data_config["db_tbl"] = args.get_val("-i")
+    data_config["no_report"] = args.get_val("-n", def_val=False)
 
     if args.get_val("-m", def_val=False):
         data_config["mongo"] = gen_libs.load_module(
