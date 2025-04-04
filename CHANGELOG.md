@@ -11,6 +11,7 @@ Breaking changes
 - Removed displaying out in standard output, all output will be JSON format.
 
 ### Added
+- create_header: Create standard JSON header for reports.
 - Added -k option: Expand JSON format using Pretty Print.
 - Added -r option: Indentation spacing for expanded JSON object.
 - Added -a option: Set write to file mode: append or write.
@@ -18,7 +19,7 @@ Breaking changes
 - create_data_config: Create data out config parameters.
 
 ### Changed
-- chk_mem_rep_lag: Refactored function to remove any processing of arguments, replaced datetime with TimeFormat class instance, removed process_std and process_json calls and replaced with mongo_libs.data_out call.
+- chk_mem_rep_lag: Refactored function to remove any processing of arguments, replaced datetime with TimeFormat class instance, removed process_std and process_json calls, replaced with mongo_libs.data_out call and replaced JSON header creation with call to create_header.
 - chk_rep_lag: Refactored function to remove any processing of arguments contained in data out configuration.
 - call_func: Refactored function to set up the data out config parameters and TimeFormat instance and removed mail setup call.
 

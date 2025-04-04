@@ -538,10 +538,15 @@ def chk_mem_rep_lag(rep_status, dtg, **kwargs):
     rep_status = dict(rep_status)
 #    json_fmt = kwargs.get("json", False)
 
-    outdata = {
-        "Application": "Mongo Replication", "RepSet": rep_status.get("set"),
-        "Master": get_master(rep_status).get("name"),
-        "AsOf": dtg.get_time("zulu"), "Slaves": []}
+    data = create_header("RepTimeLag", dtg)
+    data["RepSet"] = rep_status.get("set")
+    data["Master"] = get_master(rep_status).get("name")
+    data["Slaves"] = "Slaves": []
+
+#    outdata = {
+#        "Application": "Mongo Replication", "RepSet": rep_status.get("set"),
+#        "Master": get_master(rep_status).get("name"),
+#        "AsOf": dtg.get_time("zulu"), "Slaves": []}
 
 #        "AsOf": datetime.datetime.strftime(datetime.datetime.now(), t_format),
 
@@ -556,7 +561,7 @@ def chk_mem_rep_lag(rep_status, dtg, **kwargs):
         if member.get("optime"):
             sec_ago = gen_libs.get_secs(
                 kwargs["optdt"] - member.get("optimeDate"))
-            outdata["Slaves"].append(
+            data["Slaves"].append(
                 {"Name": member.get("name"),
                  "SyncTo": datetime.datetime.strftime(
                      member.get("optimeDate"), "%Y-%m-%d %H:%M:%S"),
@@ -565,7 +570,7 @@ def chk_mem_rep_lag(rep_status, dtg, **kwargs):
         else:
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
 
-    status = mongo_libs.data_out(outdata, **kwargs)
+    status = mongo_libs.data_out(data, **kwargs)
 #    if json_fmt:
 #        status = process_json(outdata, **kwargs)
 #
