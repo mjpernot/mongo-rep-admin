@@ -30,9 +30,15 @@ exit 2
 
     Usage:
         mongo_rep_admin.py -c file -d path
-            {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i [db:coll] -m file]
-                [-e toEmail {toEmail2, [...]} [-s subject] [-u]] |
+            {-L [-m config_file -i [db_name:table_name]]
+                [-o dir_path/file [-a a|w]] [-z] [-r [-k N]]
+                [-e to_email [to_email2 ...] [-s subject_line] [-u]]} |
+############################################################################
+# Replaced with mongo-db-admin -M option
+#            {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i [db:coll] -m file]
+#                [-e toEmail {toEmail2, [...]} [-s subject] [-u]] |
              -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject] [-u]] [-z] |
+############################################################################
              -M | -P | -S | -T }
             [-v | -h]
 
@@ -41,30 +47,51 @@ exit 2
         -d dir path => Directory path to config file (-c). Required arg.
 
         -L => Check Replication lag.
-            -j => Set output to JSON format.
-            -f => Flatten the JSON data structure to file and standard out.
-            -i [database:collection] => Name of database and collection.
-                Delimited by colon (:).  Default: sysmon:mongo_rep_lag
-            -m file => Mongo config file used for the insertion into a Mongo
-                database.  Do not include the .py extension.
+            -m file => Mongo config file.  Is loaded as a python, do not
+                include the .py extension with the name.
+                -i {database:collection} => Name of database and collection.
+                    Default: sysmon:mongo_rep_lag
             -o path/file => Directory path and file name for output.
-                Default is to overwrite the file.
-                -a => Append output to output file.
-            -e to_email_addresses => Sends output to one or more email
-                addresses.  Email addresses are space delimited.
-            -s subject_line => Subject line of email.
-            -u => Override the default mail command and use mailx.
+                -a a|w => Append or write to output to output file. Default is
+                    write.
+            -e to_email_address(es) => Enables emailing and sends output to one
+                    or more email addresses.  Email addresses are space
+                    delimited.
+                -s subject_line => Subject line of email.
+                -u => Override the default mail command and use mailx.
             -z => Suppress standard out.
+            -r => Expand the JSON format.
+                -k N => Indentation for expanded JSON format.
+############################################################################
+# Replaced with mongo-db-admin -M option
+#R            -j => Set output to JSON format.
+#R            -f => Flatten the JSON data structure to file and standard out.
+#            -i [database:collection] => Name of database and collection.
+#                Delimited by colon (:).  Default: sysmon:mongo_rep_lag
+#            -m file => Mongo config file used for the insertion into a Mongo
+#                database.  Do not include the .py extension.
+#            -o path/file => Directory path and file name for output.
+#                Default is to overwrite the file.
+#                -a => Append output to output file.
+#            -e to_email_addresses => Sends output to one or more email
+#                addresses.  Email addresses are space delimited.
+#            -s subject_line => Subject line of email.
+#            -u => Override the default mail command and use mailx.
+#            -z => Suppress standard out.
+############################################################################
 
         -M => Show current members in replication set.
 
         -N => Node health check.  Returns if a node has a problem or is down.
+############################################################################
+# Replaced with mongo-db-admin -M option
             -f => Flatten the JSON data structure to file and standard out.
             -e to_email_addresses => Sends output to one or more email
                 addresses.  Email addresses are space delimited.
             -s subject_line => Subject line of email.
             -u => Override the default mail command and use mailx.
             -z => Suppress standard out.
+############################################################################
 
         -P => Show priority for members in replication set.
 
@@ -439,7 +466,7 @@ def get_optimedate(rep_status):
     return optime_date
 
 
-def chk_mem_rep_lag(rep_status, **kwargs):
+def chk_mem_rep_lag(rep_status, dtg, **kwargs):
 
     """Function:  chk_mem_rep_lag
 
@@ -448,13 +475,18 @@ def chk_mem_rep_lag(rep_status, **kwargs):
 
     Arguments:
         (input) rep_status -> Member document from replSetGetStatus
+        (input) dtg -> DateFormat instance
         (input) **kwargs:
-            json -> True|False - JSON format
-            ofile -> file name - Name of output file
-            db_tbl -> database:collection - Name of db and collection
-            class_cfg -> Server class configuration settings
-            mail -> Mail instance
-            args -> ArgParser class instance
+            to_addr -> To email address
+            subj -> Email subject line
+            mailx -> True|False - Use mailx command
+            outfile -> Name of output file name
+            mode -> w|a => Write or append mode for file
+            expand -> True|False - Expand the JSON format
+            indent -> Indentation of JSON document if expanded
+            suppress -> True|False - Suppress standard out
+            db_tbl -> database:table - Database name:Table name
+            mongo -> Mongo configuration settings
             suf -> Primary|Freshest Secondary who has latest date time
             optdt -> Primary|Best Oplog date time
         (output) status -> Tuple on connection status
@@ -463,46 +495,48 @@ def chk_mem_rep_lag(rep_status, **kwargs):
 
     """
 
-    t_format = "%Y-%m-%d %H:%M:%S"
+#    t_format = "%Y-%m-%d %H:%M:%S"
     rep_status = dict(rep_status)
-    json_fmt = kwargs.get("json", False)
+#    json_fmt = kwargs.get("json", False)
 
     outdata = {
         "Application": "Mongo Replication", "RepSet": rep_status.get("set"),
         "Master": get_master(rep_status).get("name"),
-        "AsOf": datetime.datetime.strftime(datetime.datetime.now(), t_format),
-        "Slaves": []}
+        "AsOf": dtg.get_time("zulu"), "Slaves": []}
 
-    # Process each member in replica set.
+#        "AsOf": datetime.datetime.strftime(datetime.datetime.now(), t_format),
+
+    # Process each member in replica set
     for member in rep_status.get("members"):
 
-        # Ignore if member is Primary or Abriter.
+        # Ignore if member is Primary or Abriter
         if member.get("state") in [1, 7]:
             continue
 
-        # Fetch rep lag time.
+        # Fetch rep lag time
         if member.get("optime"):
             sec_ago = gen_libs.get_secs(
                 kwargs["optdt"] - member.get("optimeDate"))
             outdata["Slaves"].append(
                 {"Name": member.get("name"),
                  "SyncTo": datetime.datetime.strftime(
-                     member.get("optimeDate"), t_format),
+                     member.get("optimeDate"), "%Y-%m-%d %H:%M:%S"),
                  "LagTime": sec_ago})
 
         else:
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
 
-    if json_fmt:
-        status = process_json(outdata, **kwargs)
-
-    else:
-        status = process_std(outdata, **kwargs)
+    status = mongo_libs.data_out(outdata, **kwargs)
+#    if json_fmt:
+#        status = process_json(outdata, **kwargs)
+#
+#    else:
+#        status = process_std(outdata, **kwargs)
 
     return status
 
 
-def process_std(outdata, **kwargs):
+#def process_std(outdata, **kwargs):
 
     """Function:  process_std
 
@@ -513,6 +547,7 @@ def process_std(outdata, **kwargs):
         (input) **kwargs:
             json -> True|False - JSON format
             ofile -> file name - Name of output file
+            outfile -> Name of output file
             db_tbl -> database:collection - Name of db and collection
             class_cfg -> Server class configuration settings
             mail -> Mail instance
@@ -525,6 +560,7 @@ def process_std(outdata, **kwargs):
 
     """
 
+    """
     status = (True, None)
     mode = "w"
     mongo_cfg = kwargs.get("class_cfg", None)
@@ -570,9 +606,10 @@ def process_std(outdata, **kwargs):
             print(item)
 
     return status
+    """
 
 
-def process_json(outdata, **kwargs):
+#def process_json(outdata, **kwargs):
 
     """Function:  process_json
 
@@ -595,6 +632,7 @@ def process_json(outdata, **kwargs):
 
     """
 
+    """
     status = (True, None)
     mode = "w"
     indent = 4
@@ -630,9 +668,10 @@ def process_json(outdata, **kwargs):
         gen_libs.display_data(jdata)
 
     return status
+    """
 
 
-def chk_rep_lag(repset, args, **kwargs):
+def chk_rep_lag(repset, dtg, **kwargs):
 
     """Function:  chk_rep_lag
 
@@ -641,25 +680,36 @@ def chk_rep_lag(repset, args, **kwargs):
 
     Arguments:
         (input) repset -> Replication set instance
-        (input) args -> ArgParser class instance
+        (input) dtg -> DateFormat instance
         (input) **kwargs:
-            mail -> Mail instance
+            to_addr -> To email address
+            subj -> Email subject line
+            mailx -> True|False - Use mailx command
+            outfile -> Name of output file name
+            mode -> w|a => Write or append mode for file
+            expand -> True|False - Expand the JSON format
+            indent -> Indentation of JSON document if expanded
+            suppress -> True|False - Suppress standard out
+            db_tbl -> database:table - Database name:Table name
+            mongo -> Mongo configuration settings
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
 
     """
 
-    json_fmt = args.get_val("-j", def_val=False)
-    outfile = args.get_val("-o", def_val=None)
-    db_tbl = args.get_val("-i", def_val=None)
+#    json_fmt = args.get_val("-j", def_val=False)
+#    outfile = args.get_val("-o", def_val=None)
+#    db_tbl = args.get_val("-i", def_val=None)
+
     rep_status = repset.adm_cmd("replSetGetStatus")
     primary = get_master(rep_status)
-    mongo_cfg = None
 
-    if args.get_val("-m", def_val=None):
-        mongo_cfg = gen_libs.load_module(
-            args.get_val("-m"), args.get_val("-d"))
+#    mongo_cfg = None
+#
+#    if args.get_val("-m", def_val=None):
+#        mongo_cfg = gen_libs.load_module(
+#            args.get_val("-m"), args.get_val("-d"))
 
     if primary:
         optime_date = primary.get("optimeDate")
@@ -671,13 +721,15 @@ def chk_rep_lag(repset, args, **kwargs):
         suffix = "freshest secondary"
 
     status = chk_mem_rep_lag(
-        rep_status, optdt=optime_date, suf=suffix, json=json_fmt,
-        ofile=outfile, db_tbl=db_tbl, class_cfg=mongo_cfg, args=args, **kwargs)
+        rep_status, dtg, optdt=optime_date, suf=suffix, **kwargs)
+#    status = chk_mem_rep_lag(
+#        rep_status, optdt=optime_date, suf=suffix, json=json_fmt,
+#        ofile=outfile, db_tbl=db_tbl, class_cfg=mongo_cfg, args=args, **kwargs)
 
     return status
 
 
-def node_chk(mongo, args, **kwargs):
+def node_chk(mongo, dtg, **kwargs):
 
     """Function:  node_chk
 
@@ -686,42 +738,53 @@ def node_chk(mongo, args, **kwargs):
 
     Arguments:
         (input) mongo -> Mongo instance
-        (input) args -> ArgParser class instance
+        (input) dtg -> DateFormat instance
         (input) **kwargs:
-            mail -> Mail instance
+            to_addr -> To email address
+            subj -> Email subject line
+            mailx -> True|False - Use mailx command
+            outfile -> Name of output file name
+            mode -> w|a => Write or append mode for file
+            expand -> True|False - Expand the JSON format
+            indent -> Indentation of JSON document if expanded
+            suppress -> True|False - Suppress standard out
+            db_tbl -> database:table - Database name:Table name
+            mongo -> Mongo configuration settings
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
 
     """
 
-    status = (True, None)
-    mail = kwargs.get("mail", None)
+#    status = (True, None)
+#    mail = kwargs.get("mail", None)
     node_status = {}
 
-    indent = None if args.get_val("-f", def_val=False) else 4
+#    indent = None if args.get_val("-f", def_val=False) else 4
 
     for node in mongo.adm_cmd("replSetGetStatus").get("members"):
-        status2 = single_node_chk(node)
+        status = single_node_chk(node)
 
-        if status2:
-            node_status[node.get("name")] = status2
+        if status:
+            node_status[node.get("name")] = status
 
     if node_status:
-        jnode_status = json.dumps(node_status, indent=indent)
+        status = mongo_libs.data_out(outdata, **kwargs)
 
-        if not args.get_val("-z", def_val=False):
-            gen_libs.display_data(jnode_status)
+#        jnode_status = json.dumps(node_status, indent=indent)
+#
+#        if not args.get_val("-z", def_val=False):
+#            gen_libs.display_data(jnode_status)
+#
+#        if mail:
+#            if not mail.subj:
+#                subj = f"Node Status Check for Rep Set:  {mongo.repset}"
+#                mail.create_subject(subj=subj)
+#
+#            mail.add_2_msg(jnode_status)
+#            mail.send_mail(use_mailx=args.get_val("-u", def_val=False))
 
-        if mail:
-            if not mail.subj:
-                subj = f"Node Status Check for Rep Set:  {mongo.repset}"
-                mail.create_subject(subj=subj)
-
-            mail.add_2_msg(jnode_status)
-            mail.send_mail(use_mailx=args.get_val("-u", def_val=False))
-
-    return status
+    return (True, None)
 
 
 def single_node_chk(node):
@@ -755,6 +818,36 @@ def single_node_chk(node):
     return status
 
 
+def create_data_config(args):
+
+    """Function:  create_data_config
+
+    Description:  Create data out config parameters.
+
+    Arguments:
+        (input) args -> ArgParser class instance
+        (output) data_config -> Dictionary for data out config parameters
+
+    """
+
+    data_config = {}
+    data_config["to_addr"] = args.get_val("-e")
+    data_config["subj"] = args.get_val("-s")
+    data_config["mailx"] = args.get_val("-u", def_val=False)
+    data_config["outfile"] = args.get_val("-o")
+    data_config["mode"] = args.get_val("-a", def_val="w")
+    data_config["expand"] = args.get_val("-r", def_val=False)
+    data_config["indent"] = args.get_val("-k")
+    data_config["suppress"] = args.get_val("-z", def_val=False)
+    data_config["db_tbl"] = args.get_val("-i")
+
+    if args.get_val("-m", def_val=False):
+        data_config["mongo"] = gen_libs.load_module(
+            args.get_val("-m"), args.get_val("-d"))
+
+    return data_config
+
+
 def call_func(args, func_dict, repinst):
 
     """Function:  call_func
@@ -769,18 +862,26 @@ def call_func(args, func_dict, repinst):
     """
 
     func_dict = dict(func_dict)
-    mail = None
+    data_config = dict(create_data_config(args))
+    dtg = gen_class.TimeFormat()
+    dtg.create_time()
 
-    if args.get_val("-e", def_val=None):
-        mail = gen_class.setup_mail(
-            args.get_val("-e"), subj=args.get_val("-s", def_val=None))
+#######################################################################
+# Move to individual functions
+#    mail = None
+#
+#    if args.get_val("-e", def_val=None):
+#        mail = gen_class.setup_mail(
+#            args.get_val("-e"), subj=args.get_val("-s", def_val=None))
+#######################################################################
 
     # Call function: Intersection of command line & function dict.
     for item in set(args.get_args_keys()) & set(func_dict.keys()):
-        status3 = func_dict[item](repinst, args, mail=mail)
+        status = func_dict[item](repinst, dtg, **data_config)
+#        status = func_dict[item](repinst, args, mail=mail)
 
-        if not status3[0]:
-            print(f"Error detected:  {status3[1]}")
+        if not status[0]:
+            print(f"Error detected:  {status[1]}")
 
 
 def run_program(args, func_dict):

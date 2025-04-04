@@ -7,7 +7,7 @@
 echo ""
 echo "Unit test:"
 /usr/bin/python test/unit/mongo_rep_admin/call_func.py
-/usr/bin/python test/unit/mongo_rep_admin/process_std.py
+/usr/bin/python test/unit/mongo_rep_admin/create_data_config.py
 /usr/bin/python test/unit/mongo_rep_admin/chk_mem_rep_lag.py
 /usr/bin/python test/unit/mongo_rep_admin/chk_rep_lag.py
 /usr/bin/python test/unit/mongo_rep_admin/chk_rep_stat.py
@@ -18,7 +18,6 @@ echo "Unit test:"
 /usr/bin/python test/unit/mongo_rep_admin/help_message.py
 /usr/bin/python test/unit/mongo_rep_admin/main.py
 /usr/bin/python test/unit/mongo_rep_admin/node_chk.py
-/usr/bin/python test/unit/mongo_rep_admin/process_json.py
 /usr/bin/python test/unit/mongo_rep_admin/prt_rep_stat.py
 /usr/bin/python test/unit/mongo_rep_admin/rep_health_chk.py
 /usr/bin/python test/unit/mongo_rep_admin/rep_msg_chk.py

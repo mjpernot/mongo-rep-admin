@@ -8,7 +8,21 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 Breaking changes
 
 - Updated pytho-lib v4.0.1
+- Removed displaying out in standard output, all output will be JSON format.
 
+### Added
+- Added the -k and -n options, respectively expand the JSON format and indentation spacing.
+- create_data_config: Create data out config parameters.
+
+### Changed
+- chk_mem_rep_lag: Refactored function to remove any processing of arguments, replaced datetime with TimeFormat class instance, removed process_std and process_json calls and replaced with mongo_libs.data_out call.
+- chk_rep_lag: Refactored function to remove any processing of arguments contained in data out configuration.
+- call_func: Refactored function to set up the data out config parameters and TimeFormat instance and removed mail setup call.
+
+### Removed
+- process_std: No longer displaying out in standard output.
+- process_json: Replaced with call to mongo_libs.data_out.
+- Removed the -j and -f options.
 
 ## [4.0.2] - 2025-03-11
 - Added support for Mongo 7.0

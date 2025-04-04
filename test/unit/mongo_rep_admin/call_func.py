@@ -28,44 +28,38 @@ import version                                  # pylint:disable=E0401,C0413
 __version__ = version.__version__
 
 
-def fetch_priority(repset, args_array, **kwargs):
+def fetch_priority(repset, data_config, dtg):
 
     """Function:  fetch_priority
 
     Description:  Stub holder for mongo_rep_admin.fetch_priority function.
 
     Arguments:
-        (input) repset -> Replication set instance.
-        (input) args_array -> Array of command line options and values.
 
     """
 
     err_msg = "Error Message"
-    mail = kwargs.get("mail", None)
     status = (False, err_msg)
 
-    if args_array and repset and mail:
+    if data_config and repset and dtg:
         status = (False, err_msg)
 
     return status
 
 
-def prt_rep_stat(repset, args_array, **kwargs):
+def prt_rep_stat(repset, data_config, dtg):
 
     """Function:  prt_rep_stat
 
     Description:  Stub holder for mongo_rep_admin.prt_rep_stat function.
 
     Arguments:
-        (input) repset -> Replication set instance.
-        (input) args_array -> Array of command line options and values.
 
     """
 
-    mail = kwargs.get("mail", None)
     status = (True, None)
 
-    if args_array and repset and mail:
+    if data_config and repset and dtg:
         status = (True, None)
 
     return status
@@ -257,8 +251,10 @@ class UnitTest(unittest.TestCase):
             "-T": True, "-c": "config", "-d": "dirpath", "-e": "Email_Address"}
         self.args3.args_array = {"-P": True, "-c": "config", "-d": "dirpath"}
         self.func_names = {"-P": fetch_priority, "-T": prt_rep_stat}
+        self.data_config = {"to_addr": "ToAddress", "suppress": True}
 
-    def test_func_no_error(self):
+    @mock.patch("mongo_rep_admin.create_data_config")
+    def test_func_no_error(self, mock_config):
 
         """Function:  test_func_no_error
 
@@ -268,11 +264,14 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        mock_config.return_value = self.data_config
+
         self.assertFalse(
             mongo_rep_admin.call_func(
                 self.args, self.func_names, self.repset))
 
-    def test_func_error(self):
+    @mock.patch("mongo_rep_admin.create_data_config")
+    def test_func_error(self, mock_config):
 
         """Function:  test_func_error
 
@@ -282,27 +281,12 @@ class UnitTest(unittest.TestCase):
 
         """
 
+        mock_config.return_value = self.data_config
+
         with gen_libs.no_std_out():
             self.assertFalse(
                 mongo_rep_admin.call_func(
                     self.args3, self.func_names, self.repset))
-
-    @mock.patch("mongo_rep_admin.gen_class.setup_mail")
-    def test_email(self, mock_mail):
-
-        """Function:  test_email
-
-        Description:  Test with setting up email.
-
-        Arguments:
-
-        """
-
-        mock_mail.return_value = "Mail Instance"
-
-        self.assertFalse(
-            mongo_rep_admin.call_func(
-                self.args2, self.func_names, self.repset))
 
 
 if __name__ == "__main__":
