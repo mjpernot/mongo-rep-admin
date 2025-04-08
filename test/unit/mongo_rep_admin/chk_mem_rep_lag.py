@@ -38,6 +38,11 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
+        test_no_report_true_with_rep_lag2
+        test_no_report_true_with_rep_lag
+        test_no_report_true_with_delay
+        test_no_report_true_no_delay
+        test_no_report_false
         test_empty_repset
         test_only_primary
         test_no_rep_info
@@ -57,6 +62,7 @@ class UnitTest(unittest.TestCase):
         """
 
         self.date = "2019-07-26 11:13:02"
+        self.date2 = "2019-07-26 11:13:05"
         self.t_format = "%Y-%m-%d %H:%M:%S"
         self.primary = "primary"
         self.rep_status = {
@@ -98,12 +104,130 @@ class UnitTest(unittest.TestCase):
                          "optimeDate": datetime.datetime.strptime(
                              self.date, self.t_format),
                          "optime": True}]}
+        self.rep_status6 = {
+            "set": "ReplicaSet",
+            "members": [{"state": 1, "name": "server1",
+                         "optimeDate": datetime.datetime.strptime(
+                             "2019-07-26 11:13:05", self.t_format),
+                         "optime": True},
+                        {"state": 2, "name": "server2",
+                         "optimeDate": datetime.datetime.strptime(
+                             self.date, self.t_format),
+                         "optime": True},
+                        {"state": 2, "name": "server3",
+                         "optimeDate": datetime.datetime.strptime(
+                             self.date, self.t_format),
+                         "optime": True}]}
         self.optdt = datetime.datetime.strptime(self.date, "%Y-%m-%d %H:%M:%S")
+        self.optdt2 = datetime.datetime.strptime(
+            self.date2, "%Y-%m-%d %H:%M:%S")
         self.get_master = {"name": "master_server"}
         self.data_config = {"suppress": True, "mode": "a"}
+        self.data_config2 = {"suppress": True, "mode": "a", "no_report": False}
+        self.data_config3 = {"mode": "a", "no_report": True}
+        self.data_config4 = {"mode": "a", "no_report": True, "rep_lag": 5}
+        self.data_config5 = {"mode": "a", "no_report": True, "rep_lag": 2}
         self.dtg = gen_class.TimeFormat()
         self.dtg.create_time()
         self.status = (True, None)
+        self.no_report = True
+        self.no_report2 = False
+
+    @mock.patch("mongo_rep_admin.mongo_libs.data_out")
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_no_report_true_with_rep_lag2(self, mock_mst, mock_process):
+
+        """Function:  test_no_report_true_with_rep_lag2
+
+        Description:  Test with no report set to false with rep lag set.
+
+        Arguments:
+
+        """
+
+        mock_process.return_value = self.status
+        mock_mst.return_value = self.get_master
+
+        self.assertEqual(
+            mongo_rep_admin.chk_mem_rep_lag(
+                self.rep_status6, self.dtg, optdt=self.optdt2,
+                **self.data_config5), self.status)
+
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_no_report_true_with_rep_lag(self, mock_mst):
+
+        """Function:  test_no_report_true_with_rep_lag
+
+        Description:  Test with no report set to false with rep lag set.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+
+        self.assertEqual(
+            mongo_rep_admin.chk_mem_rep_lag(
+                self.rep_status6, self.dtg, optdt=self.optdt2,
+                **self.data_config4), self.status)
+
+    @mock.patch("mongo_rep_admin.mongo_libs.data_out")
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_no_report_true_with_delay(self, mock_mst, mock_process):
+
+        """Function:  test_no_report_true_with_delay
+
+        Description:  Test with no report set to false with lag time.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+        mock_process.return_value = self.status
+
+        self.assertEqual(
+            mongo_rep_admin.chk_mem_rep_lag(
+                self.rep_status6, self.dtg, optdt=self.optdt2,
+                **self.data_config3), self.status)
+
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_no_report_true_no_delay(self, mock_mst):
+
+        """Function:  test_no_report_true_no_delay
+
+        Description:  Test with no report set to false with no lag time.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+
+        self.assertEqual(
+            mongo_rep_admin.chk_mem_rep_lag(
+                self.rep_status5, self.dtg, optdt=self.optdt,
+                **self.data_config3), self.status)
+
+    @mock.patch("mongo_rep_admin.mongo_libs.data_out")
+    @mock.patch("mongo_rep_admin.get_master")
+    def test_no_report_false(self, mock_mst, mock_process):
+
+        """Function:  test_no_report_false
+
+        Description:  Test with no report set to false.
+
+        Arguments:
+
+        """
+
+        mock_mst.return_value = self.get_master
+        mock_process.return_value = self.status
+
+        self.assertEqual(
+            mongo_rep_admin.chk_mem_rep_lag(
+                self.rep_status5, self.dtg, optdt=self.optdt,
+                **self.data_config2), self.status)
 
     @mock.patch("mongo_rep_admin.mongo_libs.data_out")
     @mock.patch("mongo_rep_admin.get_master")

@@ -31,7 +31,7 @@ exit 2
     Usage:
         mongo_rep_admin.py -c file -d path
             {-L [-m config_file -i [db_name:table_name]]
-                [-o dir_path/file [-a a|w]] [-z] [-r [-k N]] [-n]
+                [-o dir_path/file [-a a|w]] [-z] [-r [-k N]] [-n [-p N]]
                 [-e to_email [to_email2 ...] [-s subject_line] [-u]]} |
              -S [-m config_file -i [db_name:table_name]]
                 [-o dir_path/file [-a a|w]] [-z] [-r [-k N]] [-n]
@@ -40,10 +40,10 @@ exit 2
                 [-o dir_path/file [-a a|w]] [-z] [-r [-k N]] [-n]
                 [-e to_email [to_email2 ...] [-s subject_line] [-u]]} |
              -P [-m config_file -i [db_name:table_name]]
-                [-o dir_path/file [-a a|w]] [-z] [-r [-k N]] [-n]
+                [-o dir_path/file [-a a|w]] [-z] [-r [-k N]]
                 [-e to_email [to_email2 ...] [-s subject_line] [-u]]} |
              -M [-m config_file -i [db_name:table_name]]
-                [-o dir_path/file [-a a|w]] [-z] [-r [-k N]] [-n]
+                [-o dir_path/file [-a a|w]] [-z] [-r [-k N]]
                 [-e to_email [to_email2 ...] [-s subject_line] [-u]]}}
 #            {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i [db:coll] -m file]
 #                [-e toEmail {toEmail2, [...]} [-s subject] [-u]] |
@@ -71,7 +71,8 @@ exit 2
             -z => Suppress standard out.
             -r => Expand the JSON format using Pretty Print.
                 -k N => Indentation for expanded JSON format.
-            -n => Do not report if no errors detected.
+            -n => Do not report if no replication lag detected.
+                -p N => Only report if rep lag is greater than N seconds.
 ############################################################################
 #R            -j => Set output to JSON format.
 #R            -f => Flatten the JSON data structure to file and standard out.
@@ -105,7 +106,6 @@ exit 2
             -z => Suppress standard out.
             -r => Expand the JSON format using Pretty Print.
                 -k N => Indentation for expanded JSON format.
-            -n => Do not report if no errors detected.
 
         -N => Node health check.
             -m file => Mongo config file.  Is loaded as a python, do not
@@ -149,7 +149,6 @@ exit 2
             -z => Suppress standard out.
             -r => Expand the JSON format using Pretty Print.
                 -k N => Indentation for expanded JSON format.
-            -n => Do not report if no errors detected.
 
         -S => Check status of rep for members in rep set.
             -m file => Mongo config file.  Is loaded as a python, do not
@@ -167,7 +166,6 @@ exit 2
             -z => Suppress standard out.
             -r => Expand the JSON format using Pretty Print.
                 -k N => Indentation for expanded JSON format.
-            -n => Do not report if no errors detected.
 
 # Option removed.
 ############################################################################
@@ -424,6 +422,7 @@ def chk_rep_stat(repset, dtg, **kwargs):
             db_tbl -> database:table - Database name:Table name
             mongo -> Mongo configuration settings
             no_report -> True|False - Only report if errors detected
+            rep_lag -> N - Replication time lag cutoff in seconds
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
@@ -509,6 +508,7 @@ def fetch_priority(repset, dtg, **kwargs):
             db_tbl -> database:table - Database name:Table name
             mongo -> Mongo configuration settings
             no_report -> True|False - Only report if errors detected
+            rep_lag -> N - Replication time lag cutoff in seconds
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
@@ -574,6 +574,7 @@ def fetch_members(repset, dtg, **kwargs):
             db_tbl -> database:table - Database name:Table name
             mongo -> Mongo configuration settings
             no_report -> True|False - Only report if errors detected
+            rep_lag -> N - Replication time lag cutoff in seconds
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
@@ -674,6 +675,7 @@ def chk_mem_rep_lag(rep_status, dtg, **kwargs):
             db_tbl -> database:table - Database name:Table name
             mongo -> Mongo configuration settings
             no_report -> True|False - Only report if errors detected
+            rep_lag -> N - Replication time lag cutoff in seconds
             suf -> Primary|Freshest Secondary who has latest date time
             optdt -> Primary|Best Oplog date time
         (output) status -> Tuple on connection status
@@ -720,7 +722,17 @@ def chk_mem_rep_lag(rep_status, dtg, **kwargs):
         else:
             gen_libs.prt_msg("Warning", "No replication info available.", 0)
 
-    status = mongo_libs.data_out(data, **kwargs)
+    if not kwargs.get("no_report", False):
+        status = mongo_libs.data_out(data, **kwargs)
+
+    else:
+        status = (True, None)
+
+        for slave in data["Slaves"]:
+            if slave["LagTime"] > kwargs.get("rep_lag", 0):
+                status = mongo_libs.data_out(data, **kwargs)
+                break
+
 #    if json_fmt:
 #        status = process_json(outdata, **kwargs)
 #
@@ -887,6 +899,7 @@ def chk_rep_lag(repset, dtg, **kwargs):
             db_tbl -> database:table - Database name:Table name
             mongo -> Mongo configuration settings
             no_report -> True|False - Only report if errors detected
+            rep_lag -> N - Replication time lag cutoff in seconds
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
@@ -946,6 +959,7 @@ def node_chk(mongo, dtg, **kwargs):
             db_tbl -> database:table - Database name:Table name
             mongo -> Mongo configuration settings
             no_report -> True|False - Only report if errors detected
+            rep_lag -> N - Replication time lag cutoff in seconds
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
@@ -1043,6 +1057,7 @@ def create_data_config(args):
     data_config["suppress"] = args.get_val("-z", def_val=False)
     data_config["db_tbl"] = args.get_val("-i")
     data_config["no_report"] = args.get_val("-n", def_val=False)
+    data_config["rep_lag"] = args.get_val("-p", def_val=0)
 
     if args.get_val("-m", def_val=False):
         data_config["mongo"] = gen_libs.load_module(

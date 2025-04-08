@@ -26,8 +26,10 @@ Breaking changes
 - rep_msg_chk, rep_health_chk, rep_state_chk: Removed prints and replaced with dictionary and returned dictionary to calling function, modied input arguments.
 - node_chk: Refactored function to remove any processing of arguments, replaced data out commands with call to mongo_libs.data_out and added pre-header to JSON output.
 - chk_mem_rep_lag: Refactored function to remove any processing of arguments, replaced datetime with TimeFormat class instance, removed process_std and process_json calls, replaced with mongo_libs.data_out call and replaced JSON header creation with call to create_header.
+- chk_mem_rep_lag: Added no_report option and a replication lag time cutoff for reporting.
 - chk_rep_lag: Refactored function to remove any processing of arguments contained in data out configuration.
 - call_func: Refactored function to set up the data out config parameters and TimeFormat instance and removed mail setup call.
+- main: Removed -T option from available functions to call.
 
 ### Removed
 - prt_rep_stat: Replaced with chk_rep_stat function.
