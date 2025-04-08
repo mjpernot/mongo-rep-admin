@@ -88,7 +88,7 @@ Make the appropriate change to the environment.
 
   * Notes for auth_mech configuration entry:
     - NOTE 1:  SCRAM-SHA-256 only works for Mongodb 4.0 and better.
-    - NOTE 2:  FIPS 140-2 environment requires SCRAM-SHA-1 or SCRAM-SHA-256.
+    - NOTE 2:  Secure environment requires SCRAM-SHA-1 or SCRAM-SHA-256.
 
   * If Mongo is set to use TLS or SSL connections, then one or more of the following entries will need to be completed to connect using TLS or SSL protocols.  Note:  Read the configuration file to determine which entries will need to be set.
     - SSL:
@@ -134,7 +134,7 @@ Make the appropriate change to the environment.
 
   * Notes for auth_mech configuration entry:
     - NOTE 1:  SCRAM-SHA-256 only works for Mongodb 4.0 and better.
-    - NOTE 2:  FIPS 140-2 environment requires SCRAM-SHA-1 or SCRAM-SHA-256.
+    - NOTE 2:  Secure environment requires SCRAM-SHA-1 or SCRAM-SHA-256.
 
   * If Mongo is set to use TLS or SSL connections, then one or more of the following entries will need to be completed to connect using TLS or SSL protocols.  Note:  Read the configuration file to determine which entries will need to be set.
     - SSL:

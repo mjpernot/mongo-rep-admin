@@ -20,6 +20,7 @@ Breaking changes
 - create_data_config: Create data out config parameters.
 
 ### Changed
+- fetch_members, fetch_priority: Replaced prints with dictionary and called mongo_libs.data_out to handle data out function.
 - chk_rep_stat: Refactored function to remove prints and replace with dictionary and call mongo_libs.data_out to handle data out function.
 - rep_msg_chk, rep_health_chk, rep_state_chk: Removed prints and replaced with dictionary and returned dictionary to calling function, modied input arguments.
 - node_chk: Refactored function to remove any processing of arguments, replaced data out commands with call to mongo_libs.data_out and added pre-header to JSON output.

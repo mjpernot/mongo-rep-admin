@@ -31,30 +31,38 @@ exit 2
     Usage:
         mongo_rep_admin.py -c file -d path
             {-L [-m config_file -i [db_name:table_name]]
-                [-o dir_path/file [-a a|w]] [-z] [-r [-k N]]
+                [-o dir_path/file [-a a|w]] [-z] [-r [-k N]] [-n]
                 [-e to_email [to_email2 ...] [-s subject_line] [-u]]} |
-############################################################################
-# Replaced with mongo-db-admin -M option
+             -S [-m config_file -i [db_name:table_name]]
+                [-o dir_path/file [-a a|w]] [-z] [-r [-k N]] [-n]
+                [-e to_email [to_email2 ...] [-s subject_line] [-u]]} |
+             -N [-m config_file -i [db_name:table_name]]
+                [-o dir_path/file [-a a|w]] [-z] [-r [-k N]] [-n]
+                [-e to_email [to_email2 ...] [-s subject_line] [-u]]} |
+             -P [-m config_file -i [db_name:table_name]]
+                [-o dir_path/file [-a a|w]] [-z] [-r [-k N]] [-n]
+                [-e to_email [to_email2 ...] [-s subject_line] [-u]]} |
+             -M [-m config_file -i [db_name:table_name]]
+                [-o dir_path/file [-a a|w]] [-z] [-r [-k N]] [-n]
+                [-e to_email [to_email2 ...] [-s subject_line] [-u]]}}
 #            {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i [db:coll] -m file]
 #                [-e toEmail {toEmail2, [...]} [-s subject] [-u]] |
-             -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject] [-u]] [-z] |
-############################################################################
+#             -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject] [-u]] [-z] |
 #             -M | -P | -S | -T }
-             -M | -P | -S }
             [-v | -h]
 
     Arguments:
-        -c file => Server configuration file.  Required arg.
-        -d dir path => Directory path to config file (-c). Required arg.
+        -c file => Server configuration file.
+        -d dir path => Directory path to server configuration file.
 
         -L => Check Replication lag.
             -m file => Mongo config file.  Is loaded as a python, do not
                 include the .py extension with the name.
-                -i {database:collection} => Name of database and collection.
+                -i [database:collection] => Name of database and collection.
                     Default: sysmon:mongo_rep_lag
             -o path/file => Directory path and file name for output.
-                -a a|w => Append or write to output to output file. Default is
-                    write.
+                -a a|w => Append or write to output to output file.
+                    Note: Default is write.
             -e to_email_address(es) => Enables emailing and sends output to one
                     or more email addresses.  Email addresses are space
                     delimited.
@@ -63,8 +71,8 @@ exit 2
             -z => Suppress standard out.
             -r => Expand the JSON format using Pretty Print.
                 -k N => Indentation for expanded JSON format.
+            -n => Do not report if no errors detected.
 ############################################################################
-# Replaced with mongo-db-admin -M option
 #R            -j => Set output to JSON format.
 #R            -f => Flatten the JSON data structure to file and standard out.
 #            -i [database:collection] => Name of database and collection.
@@ -82,15 +90,13 @@ exit 2
 ############################################################################
 
         -M => Show current members in replication set.
-
-        -N => Node health check.  Returns if a node has a problem or is down.
             -m file => Mongo config file.  Is loaded as a python, do not
                 include the .py extension with the name.
-                -i {database:collection} => Name of database and collection.
-                    Default: sysmon:mongo_rep_lag
+                -i [database:collection] => Name of database and collection.
+                    Default: sysmon:mongo_members
             -o path/file => Directory path and file name for output.
-                -a a|w => Append or write to output to output file. Default is
-                    write.
+                -a a|w => Append or write to output to output file.
+                    Note: Default is write.
             -e to_email_address(es) => Enables emailing and sends output to one
                     or more email addresses.  Email addresses are space
                     delimited.
@@ -99,9 +105,26 @@ exit 2
             -z => Suppress standard out.
             -r => Expand the JSON format using Pretty Print.
                 -k N => Indentation for expanded JSON format.
-            -n => Only report if errors detected.
+            -n => Do not report if no errors detected.
+
+        -N => Node health check.
+            -m file => Mongo config file.  Is loaded as a python, do not
+                include the .py extension with the name.
+                -i [database:collection] => Name of database and collection.
+                    Default: sysmon:mongo_node_check
+            -o path/file => Directory path and file name for output.
+                -a a|w => Append or write to output to output file.
+                    Note: Default is write.
+            -e to_email_address(es) => Enables emailing and sends output to one
+                    or more email addresses.  Email addresses are space
+                    delimited.
+                -s subject_line => Subject line of email.
+                -u => Override the default mail command and use mailx.
+            -z => Suppress standard out.
+            -r => Expand the JSON format using Pretty Print.
+                -k N => Indentation for expanded JSON format.
+            -n => Do not report if no errors detected.
 ############################################################################
-# Replaced with mongo-db-admin -M option
 #R            -f => Flatten the JSON data structure to file and standard out.
 #            -e to_email_addresses => Sends output to one or more email
 #                addresses.  Email addresses are space delimited.
@@ -111,13 +134,46 @@ exit 2
 ############################################################################
 
         -P => Show priority for members in replication set.
+            -m file => Mongo config file.  Is loaded as a python, do not
+                include the .py extension with the name.
+                -i [database:collection] => Name of database and collection.
+                    Default: sysmon:mongo_priority
+            -o path/file => Directory path and file name for output.
+                -a a|w => Append or write to output to output file.
+                    Note: Default is write.
+            -e to_email_address(es) => Enables emailing and sends output to one
+                    or more email addresses.  Email addresses are space
+                    delimited.
+                -s subject_line => Subject line of email.
+                -u => Override the default mail command and use mailx.
+            -z => Suppress standard out.
+            -r => Expand the JSON format using Pretty Print.
+                -k N => Indentation for expanded JSON format.
+            -n => Do not report if no errors detected.
 
-        -S => Check status of rep for members in rep set, but will only print
-            the status if errors are detected.
+        -S => Check status of rep for members in rep set.
+            -m file => Mongo config file.  Is loaded as a python, do not
+                include the .py extension with the name.
+                -i [database:collection] => Name of database and collection.
+                    Default: sysmon:mongo_rep_status
+            -o path/file => Directory path and file name for output.
+                -a a|w => Append or write to output to output file.
+                    Note: Default is write.
+            -e to_email_address(es) => Enables emailing and sends output to one
+                    or more email addresses.  Email addresses are space
+                    delimited.
+                -s subject_line => Subject line of email.
+                -u => Override the default mail command and use mailx.
+            -z => Suppress standard out.
+            -r => Expand the JSON format using Pretty Print.
+                -k N => Indentation for expanded JSON format.
+            -n => Do not report if no errors detected.
 
 # Option removed.
+############################################################################
 #        -T => Check status of rep for members in rep set and will print the
 #            status in all checks.
+############################################################################
 
         -v => Display version of this program.
         -h => Help and usage message.
@@ -174,8 +230,8 @@ exit 2
                     tls_certkey = None
                     tls_certkey_phrase = None
 
-            Note:  FIPS Environment for Mongo.
-              If operating in a FIPS 104-2 environment, this package will
+            Note:  Secure Environment for Mongo.
+              If operating in a secure environment, this package will
               require at least a minimum of pymongo==3.8.0 or better.  It will
               also require a manual change to the auth.py module in the pymongo
               package.  See below for changes to auth.py.
@@ -376,6 +432,8 @@ def chk_rep_stat(repset, dtg, **kwargs):
 
     status = (True, None)
 
+    kwargs["db_tbl"] = "sysmon:mongo_rep_status"
+
     data = create_header("RepStatus", dtg)
     data["RepSet"] = repset.repset
     data["Servers"] = []
@@ -413,7 +471,7 @@ def chk_rep_stat(repset, dtg, **kwargs):
 
     Arguments:
         (input) repset -> Replication set instance
-        (input) args -> ArgParser class instance
+        (input) dtg -> DateFormat instance
         (input) **kwargs:
             mail -> Mail instance
         (output) status -> Tuple on connection status
@@ -430,7 +488,7 @@ def chk_rep_stat(repset, dtg, **kwargs):
     """
 
 
-def fetch_priority(repset, args, **kwargs):             # pylint:disable=W0613
+def fetch_priority(repset, dtg, **kwargs):
 
     """Function:  fetch_priority
 
@@ -438,9 +496,19 @@ def fetch_priority(repset, args, **kwargs):             # pylint:disable=W0613
 
     Arguments:
         (input) repset -> Replication set instance
-        (input) args -> ArgParser class instance
+        (input) dtg -> DateFormat instance
         (input) **kwargs:
-            mail -> Mail instance
+            to_addr -> To email address
+            subj -> Email subject line
+            mailx -> True|False - Use mailx command
+            outfile -> Name of output file name
+            mode -> w|a => Write or append mode for file
+            use_pprint -> True|False - Expand the JSON format
+            indent -> Indentation of JSON document if expanded
+            suppress -> True|False - Suppress standard out
+            db_tbl -> database:table - Database name:Table name
+            mongo -> Mongo configuration settings
+            no_report -> True|False - Only report if errors detected
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
@@ -458,12 +526,19 @@ def fetch_priority(repset, args, **kwargs):             # pylint:disable=W0613
         tls_ca_certs=repset.tls_ca_certs, tls_certkey=repset.tls_certkey,
         tls_certkey_phrase=repset.tls_certkey_phrase)
     status = coll.connect()
+    kwargs["db_tbl"] = "sysmon:mongo_priority"
 
     if status[0]:
-        print(f"\nMembers => priority of replica set: {repset.repset}")
+        data = create_header("NodePriority", dtg)
+        data["RepSet"] = repset.repset
+        data["Priority"] = []
+#        print(f"\nMembers => priority of replica set: {repset.repset}")
 
         for item in coll.coll_find1()["members"]:
-            print(f'\t{item["host"]} => {item["priority"]}')
+            data["Priority"].append({item["host"]: item["priority"]})
+#            print(f'\t{item["host"]} => {item["priority"]}')
+
+        status = mongo_libs.data_out(data, **kwargs)
 
         mongo_libs.disconnect([coll])
 
@@ -474,18 +549,28 @@ def fetch_priority(repset, args, **kwargs):             # pylint:disable=W0613
     return status
 
 
-def fetch_members(repset, args, **kwargs):              # pylint:disable=W0613
+def fetch_members(repset, dtg, **kwargs):
 
     """Function:  fetch_members
 
-    Description:  Fetch and print members in the replication set and identify
+    Description:  Fetch and display members in the replication set and identify
         the primary server.
 
     Arguments:
         (input) repset -> Replication set instance
-        (input) args -> ArgParser class instance
+        (input) dtg -> DateFormat instance
         (input) **kwargs:
-            mail -> Mail instance
+            to_addr -> To email address
+            subj -> Email subject line
+            mailx -> True|False - Use mailx command
+            outfile -> Name of output file name
+            mode -> w|a => Write or append mode for file
+            use_pprint -> True|False - Expand the JSON format
+            indent -> Indentation of JSON document if expanded
+            suppress -> True|False - Suppress standard out
+            db_tbl -> database:table - Database name:Table name
+            mongo -> Mongo configuration settings
+            no_report -> True|False - Only report if errors detected
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
@@ -493,16 +578,26 @@ def fetch_members(repset, args, **kwargs):              # pylint:disable=W0613
     """
 
     status = (True, None)
-    print(f"\nMembers of replica set: {repset.repset}")
+    kwargs["db_tbl"] = "sysmon:mongo_members"
+    data = create_header("RepMembers", dtg)
+    data["RepSet"] = repset.repset
+    data["Secondaries"] = []
+
+#    print(f"\nMembers of replica set: {repset.repset}")
     rep_status = repset.adm_cmd("replSetGetStatus")
     primary = get_master(rep_status)
-    print(f'\t{primary["name"]} (Primary)')
+
+    data["Master"] = primary["name"]
+#    print(f'\t{primary["name"]} (Primary)')
 
     secondaries = [member for member in rep_status.get("members")
                    if member.get("state") == 2]
 
     for second in secondaries:
-        print(f'\t{second["name"]}')
+        data["Secondaries"].append(second["name"])
+#        print(f'\t{second["name"]}')
+
+    status = mongo_libs.data_out(data, **kwargs)
 
     return status
 
@@ -587,6 +682,8 @@ def chk_mem_rep_lag(rep_status, dtg, **kwargs):
 #    t_format = "%Y-%m-%d %H:%M:%S"
     rep_status = dict(rep_status)
 #    json_fmt = kwargs.get("json", False)
+
+    kwargs["db_tbl"] = "sysmon:mongo_rep_lag"
 
     data = create_header("RepTimeLag", dtg)
     data["RepSet"] = rep_status.get("set")
@@ -856,6 +953,8 @@ def node_chk(mongo, dtg, **kwargs):
 #    mail = kwargs.get("mail", None)
     node_status = {}
 
+    kwargs["db_tbl"] = "sysmon:mongo_node_check"
+
 #    indent = None if args.get_val("-f", def_val=False) else 4
 
     for node in mongo.adm_cmd("replSetGetStatus").get("members"):
@@ -1081,9 +1180,12 @@ def main():
     file_crt = ["-o"]
     func_dict = {
         "-L": chk_rep_lag, "-M": fetch_members, "-S": chk_rep_stat,
-        "-P": fetch_priority, "-T": prt_rep_stat, "-N": node_chk}
+        "-P": fetch_priority, "-N": node_chk}
+#    func_dict = {
+#        "-L": chk_rep_lag, "-M": fetch_members, "-S": chk_rep_stat,
+#        "-P": fetch_priority, "-T": prt_rep_stat, "-N": node_chk}
     opt_con_req_list = {"-i": ["-m"], "-s": ["-e"], "-u": ["-e"], "-k": ["-r"]}
-    opt_def_dict = {"-i": "sysmon:mongo_rep_lag"}
+    opt_def_dict = {"-i": "sysmon:mongo_rep_admin"}
     opt_multi_list = ["-e", "-s"]
     opt_req_list = ["-c", "-d"]
     opt_val_list = ["-c", "-d", "-i", "-m", "-o", "-e", "-s", "-k", "-a"]
