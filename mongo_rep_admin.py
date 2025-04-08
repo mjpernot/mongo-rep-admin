@@ -515,16 +515,19 @@ def fetch_priority(repset, dtg, **kwargs):
 
     """
 
+    secure_config = mongo_libs.create_security_config(cfg=repset)
+
     coll = mongo_class.Coll(
         repset.name, repset.user, repset.japd, host=repset.host,
         port=repset.port, db="local", coll="system.replset", auth=repset.auth,
-        conf_file=repset.conf_file, auth_db=repset.auth_db,
-        auth_mech=repset.auth_mech, ssl_client_ca=repset.ssl_client_ca,
-        ssl_client_cert=repset.ssl_client_cert,
-        ssl_client_key=repset.ssl_client_key,
-        ssl_client_phrase=repset.ssl_client_phrase, auth_type=repset.auth_type,
-        tls_ca_certs=repset.tls_ca_certs, tls_certkey=repset.tls_certkey,
-        tls_certkey_phrase=repset.tls_certkey_phrase)
+        conf_file=repset.conf_file, **secure_config)
+#        conf_file=repset.conf_file, auth_db=repset.auth_db,
+#        auth_mech=repset.auth_mech, ssl_client_ca=repset.ssl_client_ca,
+#        ssl_client_cert=repset.ssl_client_cert,
+#        ssl_client_key=repset.ssl_client_key,
+#        ssl_client_phrase=repset.ssl_client_phrase, auth_type=repset.auth_type,
+#        tls_ca_certs=repset.tls_ca_certs, tls_certkey=repset.tls_certkey,
+#        tls_certkey_phrase=repset.tls_certkey_phrase)
     status = coll.connect()
     kwargs["db_tbl"] = "sysmon:mongo_priority"
 
@@ -1098,17 +1101,19 @@ def run_program(args, func_dict):
 
     func_dict = dict(func_dict)
     server = gen_libs.load_module(args.get_val("-c"), args.get_val("-d"))
+    secure_config = mongo_libs.create_security_config(cfg=server)
 
     coll = mongo_class.Coll(
         server.name, server.user, server.japd, host=server.host,
         port=server.port, db="local", coll="system.replset", auth=server.auth,
-        conf_file=server.conf_file, auth_db=server.auth_db,
-        auth_mech=server.auth_mech, ssl_client_ca=server.ssl_client_ca,
-        ssl_client_cert=server.ssl_client_cert,
-        ssl_client_key=server.ssl_client_key,
-        ssl_client_phrase=server.ssl_client_phrase, auth_type=server.auth_type,
-        tls_ca_certs=server.tls_ca_certs, tls_certkey=server.tls_certkey,
-        tls_certkey_phrase=server.tls_certkey_phrase)
+        conf_file=server.conf_file, **secure_config)
+#        conf_file=server.conf_file, auth_db=server.auth_db,
+#        auth_mech=server.auth_mech, ssl_client_ca=server.ssl_client_ca,
+#        ssl_client_cert=server.ssl_client_cert,
+#        ssl_client_key=server.ssl_client_key,
+#        ssl_client_phrase=server.ssl_client_phrase, auth_type=server.auth_type,
+#        tls_ca_certs=server.tls_ca_certs, tls_certkey=server.tls_certkey,
+#        tls_certkey_phrase=server.tls_certkey_phrase)
     status = coll.connect()
 
     if status[0]:
@@ -1126,14 +1131,15 @@ def run_program(args, func_dict):
             repinst = mongo_class.RepSet(
                 server.name, server.user, server.japd, host=server.host,
                 port=server.port, auth=server.auth, repset=rep_set,
-                repset_hosts=server.repset_hosts, auth_db=server.auth_db,
-                auth_mech=server.auth_mech, ssl_client_ca=server.ssl_client_ca,
-                ssl_client_cert=server.ssl_client_cert,
-                ssl_client_key=server.ssl_client_key,
-                ssl_client_phrase=server.ssl_client_phrase,
-                auth_type=server.auth_type, tls_ca_certs=server.tls_ca_certs,
-                tls_certkey=server.tls_certkey,
-                tls_certkey_phrase=server.tls_certkey_phrase)
+                repset_hosts=server.repset_hosts, **secure_config)
+#                repset_hosts=server.repset_hosts, auth_db=server.auth_db,
+#                auth_mech=server.auth_mech, ssl_client_ca=server.ssl_client_ca,
+#                ssl_client_cert=server.ssl_client_cert,
+#                ssl_client_key=server.ssl_client_key,
+#                ssl_client_phrase=server.ssl_client_phrase,
+#                auth_type=server.auth_type, tls_ca_certs=server.tls_ca_certs,
+#                tls_certkey=server.tls_certkey,
+#                tls_certkey_phrase=server.tls_certkey_phrase)
             status2 = repinst.connect()
 
             if status2[0]:

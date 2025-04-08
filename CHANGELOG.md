@@ -20,6 +20,7 @@ Breaking changes
 - create_data_config: Create data out config parameters.
 
 ### Changed
+- fetch_priority, run_program: Replaced setting TLS/SSL settings with call to mongo_libs.create_security_config and passing in dictionary with secure settings.
 - fetch_members, fetch_priority: Replaced prints with dictionary and called mongo_libs.data_out to handle data out function.
 - chk_rep_stat: Refactored function to remove prints and replace with dictionary and call mongo_libs.data_out to handle data out function.
 - rep_msg_chk, rep_health_chk, rep_state_chk: Removed prints and replaced with dictionary and returned dictionary to calling function, modied input arguments.
