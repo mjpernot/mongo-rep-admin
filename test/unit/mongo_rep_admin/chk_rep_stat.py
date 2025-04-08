@@ -22,35 +22,10 @@ import mock
 # Local
 sys.path.append(os.getcwd())
 import mongo_rep_admin                          # pylint:disable=E0401,C0413
-import lib.gen_libs as gen_libs             # pylint:disable=E0401,C0413,R0402
+import lib.gen_class as gen_class           # pylint:disable=E0401,C0413,R0402
 import version                                  # pylint:disable=E0401,C0413
 
 __version__ = version.__version__
-
-
-class ArgParser():                                      # pylint:disable=R0903
-
-    """Class:  ArgParser
-
-    Description:  Class stub holder for gen_class.ArgParser class.
-
-    Methods:
-        __init__
-
-    """
-
-    def __init__(self):
-
-        """Method:  __init__
-
-        Description:  Class initialization.
-
-        Arguments:
-
-        """
-
-        self.cmdline = None
-        self.args_array = {}
 
 
 class Server():                                         # pylint:disable=R0903
@@ -102,7 +77,8 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
-        test_chk_rep_stat
+        test_errors_detected
+        test_no_report_true
 
     """
 
@@ -117,31 +93,61 @@ class UnitTest(unittest.TestCase):
         """
 
         self.server = Server()
-        self.args = ArgParser()
-        self.args.args_array = {"-c": "config"}
+        self.dtg = gen_class.TimeFormat()
+        self.dtg.create_time()
         self.status = (True, None)
+        self.rep_health_chk = {}
+        self.rep_health_chk2 = {"Health": "Bad"}
+        self.rep_state_chk = {}
+        self.rep_state_chk2 = {"State": 3}
+        self.rep_msg_chk = {}
+        self.rep_msg_chk2 = {"ErrorMessage": "MessageHere"}
 
+    @mock.patch("mongo_rep_admin.mongo_libs.data_out")
     @mock.patch("mongo_rep_admin.rep_msg_chk")
     @mock.patch("mongo_rep_admin.rep_state_chk")
     @mock.patch("mongo_rep_admin.rep_health_chk")
-    def test_chk_rep_stat(self, mock_health, mock_state, mock_msg):
+    def test_errors_detected(self, mock_health, mock_state, mock_msg, mock_out):
 
-        """Function:  test_chk_rep_stat
+        """Function:  test_errors_detected
 
-        Description:  Test chk_rep_stat function.
+        Description:  Test with errors detected.
 
         Arguments:
 
         """
 
-        mock_health.return_value = True
-        mock_state.return_value = True
-        mock_msg.return_value = True
+        mock_health.return_value = self.rep_health_chk2
+        mock_state.return_value = self.rep_state_chk2
+        mock_msg.return_value = self.rep_msg_chk2
+        mock_out.return_value = self.status
 
-        with gen_libs.no_std_out():
-            self.assertEqual(
-                mongo_rep_admin.chk_rep_stat(
-                    self.server, self.args), self.status)
+        self.assertEqual(
+            mongo_rep_admin.chk_rep_stat(
+                self.server, self.dtg, no_report=True), self.status)
+
+    @mock.patch("mongo_rep_admin.mongo_libs.data_out")
+    @mock.patch("mongo_rep_admin.rep_msg_chk")
+    @mock.patch("mongo_rep_admin.rep_state_chk")
+    @mock.patch("mongo_rep_admin.rep_health_chk")
+    def test_no_report_true(self, mock_health, mock_state, mock_msg, mock_out):
+
+        """Function:  test_no_report_true
+
+        Description:  Test with no report set to true.
+
+        Arguments:
+
+        """
+
+        mock_health.return_value = self.rep_health_chk
+        mock_state.return_value = self.rep_state_chk
+        mock_msg.return_value = self.rep_msg_chk
+        mock_out.return_value = self.status
+
+        self.assertEqual(
+            mongo_rep_admin.chk_rep_stat(
+                self.server, self.dtg, no_report=True), self.status)
 
 
 if __name__ == "__main__":

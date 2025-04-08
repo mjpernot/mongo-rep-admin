@@ -261,7 +261,7 @@ def create_header(name, dtg):
     return header
 
 
-def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1):
+def rep_health_chk(rep_stat, server, no_report):
 
     """Function:  rep_health_chk
 
@@ -269,21 +269,27 @@ def rep_health_chk(rep_stat, prt_all=False, prt_lvl=1):
 
     Arguments:
         (input) rep_stat -> Member document from replSetGetStatus
-        (input) prt_all -> True|False - To print all or just errors
-        (input) prt_lvl -> Integer - Level at which to print message
+        (input) server -> Dictionary of current status of node
+        (input) no_report -> True|False - Only report if errors detected
+        (output) server -> Dictionary of current status of node
 
     """
 
     rep_stat = dict(rep_stat)
+    server = dict(server)
 
     if not rep_stat.get("health"):
-        gen_libs.prt_msg("Health", "Bad", prt_lvl)
+        server["Health"] = "Bad"
+#        gen_libs.prt_msg("Health", "Bad", prt_lvl)
 
-    elif prt_all:
-        gen_libs.prt_msg("Health", "Good", prt_lvl)
+    elif not no_report:
+        server["Health"] = "Good"
+#        gen_libs.prt_msg("Health", "Good", prt_lvl)
+
+    return server
 
 
-def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1):
+def rep_state_chk(rep_stat, server, no_report):
 
     """Function:  rep_state_chk
 
@@ -292,21 +298,28 @@ def rep_state_chk(rep_stat, prt_all=False, prt_lvl=1):
 
     Arguments:
         (input) rep_stat -> Member document from replSetGetStatus
-        (input) prt_all -> True|False - To print all or just errors
-        (input) prt_lvl -> Integer - Level at which to print message
+        (input) server -> Dictionary of current status of node
+        (input) no_report -> True|False - Only report if errors detected
+        (output) server -> Dictionary of current status of node
 
     """
 
     # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter).
     good_state = [1, 2, 7]
     rep_stat = dict(rep_stat)
+    server = dict(server)
 
-    if rep_stat.get("state") not in good_state or prt_all:
-        gen_libs.prt_msg("State", rep_stat.get("state"), prt_lvl)
-        gen_libs.prt_msg("State Msg", rep_stat.get("stateStr"), prt_lvl + 1)
+    if rep_stat.get("state") not in good_state or not no_report:
+        server["Status"] = {"State": rep_stat.get("state"),
+                            "StateMsg": rep_stat.get("stateStr")}
+
+    return server
+#    if rep_stat.get("state") not in good_state or prt_all:
+#        gen_libs.prt_msg("State", rep_stat.get("state"), prt_lvl)
+#        gen_libs.prt_msg("State Msg", rep_stat.get("stateStr"), prt_lvl + 1)
 
 
-def rep_msg_chk(rep_stat, prt_lvl=1):
+def rep_msg_chk(rep_stat, server, no_report):
 
     """Function:  rep_msg_chk
 
@@ -314,17 +327,24 @@ def rep_msg_chk(rep_stat, prt_lvl=1):
 
     Arguments:
         (input) rep_stat -> Member document from replSetGetStatus
-        (input) prt_lvl -> Integer - Level at which to print message
+        (input) server -> Dictionary of current status of node
+        (input) no_report -> True|False - Only report if errors detected
+        (output) server -> Dictionary of current status of node
 
     """
 
     rep_stat = dict(rep_stat)
+    server = dict(server)
 
-    if rep_stat.get("infoMessage"):
-        gen_libs.prt_msg("Error Message", rep_stat.get("infoMessage"), prt_lvl)
+    if rep_stat.get("infoMessage") or not no_report:
+        server["ErrorMessage"] = rep_stat.get("infoMessage")
+#    if rep_stat.get("infoMessage"):
+#        gen_libs.prt_msg("Error Message", rep_stat.get("infoMessage"), prt_lvl)
+
+    return server
 
 
-def chk_rep_stat(repset, args, **kwargs):
+def chk_rep_stat(repset, dtg, **kwargs):
 
     """Function:  chk_rep_stat
 
@@ -345,7 +365,7 @@ def chk_rep_stat(repset, args, **kwargs):
             suppress -> True|False - Suppress standard out
             db_tbl -> database:table - Database name:Table name
             mongo -> Mongo configuration settings
-            no_report -> Only report if errors detected
+            no_report -> True|False - Only report if errors detected
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
@@ -357,23 +377,28 @@ def chk_rep_stat(repset, args, **kwargs):
     data = create_header("RepStatus", dtg)
     data["RepSet"] = repset.repset
     data["Servers"] = []
+    no_report = kwargs.get("no_report", False)
 
-### STOPPED HERE
 #    print(f"\nReplication Status Check for Rep Set:  {repset.repset}")
-# Replaced with no_report option.
 #    prt_all = kwargs.get("prt_all", False)
 
     # Process each member in replica set.
     for item in repset.adm_cmd("replSetGetStatus").get("members"):
-        # Capture each one
-        # if not kwargs.get("no_report", False) or (
-        #    kwargs.get("no_report", False) and (return checks here)):
-        #       Create header for server
-        #       Populate header
-        print(f'\nServer: {item.get("name")}')
-        rep_health_chk(item, prt_all)
-        rep_state_chk(item, prt_all)
-        rep_msg_chk(item)
+        server = {}
+        server = rep_health_chk(item, server, no_report)
+        server = rep_state_chk(item, server, no_report)
+        server = rep_msg_chk(item, server, no_report)
+
+        if server:
+            server["Server"] = item.get("name")
+            data["Servers"].append(server)
+#        print(f'\nServer: {item.get("name")}')
+#        rep_health_chk(item, prt_all)
+#        rep_state_chk(item, prt_all)
+#        rep_msg_chk(item)
+
+    if data["Servers"]:
+        status = mongo_libs.data_out(data, **kwargs)
 
     return status
 
@@ -546,7 +571,7 @@ def chk_mem_rep_lag(rep_status, dtg, **kwargs):
             suppress -> True|False - Suppress standard out
             db_tbl -> database:table - Database name:Table name
             mongo -> Mongo configuration settings
-            no_report -> Only report if errors detected
+            no_report -> True|False - Only report if errors detected
             suf -> Primary|Freshest Secondary who has latest date time
             optdt -> Primary|Best Oplog date time
         (output) status -> Tuple on connection status
@@ -757,7 +782,7 @@ def chk_rep_lag(repset, dtg, **kwargs):
             suppress -> True|False - Suppress standard out
             db_tbl -> database:table - Database name:Table name
             mongo -> Mongo configuration settings
-            no_report -> Only report if errors detected
+            no_report -> True|False - Only report if errors detected
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed
@@ -816,7 +841,7 @@ def node_chk(mongo, dtg, **kwargs):
             suppress -> True|False - Suppress standard out
             db_tbl -> database:table - Database name:Table name
             mongo -> Mongo configuration settings
-            no_report -> Only report if errors detected
+            no_report -> True|False - Only report if errors detected
         (output) status -> Tuple on connection status
             status[0] - True|False - Connection successful
             status[1] - Error message if connection failed

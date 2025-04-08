@@ -17,7 +17,6 @@
 import sys
 import os
 import unittest
-import mock
 
 # Local
 sys.path.append(os.getcwd())
@@ -35,9 +34,10 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
-        test_print_all
-        test_good_state
-        test_bad_state
+        test_state_bad_nr_false
+        test_state_bad_nr_true
+        test_state_good_nr_false
+        test_state_good_nr_true
 
     """
 
@@ -52,50 +52,69 @@ class UnitTest(unittest.TestCase):
         """
 
         self.rep_stat = {"state": 1, "stateStr": "StringHere"}
-        self.rep_stat2 = {"state": 3, "stateStr": "StringHere"}
+        self.rep_stat2 = {"state": 3, "stateStr": "StringHere2"}
+        self.server = {}
+        self.no_report = True
+        self.no_report2 = False
+        self.results = {}
+        self.results2 = {'Status': {'State': 1, 'StateMsg': 'StringHere'}}
+        self.results3 = {'Status': {'State': 3, 'StateMsg': 'StringHere2'}}
 
-    @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
-    def test_print_all(self, mock_prt):
+    def test_state_bad_nr_false(self):
 
-        """Function:  test_print_all
+        """Function:  test_state_bad_nr_false
 
-        Description:  Test with print all option.
-
-        Arguments:
-
-        """
-
-        mock_prt.return_value = True
-
-        self.assertFalse(mongo_rep_admin.rep_state_chk(self.rep_stat,
-                                                       prt_all=True))
-
-    def test_good_state(self):
-
-        """Function:  test_good_state
-
-        Description:  Test with good state.
+        Description:  Test with state is bad and no report false.
 
         Arguments:
 
         """
 
-        self.assertFalse(mongo_rep_admin.rep_state_chk(self.rep_stat))
+        self.assertEqual(
+            mongo_rep_admin.rep_state_chk(
+                self.rep_stat2, self.server, self.no_report2), self.results3)
 
-    @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
-    def test_bad_state(self, mock_prt):
+    def test_state_bad_nr_true(self):
 
-        """Function:  test_bad_state
+        """Function:  test_state_bad_nr_true
 
-        Description:  Test with bad state.
+        Description:  Test with state is vad and no report true.
 
         Arguments:
 
         """
 
-        mock_prt.return_value = True
+        self.assertEqual(
+            mongo_rep_admin.rep_state_chk(
+                self.rep_stat2, self.server, self.no_report), self.results3)
 
-        self.assertFalse(mongo_rep_admin.rep_state_chk(self.rep_stat2))
+    def test_state_good_nr_false(self):
+
+        """Function:  test_state_good_nr_false
+
+        Description:  Test with state is good and no report false.
+
+        Arguments:
+
+        """
+
+        self.assertEqual(
+            mongo_rep_admin.rep_state_chk(
+                self.rep_stat, self.server, self.no_report2), self.results2)
+
+    def test_state_good_nr_true(self):
+
+        """Function:  test_state_good_nr_true
+
+        Description:  Test with state is good and no report true.
+
+        Arguments:
+
+        """
+
+        self.assertEqual(
+            mongo_rep_admin.rep_state_chk(
+                self.rep_stat, self.server, self.no_report), self.results)
 
 
 if __name__ == "__main__":
