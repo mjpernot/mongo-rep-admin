@@ -107,7 +107,8 @@ class UnitTest(unittest.TestCase):
     @mock.patch("mongo_rep_admin.rep_msg_chk")
     @mock.patch("mongo_rep_admin.rep_state_chk")
     @mock.patch("mongo_rep_admin.rep_health_chk")
-    def test_errors_detected(self, mock_health, mock_state, mock_msg, mock_out):
+    def test_errors_detected(
+            self, mock_health, mock_state, mock_msg, mock_out):
 
         """Function:  test_errors_detected
 

@@ -259,10 +259,10 @@ exit 2
 import sys
 import datetime
 
-try:
-    import simplejson as json
-except ImportError:
-    import json
+# try:
+#    import simplejson as json
+# except ImportError:
+#    import json
 
 # Local
 try:
@@ -395,7 +395,7 @@ def rep_msg_chk(rep_stat, server, no_report):
     if rep_stat.get("infoMessage") or not no_report:
         server["ErrorMessage"] = rep_stat.get("infoMessage")
 #    if rep_stat.get("infoMessage"):
-#        gen_libs.prt_msg("Error Message", rep_stat.get("infoMessage"), prt_lvl)
+#       gen_libs.prt_msg("Error Message", rep_stat.get("infoMessage"), prt_lvl)
 
     return server
 
@@ -462,7 +462,7 @@ def chk_rep_stat(repset, dtg, **kwargs):
     return status
 
 
-#def prt_rep_stat(repset, args, **kwargs):
+# def prt_rep_stat(repset, args, **kwargs):
 
     """Function:  prt_rep_stat
 
@@ -525,7 +525,7 @@ def fetch_priority(repset, dtg, **kwargs):
 #        auth_mech=repset.auth_mech, ssl_client_ca=repset.ssl_client_ca,
 #        ssl_client_cert=repset.ssl_client_cert,
 #        ssl_client_key=repset.ssl_client_key,
-#        ssl_client_phrase=repset.ssl_client_phrase, auth_type=repset.auth_type,
+#       ssl_client_phrase=repset.ssl_client_phrase, auth_type=repset.auth_type,
 #        tls_ca_certs=repset.tls_ca_certs, tls_certkey=repset.tls_certkey,
 #        tls_certkey_phrase=repset.tls_certkey_phrase)
     status = coll.connect()
@@ -742,7 +742,7 @@ def chk_mem_rep_lag(rep_status, dtg, **kwargs):
     return status
 
 
-#def process_std(outdata, **kwargs):
+# def process_std(outdata, **kwargs):
 
     """Function:  process_std
 
@@ -815,7 +815,7 @@ def chk_mem_rep_lag(rep_status, dtg, **kwargs):
     """
 
 
-#def process_json(outdata, **kwargs):
+# def process_json(outdata, **kwargs):
 
     """Function:  process_json
 
@@ -932,7 +932,7 @@ def chk_rep_lag(repset, dtg, **kwargs):
         rep_status, dtg, optdt=optime_date, suf=suffix, **kwargs)
 #    status = chk_mem_rep_lag(
 #        rep_status, optdt=optime_date, suf=suffix, json=json_fmt,
-#        ofile=outfile, db_tbl=db_tbl, class_cfg=mongo_cfg, args=args, **kwargs)
+#       ofile=outfile, db_tbl=db_tbl, class_cfg=mongo_cfg, args=args, **kwargs)
 
     return status
 
@@ -1126,7 +1126,7 @@ def run_program(args, func_dict):
 #        auth_mech=server.auth_mech, ssl_client_ca=server.ssl_client_ca,
 #        ssl_client_cert=server.ssl_client_cert,
 #        ssl_client_key=server.ssl_client_key,
-#        ssl_client_phrase=server.ssl_client_phrase, auth_type=server.auth_type,
+#       ssl_client_phrase=server.ssl_client_phrase, auth_type=server.auth_type,
 #        tls_ca_certs=server.tls_ca_certs, tls_certkey=server.tls_certkey,
 #        tls_certkey_phrase=server.tls_certkey_phrase)
     status = coll.connect()
@@ -1148,7 +1148,7 @@ def run_program(args, func_dict):
                 port=server.port, auth=server.auth, repset=rep_set,
                 repset_hosts=server.repset_hosts, **secure_config)
 #                repset_hosts=server.repset_hosts, auth_db=server.auth_db,
-#                auth_mech=server.auth_mech, ssl_client_ca=server.ssl_client_ca,
+#               auth_mech=server.auth_mech, ssl_client_ca=server.ssl_client_ca,
 #                ssl_client_cert=server.ssl_client_cert,
 #                ssl_client_key=server.ssl_client_key,
 #                ssl_client_phrase=server.ssl_client_phrase,
