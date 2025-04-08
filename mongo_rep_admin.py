@@ -1067,7 +1067,7 @@ def call_func(args, func_dict, repinst):
     dtg.create_time()
 
 #######################################################################
-# Move to individual functions
+# Move to mongo_libs.data_out
 #    mail = None
 #
 #    if args.get_val("-e", def_val=None):
