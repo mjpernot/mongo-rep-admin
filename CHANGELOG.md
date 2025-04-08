@@ -9,6 +9,7 @@ Breaking changes
 
 - Updated pytho-lib v4.0.1
 - Removed displaying out in standard output, all output will be JSON format.
+- Removed -T option.
 
 ### Added
 - create_header: Create standard JSON header for reports.
@@ -27,9 +28,10 @@ Breaking changes
 - call_func: Refactored function to set up the data out config parameters and TimeFormat instance and removed mail setup call.
 
 ### Removed
+- prt_rep_stat: Replaced with chk_rep_stat function.
 - process_std: No longer displaying out in standard output.
 - process_json: Replaced with call to mongo_libs.data_out.
-- Removed the -j and -f options.
+- Removed the -T, -j and -f options.
 
 ## [4.0.2] - 2025-03-11
 - Added support for Mongo 7.0

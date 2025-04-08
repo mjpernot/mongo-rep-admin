@@ -39,7 +39,8 @@ exit 2
 #                [-e toEmail {toEmail2, [...]} [-s subject] [-u]] |
              -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject] [-u]] [-z] |
 ############################################################################
-             -M | -P | -S | -T }
+#             -M | -P | -S | -T }
+             -M | -P | -S }
             [-v | -h]
 
     Arguments:
@@ -114,8 +115,9 @@ exit 2
         -S => Check status of rep for members in rep set, but will only print
             the status if errors are detected.
 
-        -T => Check status of rep for members in rep set and will print the
-            status in all checks.
+# Option removed.
+#        -T => Check status of rep for members in rep set and will print the
+#            status in all checks.
 
         -v => Display version of this program.
         -h => Help and usage message.
@@ -403,7 +405,7 @@ def chk_rep_stat(repset, dtg, **kwargs):
     return status
 
 
-def prt_rep_stat(repset, args, **kwargs):               # pylint:disable=W0613
+#def prt_rep_stat(repset, args, **kwargs):
 
     """Function:  prt_rep_stat
 
@@ -420,10 +422,12 @@ def prt_rep_stat(repset, args, **kwargs):               # pylint:disable=W0613
 
     """
 
+    """
     status = (True, None)
     chk_rep_stat(repset, args, prt_all=args.get_val("-T"))
 
     return status
+    """
 
 
 def fetch_priority(repset, args, **kwargs):             # pylint:disable=W0613
