@@ -45,10 +45,6 @@ exit 2
              -M [-m config_file -i [db_name:table_name]]
                 [-o dir_path/file [-a a|w]] [-z] [-r [-k N]]
                 [-e to_email [to_email2 ...] [-s subject_line] [-u]]}}
-#            {-L [-j [-f]] [-z] [-o dir_path/file [-a]] [-i [db:coll] -m file]
-#                [-e toEmail {toEmail2, [...]} [-s subject] [-u]] |
-#             -N [ [-f] [-e toEmail {toEmail2, [...]} [-s subject] [-u]] [-z] |
-#             -M | -P | -S | -T }
             [-v | -h]
 
     Arguments:
@@ -73,22 +69,6 @@ exit 2
                 -k N => Indentation for expanded JSON format.
             -n => Do not report if no replication lag detected.
                 -p N => Only report if rep lag is greater than N seconds.
-############################################################################
-#R            -j => Set output to JSON format.
-#R            -f => Flatten the JSON data structure to file and standard out.
-#            -i [database:collection] => Name of database and collection.
-#                Delimited by colon (:).  Default: sysmon:mongo_rep_lag
-#            -m file => Mongo config file used for the insertion into a Mongo
-#                database.  Do not include the .py extension.
-#            -o path/file => Directory path and file name for output.
-#                Default is to overwrite the file.
-#                -a => Append output to output file.
-#            -e to_email_addresses => Sends output to one or more email
-#                addresses.  Email addresses are space delimited.
-#            -s subject_line => Subject line of email.
-#            -u => Override the default mail command and use mailx.
-#            -z => Suppress standard out.
-############################################################################
 
         -M => Show current members in replication set.
             -m file => Mongo config file.  Is loaded as a python, do not
@@ -124,14 +104,6 @@ exit 2
             -r => Expand the JSON format using Pretty Print.
                 -k N => Indentation for expanded JSON format.
             -n => Do not report if no errors detected.
-############################################################################
-#R            -f => Flatten the JSON data structure to file and standard out.
-#            -e to_email_addresses => Sends output to one or more email
-#                addresses.  Email addresses are space delimited.
-#            -s subject_line => Subject line of email.
-#            -u => Override the default mail command and use mailx.
-#            -z => Suppress standard out.
-############################################################################
 
         -P => Show priority for members in replication set.
             -m file => Mongo config file.  Is loaded as a python, do not
@@ -166,12 +138,6 @@ exit 2
             -z => Suppress standard out.
             -r => Expand the JSON format using Pretty Print.
                 -k N => Indentation for expanded JSON format.
-
-# Option removed.
-############################################################################
-#        -T => Check status of rep for members in rep set and will print the
-#            status in all checks.
-############################################################################
 
         -v => Display version of this program.
         -h => Help and usage message.
@@ -259,11 +225,6 @@ exit 2
 import sys
 import datetime
 
-# try:
-#    import simplejson as json
-# except ImportError:
-#    import json
-
 # Local
 try:
     from .lib import gen_libs
@@ -336,11 +297,9 @@ def rep_health_chk(rep_stat, server, no_report):
 
     if not rep_stat.get("health"):
         server["Health"] = "Bad"
-#        gen_libs.prt_msg("Health", "Bad", prt_lvl)
 
     elif not no_report:
         server["Health"] = "Good"
-#        gen_libs.prt_msg("Health", "Good", prt_lvl)
 
     return server
 
@@ -360,7 +319,7 @@ def rep_state_chk(rep_stat, server, no_report):
 
     """
 
-    # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter).
+    # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter)
     good_state = [1, 2, 7]
     rep_stat = dict(rep_stat)
     server = dict(server)
@@ -370,9 +329,6 @@ def rep_state_chk(rep_stat, server, no_report):
                             "StateMsg": rep_stat.get("stateStr")}
 
     return server
-#    if rep_stat.get("state") not in good_state or prt_all:
-#        gen_libs.prt_msg("State", rep_stat.get("state"), prt_lvl)
-#        gen_libs.prt_msg("State Msg", rep_stat.get("stateStr"), prt_lvl + 1)
 
 
 def rep_msg_chk(rep_stat, server, no_report):
@@ -394,8 +350,6 @@ def rep_msg_chk(rep_stat, server, no_report):
 
     if rep_stat.get("infoMessage") or not no_report:
         server["ErrorMessage"] = rep_stat.get("infoMessage")
-#    if rep_stat.get("infoMessage"):
-#       gen_libs.prt_msg("Error Message", rep_stat.get("infoMessage"), prt_lvl)
 
     return server
 
@@ -430,18 +384,13 @@ def chk_rep_stat(repset, dtg, **kwargs):
     """
 
     status = (True, None)
-
     kwargs["db_tbl"] = "sysmon:mongo_rep_status"
-
     data = create_header("RepStatus", dtg)
     data["RepSet"] = repset.repset
     data["Servers"] = []
     no_report = kwargs.get("no_report", False)
 
-#    print(f"\nReplication Status Check for Rep Set:  {repset.repset}")
-#    prt_all = kwargs.get("prt_all", False)
-
-    # Process each member in replica set.
+    # Process each member in replica set
     for item in repset.adm_cmd("replSetGetStatus").get("members"):
         server = {}
         server = rep_health_chk(item, server, no_report)
@@ -451,40 +400,11 @@ def chk_rep_stat(repset, dtg, **kwargs):
         if server:
             server["Server"] = item.get("name")
             data["Servers"].append(server)
-#        print(f'\nServer: {item.get("name")}')
-#        rep_health_chk(item, prt_all)
-#        rep_state_chk(item, prt_all)
-#        rep_msg_chk(item)
 
     if data["Servers"]:
         status = mongo_libs.data_out(data, **kwargs)
 
     return status
-
-
-# def prt_rep_stat(repset, args, **kwargs):
-
-    """Function:  prt_rep_stat
-
-    Description:  Set the print all flag and call chk_rep_stat function.
-
-    Arguments:
-        (input) repset -> Replication set instance
-        (input) dtg -> DateFormat instance
-        (input) **kwargs:
-            mail -> Mail instance
-        (output) status -> Tuple on connection status
-            status[0] - True|False - Connection successful
-            status[1] - Error message if connection failed
-
-    """
-
-    """
-    status = (True, None)
-    chk_rep_stat(repset, args, prt_all=args.get_val("-T"))
-
-    return status
-    """
 
 
 def fetch_priority(repset, dtg, **kwargs):
@@ -516,18 +436,10 @@ def fetch_priority(repset, dtg, **kwargs):
     """
 
     secure_config = mongo_libs.create_security_config(cfg=repset)
-
     coll = mongo_class.Coll(
         repset.name, repset.user, repset.japd, host=repset.host,
         port=repset.port, db="local", coll="system.replset", auth=repset.auth,
         conf_file=repset.conf_file, **secure_config)
-#        conf_file=repset.conf_file, auth_db=repset.auth_db,
-#        auth_mech=repset.auth_mech, ssl_client_ca=repset.ssl_client_ca,
-#        ssl_client_cert=repset.ssl_client_cert,
-#        ssl_client_key=repset.ssl_client_key,
-#       ssl_client_phrase=repset.ssl_client_phrase, auth_type=repset.auth_type,
-#        tls_ca_certs=repset.tls_ca_certs, tls_certkey=repset.tls_certkey,
-#        tls_certkey_phrase=repset.tls_certkey_phrase)
     status = coll.connect()
     kwargs["db_tbl"] = "sysmon:mongo_priority"
 
@@ -535,11 +447,9 @@ def fetch_priority(repset, dtg, **kwargs):
         data = create_header("NodePriority", dtg)
         data["RepSet"] = repset.repset
         data["Priority"] = []
-#        print(f"\nMembers => priority of replica set: {repset.repset}")
 
         for item in coll.coll_find1()["members"]:
             data["Priority"].append({item["host"]: item["priority"]})
-#            print(f'\t{item["host"]} => {item["priority"]}')
 
         status = mongo_libs.data_out(data, **kwargs)
 
@@ -586,20 +496,14 @@ def fetch_members(repset, dtg, **kwargs):
     data = create_header("RepMembers", dtg)
     data["RepSet"] = repset.repset
     data["Secondaries"] = []
-
-#    print(f"\nMembers of replica set: {repset.repset}")
     rep_status = repset.adm_cmd("replSetGetStatus")
     primary = get_master(rep_status)
-
     data["Master"] = primary["name"]
-#    print(f'\t{primary["name"]} (Primary)')
-
     secondaries = [member for member in rep_status.get("members")
                    if member.get("state") == 2]
 
     for second in secondaries:
         data["Secondaries"].append(second["name"])
-#        print(f'\t{second["name"]}')
 
     status = mongo_libs.data_out(data, **kwargs)
 
@@ -621,7 +525,7 @@ def get_master(rep_status):
     rep_status = dict(rep_status)
     primary = None
 
-    # Process each member in replica set.
+    # Process each member in replica set
     for member in rep_status.get("members"):
         if member.get("state") == 1:
             primary = member
@@ -646,7 +550,7 @@ def get_optimedate(rep_status):
     optime_date = datetime.datetime.strptime(
         "1900-01-01 00:00:01", "%Y-%m-%d %H:%M:%S")
 
-    # Find best datetime from Secondary servers.
+    # Find best datetime from Secondary servers
     for member in rep_status.get("members"):
         optime_date = max(optime_date, member.get('optimeDate'))
 
@@ -684,23 +588,12 @@ def chk_mem_rep_lag(rep_status, dtg, **kwargs):
 
     """
 
-#    t_format = "%Y-%m-%d %H:%M:%S"
     rep_status = dict(rep_status)
-#    json_fmt = kwargs.get("json", False)
-
     kwargs["db_tbl"] = "sysmon:mongo_rep_lag"
-
     data = create_header("RepTimeLag", dtg)
     data["RepSet"] = rep_status.get("set")
     data["Master"] = get_master(rep_status).get("name")
     data["Slaves"] = []
-
-#    outdata = {
-#        "Application": "Mongo Replication", "RepSet": rep_status.get("set"),
-#        "Master": get_master(rep_status).get("name"),
-#        "AsOf": dtg.get_time("zulu"), "Slaves": []}
-
-#        "AsOf": datetime.datetime.strftime(datetime.datetime.now(), t_format),
 
     # Process each member in replica set
     for member in rep_status.get("members"):
@@ -733,148 +626,7 @@ def chk_mem_rep_lag(rep_status, dtg, **kwargs):
                 status = mongo_libs.data_out(data, **kwargs)
                 break
 
-#    if json_fmt:
-#        status = process_json(outdata, **kwargs)
-#
-#    else:
-#        status = process_std(outdata, **kwargs)
-
     return status
-
-
-# def process_std(outdata, **kwargs):
-
-    """Function:  process_std
-
-    Description:  Process standard out formatted data.
-
-    Arguments:
-        (input) outdata -> JSON document from chk_mem_rep_lag function
-        (input) **kwargs:
-            json -> True|False - JSON format
-            ofile -> file name - Name of output file
-            outfile -> Name of output file
-            db_tbl -> database:collection - Name of db and collection
-            class_cfg -> Server class configuration settings
-            mail -> Mail instance
-            args -> ArgParser class instance
-            suf -> Primary|Freshest Secondary who has latest date time
-            optdt -> Primary|Best Oplog date time
-        (output) status -> Tuple on connection status
-            status[0] - True|False - Connection successful
-            status[1] - Error message if connection failed
-
-    """
-
-    """
-    status = (True, None)
-    mode = "w"
-    mongo_cfg = kwargs.get("class_cfg", None)
-    db_tbl = kwargs.get("db_tbl", None)
-    ofile = kwargs.get("ofile", None)
-    mail = kwargs.get("mail", None)
-    args = kwargs.get("args", None)
-    body = []
-
-    if args.get_val("-a", def_val=False):
-        mode = "a"
-
-    body.append(f'\nReplication lag for Replica set: {outdata["RepSet"]}')
-
-    for item in outdata["Slaves"]:
-        body.append(f'\nSource: {item["Name"]}')
-        body.append(f'\tsynced to:  {item["SyncTo"]}')
-        body.append(f'\t{item["LagTime"]} secs'
-                    f' ({int((item["LagTime"] / 36) / 100)} hrs) behind the'
-                    f' {kwargs["suf"]}')
-
-    if mongo_cfg and db_tbl:
-        dbs, tbl = db_tbl.split(":")
-        status = mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
-
-    if not status[0]:
-        status = (status[0], "process_std: " + status[1])
-
-    if ofile:
-        f_hldr = gen_libs.openfile(ofile, mode)
-
-        for line in body:
-            gen_libs.write_file2(f_hldr, line)
-
-    if mail:
-        for line in body:
-            mail.add_2_msg(line)
-
-        mail.send_mail(use_mailx=args.get_val("-u", def_val=False))
-
-    if not args.get_val("-z", def_val=False):
-        for item in body:
-            print(item)
-
-    return status
-    """
-
-
-# def process_json(outdata, **kwargs):
-
-    """Function:  process_json
-
-    Description:  Process JSON data.
-
-    Arguments:
-        (input) outdata -> JSON document from chk_mem_rep_lag function
-        (input) **kwargs:
-            json -> True|False - JSON format
-            ofile -> file name - Name of output file
-            db_tbl -> database:collection - Name of db and collection
-            class_cfg -> Server class configuration settings
-            mail -> Mail instance
-            args -> ArgParser class instance
-            suf -> Primary|Freshest Secondary who has latest date time
-            optdt -> Primary|Best Oplog date time
-        (output) status -> Tuple on connection status
-            status[0] - True|False - Connection successful
-            status[1] - Error message if connection failed
-
-    """
-
-    """
-    status = (True, None)
-    mode = "w"
-    indent = 4
-    mongo_cfg = kwargs.get("class_cfg", None)
-    db_tbl = kwargs.get("db_tbl", None)
-    ofile = kwargs.get("ofile", None)
-    mail = kwargs.get("mail", None)
-    args = kwargs.get("args", None)
-
-    if args.get_val("-a", def_val=False):
-        mode = "a"
-
-    if args.get_val("-f", def_val=False):
-        indent = None
-
-    jdata = json.dumps(outdata, indent=indent)
-
-    if mongo_cfg and db_tbl:
-        dbs, tbl = db_tbl.split(":")
-        status = mongo_libs.ins_doc(mongo_cfg, dbs, tbl, outdata)
-
-    if not status[0]:
-        status = (status[0], "process_json: " + status[1])
-
-    if ofile:
-        gen_libs.write_file(ofile, mode, jdata)
-
-    if mail:
-        mail.add_2_msg(jdata)
-        mail.send_mail(use_mailx=args.get_val("-u", def_val=False))
-
-    if not args.get_val("-z", def_val=False):
-        gen_libs.display_data(jdata)
-
-    return status
-    """
 
 
 def chk_rep_lag(repset, dtg, **kwargs):
@@ -906,33 +658,20 @@ def chk_rep_lag(repset, dtg, **kwargs):
 
     """
 
-#    json_fmt = args.get_val("-j", def_val=False)
-#    outfile = args.get_val("-o", def_val=None)
-#    db_tbl = args.get_val("-i", def_val=None)
-
     rep_status = repset.adm_cmd("replSetGetStatus")
     primary = get_master(rep_status)
-
-#    mongo_cfg = None
-#
-#    if args.get_val("-m", def_val=None):
-#        mongo_cfg = gen_libs.load_module(
-#            args.get_val("-m"), args.get_val("-d"))
 
     if primary:
         optime_date = primary.get("optimeDate")
         suffix = "primary"
 
-    # Use best datetime from Secondaries.
+    # Use best datetime from Secondaries
     else:
         optime_date = get_optimedate(rep_status)
         suffix = "freshest secondary"
 
     status = chk_mem_rep_lag(
         rep_status, dtg, optdt=optime_date, suf=suffix, **kwargs)
-#    status = chk_mem_rep_lag(
-#        rep_status, optdt=optime_date, suf=suffix, json=json_fmt,
-#       ofile=outfile, db_tbl=db_tbl, class_cfg=mongo_cfg, args=args, **kwargs)
 
     return status
 
@@ -967,12 +706,8 @@ def node_chk(repset, dtg, **kwargs):
     """
 
     status = (True, None)
-#    mail = kwargs.get("mail", None)
     node_status = {}
-
     kwargs["db_tbl"] = "sysmon:mongo_node_check"
-
-#    indent = None if args.get_val("-f", def_val=False) else 4
 
     for node in repset.adm_cmd("replSetGetStatus").get("members"):
         tstatus = single_node_chk(node)
@@ -985,20 +720,6 @@ def node_chk(repset, dtg, **kwargs):
         data = create_header("NodeCheck", dtg)
         data["NodeError"] = node_status
         status = mongo_libs.data_out(data, **kwargs)
-
-#    if node_status:
-#        jnode_status = json.dumps(node_status, indent=indent)
-#
-#        if not args.get_val("-z", def_val=False):
-#            gen_libs.display_data(jnode_status)
-#
-#        if mail:
-#            if not mail.subj:
-#                subj = f"Node Status Check for Rep Set:  {repset.repset}"
-#                mail.create_subject(subj=subj)
-#
-#            mail.add_2_msg(jnode_status)
-#            mail.send_mail(use_mailx=args.get_val("-u", def_val=False))
 
     return status
 
@@ -1016,7 +737,7 @@ def single_node_chk(node):
 
     """
 
-    # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter).
+    # Good state is 1 (Primary), 2 (Secondary), 7 (Abriter)
     good_state = [1, 2, 7]
     node = dict(node)
     status = {}
@@ -1084,19 +805,9 @@ def call_func(args, func_dict, repinst):
     dtg = gen_class.TimeFormat()
     dtg.create_time()
 
-#######################################################################
-# Move to mongo_libs.data_out
-#    mail = None
-#
-#    if args.get_val("-e", def_val=None):
-#        mail = gen_class.setup_mail(
-#            args.get_val("-e"), subj=args.get_val("-s", def_val=None))
-#######################################################################
-
-    # Call function: Intersection of command line & function dict.
+    # Call function: Intersection of command line & function dict
     for item in set(args.get_args_keys()) & set(func_dict.keys()):
         status = func_dict[item](repinst, dtg, **data_config)
-#        status = func_dict[item](repinst, args, mail=mail)
 
         if not status[0]:
             print(f"Error detected:  {status[1]}")
@@ -1122,21 +833,14 @@ def run_program(args, func_dict):
         server.name, server.user, server.japd, host=server.host,
         port=server.port, db="local", coll="system.replset", auth=server.auth,
         conf_file=server.conf_file, **secure_config)
-#        conf_file=server.conf_file, auth_db=server.auth_db,
-#        auth_mech=server.auth_mech, ssl_client_ca=server.ssl_client_ca,
-#        ssl_client_cert=server.ssl_client_cert,
-#        ssl_client_key=server.ssl_client_key,
-#       ssl_client_phrase=server.ssl_client_phrase, auth_type=server.auth_type,
-#        tls_ca_certs=server.tls_ca_certs, tls_certkey=server.tls_certkey,
-#        tls_certkey_phrase=server.tls_certkey_phrase)
     status = coll.connect()
 
     if status[0]:
 
-        # Is replication setup.
+        # Is replication setup
         if coll.coll_cnt() != 0:
 
-            # Get replica set name if not in config.
+            # Get replica set name if not in config
             if server.repset:
                 rep_set = server.repset
 
@@ -1147,14 +851,6 @@ def run_program(args, func_dict):
                 server.name, server.user, server.japd, host=server.host,
                 port=server.port, auth=server.auth, repset=rep_set,
                 repset_hosts=server.repset_hosts, **secure_config)
-#                repset_hosts=server.repset_hosts, auth_db=server.auth_db,
-#               auth_mech=server.auth_mech, ssl_client_ca=server.ssl_client_ca,
-#                ssl_client_cert=server.ssl_client_cert,
-#                ssl_client_key=server.ssl_client_key,
-#                ssl_client_phrase=server.ssl_client_phrase,
-#                auth_type=server.auth_type, tls_ca_certs=server.tls_ca_certs,
-#                tls_certkey=server.tls_certkey,
-#                tls_certkey_phrase=server.tls_certkey_phrase)
             status2 = repinst.connect()
 
             if status2[0]:
@@ -1202,16 +898,13 @@ def main():
     func_dict = {
         "-L": chk_rep_lag, "-M": fetch_members, "-S": chk_rep_stat,
         "-P": fetch_priority, "-N": node_chk}
-#    func_dict = {
-#        "-L": chk_rep_lag, "-M": fetch_members, "-S": chk_rep_stat,
-#        "-P": fetch_priority, "-T": prt_rep_stat, "-N": node_chk}
     opt_con_req_list = {"-i": ["-m"], "-s": ["-e"], "-u": ["-e"], "-k": ["-r"]}
     opt_def_dict = {"-i": "sysmon:mongo_rep_admin"}
     opt_multi_list = ["-e", "-s"]
     opt_req_list = ["-c", "-d"]
     opt_val_list = ["-c", "-d", "-i", "-m", "-o", "-e", "-s", "-k", "-a"]
 
-    # Process argument list from command line.
+    # Process argument list from command line
     args = gen_class.ArgParser(
         sys.argv, opt_val=opt_val_list, opt_def=opt_def_dict,
         multi_val=opt_multi_list)
