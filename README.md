@@ -107,8 +107,8 @@ Make the appropriate change to the environment.
 
 ```
 cp config/mongo.py.TEMPLATE config/mongo.py
-vim config/mongo.py
 chmod 600 config/mongo.py
+vim config/mongo.py
 ```
 
 If inserting the results into a different Mongo database then create another mongo configuration file and use this file with the -m option.
@@ -151,8 +151,8 @@ Make the appropriate change to the environment.
 
 ```
 cp config/mongo.py.TEMPLATE config/mongo_insert.py
-vim config/mongo_insert.py
 chmod 600 config/mongo_insert.py
+vim config/mongo_insert.py
 ```
 
 

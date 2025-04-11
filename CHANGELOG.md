@@ -7,9 +7,10 @@ The format is based on "Keep a Changelog".  This project adheres to Semantic Ver
 ## [5.0.0] - 2025-04-01
 Breaking changes
 
-- Updated pytho-lib v4.0.1
 - Removed displaying out in standard output, all output will be JSON format.
-- Removed -T option.
+- Removed -T, -j and -f options.
+- Added -k, -r, -a and -n options.
+- Updated pytho-lib v4.0.1
 
 ### Added
 - create_header: Create standard JSON header for reports.
