@@ -937,7 +937,7 @@ def chk_rep_lag(repset, dtg, **kwargs):
     return status
 
 
-def node_chk(mongo, dtg, **kwargs):
+def node_chk(repset, dtg, **kwargs):
 
     """Function:  node_chk
 
@@ -945,7 +945,7 @@ def node_chk(mongo, dtg, **kwargs):
         something if a node is down or an error is detected.
 
     Arguments:
-        (input) mongo -> Replication set instance
+        (input) repset -> Replication set instance
         (input) dtg -> DateFormat instance
         (input) **kwargs:
             to_addr -> To email address
@@ -974,7 +974,7 @@ def node_chk(mongo, dtg, **kwargs):
 
 #    indent = None if args.get_val("-f", def_val=False) else 4
 
-    for node in mongo.adm_cmd("replSetGetStatus").get("members"):
+    for node in repset.adm_cmd("replSetGetStatus").get("members"):
         tstatus = single_node_chk(node)
 
         if tstatus:
@@ -994,7 +994,7 @@ def node_chk(mongo, dtg, **kwargs):
 #
 #        if mail:
 #            if not mail.subj:
-#                subj = f"Node Status Check for Rep Set:  {mongo.repset}"
+#                subj = f"Node Status Check for Rep Set:  {repset.repset}"
 #                mail.create_subject(subj=subj)
 #
 #            mail.add_2_msg(jnode_status)
