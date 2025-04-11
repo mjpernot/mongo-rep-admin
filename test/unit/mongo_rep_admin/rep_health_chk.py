@@ -17,7 +17,6 @@
 import sys
 import os
 import unittest
-import mock
 
 # Local
 sys.path.append(os.getcwd())
@@ -35,9 +34,10 @@ class UnitTest(unittest.TestCase):
 
     Methods:
         setUp
-        test_print_all
-        test_good_health
-        test_bad_health
+        test_health_bad_nr_false
+        test_health_bad_nr_true
+        test_health_good_nr_false
+        test_health_good_nr_true
 
     """
 
@@ -51,51 +51,70 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        self.rep_stat = {"health": False}
-        self.rep_stat2 = {"health": True}
+        self.rep_stat = {"health": True}
+        self.rep_stat2 = {"health": False}
+        self.server = {}
+        self.no_report = True
+        self.no_report2 = False
+        self.results = {}
+        self.results2 = {'Health': 'Good'}
+        self.results3 = {'Health': 'Bad'}
 
-    @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
-    def test_print_all(self, mock_prt):
+    def test_health_bad_nr_false(self):
 
-        """Function:  test_print_all
+        """Function:  test_health_bad_nr_false
 
-        Description:  Test with print all option.
-
-        Arguments:
-
-        """
-
-        mock_prt.return_value = True
-
-        self.assertFalse(mongo_rep_admin.rep_health_chk(self.rep_stat2,
-                                                        prt_all=True))
-
-    def test_good_health(self):
-
-        """Function:  test_good_health
-
-        Description:  Test with good health.
+        Description:  Test with health bad and no report false.
 
         Arguments:
 
         """
 
-        self.assertFalse(mongo_rep_admin.rep_health_chk(self.rep_stat2))
+        self.assertEqual(
+            mongo_rep_admin.rep_health_chk(
+                self.rep_stat2, self.server, self.no_report2), self.results3)
 
-    @mock.patch("mongo_rep_admin.gen_libs.prt_msg")
-    def test_bad_health(self, mock_prt):
+    def test_health_bad_nr_true(self):
 
-        """Function:  test_bad_health
+        """Function:  test_health_bad_nr_true
 
-        Description:  Test with bad health.
+        Description:  Test with health bad and no report true.
 
         Arguments:
 
         """
 
-        mock_prt.return_value = True
+        self.assertEqual(
+            mongo_rep_admin.rep_health_chk(
+                self.rep_stat2, self.server, self.no_report), self.results3)
 
-        self.assertFalse(mongo_rep_admin.rep_health_chk(self.rep_stat))
+    def test_health_good_nr_false(self):
+
+        """Function:  test_health_good_nr_false
+
+        Description:  Test with health good and no report false.
+
+        Arguments:
+
+        """
+
+        self.assertEqual(
+            mongo_rep_admin.rep_health_chk(
+                self.rep_stat, self.server, self.no_report2), self.results2)
+
+    def test_health_good_nr_true(self):
+
+        """Function:  test_health_good_nr_true
+
+        Description:  Test with health good and no report true.
+
+        Arguments:
+
+        """
+
+        self.assertEqual(
+            mongo_rep_admin.rep_health_chk(
+                self.rep_stat, self.server, self.no_report), self.results)
 
 
 if __name__ == "__main__":

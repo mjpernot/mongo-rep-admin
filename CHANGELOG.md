@@ -4,6 +4,40 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [5.0.0] - 2025-04-01
+Breaking changes
+
+- Removed displaying out in standard output, all output will be JSON format.
+- Removed -T, -j and -f options.
+- Added -k, -r, -a and -n options.
+- Updated pytho-lib v4.0.1
+
+### Added
+- create_header: Create standard JSON header for reports.
+- Added -k option: Expand JSON format using Pretty Print.
+- Added -r option: Indentation spacing for expanded JSON object.
+- Added -a option: Set write to file mode: append or write.
+- Added -n option: Do not report if no errors detected.
+- create_data_config: Create data out config parameters.
+
+### Changed
+- fetch_priority, run_program: Replaced setting TLS/SSL settings with call to mongo_libs.create_security_config and passing in dictionary with secure settings.
+- fetch_members, fetch_priority: Replaced prints with dictionary and called mongo_libs.data_out to handle data out function.
+- chk_rep_stat: Refactored function to remove prints and replace with dictionary and call mongo_libs.data_out to handle data out function.
+- rep_msg_chk, rep_health_chk, rep_state_chk: Removed prints and replaced with dictionary and returned dictionary to calling function, modied input arguments.
+- node_chk: Refactored function to remove any processing of arguments, replaced data out commands with call to mongo_libs.data_out and added pre-header to JSON output.
+- chk_mem_rep_lag: Refactored function to remove any processing of arguments, replaced datetime with TimeFormat class instance, removed process_std and process_json calls, replaced with mongo_libs.data_out call and replaced JSON header creation with call to create_header.
+- chk_mem_rep_lag: Added no_report option and a replication lag time cutoff for reporting.
+- chk_rep_lag: Refactored function to remove any processing of arguments contained in data out configuration.
+- call_func: Refactored function to set up the data out config parameters and TimeFormat instance and removed mail setup call.
+- main: Removed -T option from available functions to call.
+
+### Removed
+- prt_rep_stat: Replaced with chk_rep_stat function.
+- process_std: No longer displaying out in standard output.
+- process_json: Replaced with call to mongo_libs.data_out.
+- Removed the -T, -j and -f options.
+
 ## [4.0.2] - 2025-03-11
 - Added support for Mongo 7.0
 - Updated mongo-libs to v4.5.1

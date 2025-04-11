@@ -17,39 +17,15 @@
 import sys
 import os
 import unittest
+import mock
 
 # Local
 sys.path.append(os.getcwd())
 import mongo_rep_admin                          # pylint:disable=E0401,C0413
-import lib.gen_libs as gen_libs             # pylint:disable=E0401,C0413,R0402
+import lib.gen_class as gen_class           # pylint:disable=E0401,C0413,R0402
 import version                                  # pylint:disable=E0401,C0413
 
 __version__ = version.__version__
-
-
-class ArgParser():                                      # pylint:disable=R0903
-
-    """Class:  ArgParser
-
-    Description:  Class stub holder for gen_class.ArgParser class.
-
-    Methods:
-        __init__
-
-    """
-
-    def __init__(self):
-
-        """Method:  __init__
-
-        Description:  Class initialization.
-
-        Arguments:
-
-        """
-
-        self.cmdline = None
-        self.args_array = {}
 
 
 class Server():                                         # pylint:disable=R0903
@@ -118,10 +94,32 @@ class UnitTest(unittest.TestCase):
         """
 
         self.server = Server()
-        self.args = ArgParser()
-        self.args.args_array = {"-T": "TimeLag"}
+        self.dtg = gen_class.TimeFormat()
+        self.dtg.create_time()
         self.status = (True, None)
 
+    @mock.patch("mongo_rep_admin.mongo_libs.data_out",
+                mock.Mock(return_value=(True, None)))
+    def test_fetch_members2(self):
+
+        """Function:  test_fetch_members2
+
+        Description:  Test fetch_members function with one member state 3.
+
+        Arguments:
+
+        """
+
+        self.server.data = {
+            "members": [{"name": "mongo1:27017", "state": 1},
+                        {"name": "mongo2:27017", "state": 2},
+                        {"name": "mongo3:27017", "state": 3}]}
+
+        self.assertEqual(
+            mongo_rep_admin.fetch_members(self.server, self.dtg), self.status)
+
+    @mock.patch("mongo_rep_admin.mongo_libs.data_out",
+                mock.Mock(return_value=(True, None)))
     def test_fetch_members(self):
 
         """Function:  test_fetch_members
@@ -132,10 +130,8 @@ class UnitTest(unittest.TestCase):
 
         """
 
-        with gen_libs.no_std_out():
-            self.assertEqual(
-                mongo_rep_admin.fetch_members(
-                    self.server, self.args), self.status)
+        self.assertEqual(
+            mongo_rep_admin.fetch_members(self.server, self.dtg), self.status)
 
 
 if __name__ == "__main__":
