@@ -491,7 +491,6 @@ def fetch_members(repset, dtg, **kwargs):
 
     """
 
-    status = (True, None)
     kwargs["db_tbl"] = "sysmon:mongo_members"
     data = create_header("RepMembers", dtg)
     data["RepSet"] = repset.repset

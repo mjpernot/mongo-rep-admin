@@ -53,7 +53,6 @@ class UnitTest(unittest.TestCase):
 
         self.rep_stat = {"infoMessage": None}
         self.rep_stat2 = {"infoMessage": "StringHere"}
-#        self.rep_stat2 = {"state": 3, "stateStr": "StringHere"}
         self.server = {}
         self.no_report = True
         self.no_report2 = False
