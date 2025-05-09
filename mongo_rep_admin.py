@@ -717,6 +717,8 @@ def node_chk(repset, dtg, **kwargs):
     if not kwargs.get("no_report", False) or (
             kwargs.get("no_report", False) and node_status):
         data = create_header("NodeCheck", dtg)
+        data["RepSet"] = repset.repset
+        data["NodeName"] = repset.host
         data["NodeError"] = node_status
         status = mongo_libs.data_out(data, **kwargs)
 
