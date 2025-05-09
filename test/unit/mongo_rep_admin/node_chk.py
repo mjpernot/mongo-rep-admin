@@ -55,6 +55,7 @@ class Server():                                         # pylint:disable=R0903
         self.status = {"members":
                        [{"name": "MemberName", "health": 1.0, "state": 1,
                          "stateStr": None, "infoMessage": None}]}
+        self.host = "HostName"
 
     def adm_cmd(self, cmd):
 

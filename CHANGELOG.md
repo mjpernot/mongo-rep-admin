@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on "Keep a Changelog".  This project adheres to Semantic Versioning.
 
 
+## [5.0.1] - 2025-05-09
+- Added additional information to Node Check JSON object
+
+### Fixed
+- node_chk: Added RepSet and NodeName to the JSON object to identify the node that is being checked.
+
+
 ## [5.0.0] - 2025-04-01
 Breaking changes
 
